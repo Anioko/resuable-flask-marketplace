@@ -1,0 +1,71 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+
+{% block scripts %}
+{% endblock %}
+
+{% block content %}
+    <div class="ui stackable centered grid container">
+            <div class="four wide column">
+                {% include 'admin/partials/nav.html' %}
+        </div>
+        <div class="twelve wide column">
+            <a class="ui basic compact button" href="{{ url_for('admin.frontend_dashboard') }}">
+                <i class="caret left icon"></i>
+                Back to frontend dashboard
+            </a>
+            <h2 class="ui header">
+                Add or Edit or Update Landing Page Brands
+                <div class="sub header">Please ensure that you use the same names of the brands to name the brand logo's so that they appear</div>
+            </h2>
+
+            {% set flashes = {
+                'error':   get_flashed_messages(category_filter=['form-error']),
+                'warning': get_flashed_messages(category_filter=['form-check-email']),
+                'info':    get_flashed_messages(category_filter=['form-info']),
+                'success': get_flashed_messages(category_filter=['form-success'])
+            } %}
+
+            {{ f.begin_form(form, flashes) }}
+
+
+
+
+            <div class="two fields">
+                {{ f.render_form_field(form.brand_name_one) }}
+                {{ f.render_form_field(form.brand_url_one) }}
+            </div>	
+
+            <div class="two fields">
+                {{ f.render_form_field(form.brand_name_two) }}
+                {{ f.render_form_field(form.brand_url_two) }}
+            </div>
+            <div class="two fields">
+                {{ f.render_form_field(form.brand_name_three) }}
+                {{ f.render_form_field(form.brand_url_three) }}
+            </div>
+
+            <div class="two fields">
+                {{ f.render_form_field(form.brand_name_four) }}
+                {{ f.render_form_field(form.brand_url_four) }}
+            </div>
+
+            <div class="two fields">
+                {{ f.render_form_field(form.brand_name_five) }}
+                {{ f.render_form_field(form.brand_url_five) }}
+            </div>
+			
+            {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
+            {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
+            {{ f.form_message(flashes['info'], header='Information', class='info') }}
+            {{ f.form_message(flashes['success'], header='Success!', class='success') }}
+
+            {% for field in form | selectattr('type', 'equalto', 'SubmitField') %}
+                {{ f.render_form_field(field) }}
+            {% endfor %}
+
+            {{ f.end_form() }}
+
+        </div>
+    </div>
+{% endblock %}

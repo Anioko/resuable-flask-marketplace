@@ -1,0 +1,151 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+    <div class="ui stackable grid container">
+        <div class="four wide column">
+            {% include 'admin/partials/nav.html' %}
+        </div>
+        <div class="twelve wide tablet twelve wide computer centered column">
+            <a class="ui basic compact button" href="{{ url_for('admin.index') }}">
+                <i class="caret left icon"></i>
+                Back to dashboard
+            </a>
+            <h2 class="ui header">
+                All Jobs
+                <div class="sub header">
+                    View and manage users' Jobs.
+                </div>
+            </h2>
+
+            <div class="ui menu">
+                <div id="select-role" class="ui dropdown item">
+                    <div class="text">
+                        All account types
+                    </div>
+                    <i class="dropdown icon"></i>
+                    <div class="menu">
+                        <div class="item" data-value="">All job types</div>
+
+                    </div>
+                </div>
+                <div class="ui right search item">
+                    <div class="ui transparent icon input">
+                        <input id="search-users" type="text" placeholder="Search users…">
+                        <i class="search icon"></i>
+                    </div>
+                </div>
+            </div>
+
+            {# Use overflow-x: scroll so that mobile views don't freak out
+             # when the table is too wide #}
+            <div style="overflow-x: scroll;">
+                <table class="ui searchable sortable unstackable selectable celled table">
+                    <thead>
+                    <tr>
+                        <th>Job Title</th>
+                        <th>Creator</th>
+                        <th class="sorted ascending">Created At</th>
+                        <th>Last Update</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for job in jobs.items | sort(attribute='created_at') %}
+                        <tr>
+
+                            <td>{{ job.position_title[:50] }}...</td>
+                            <td>{{ job.user.full_name }}</td>
+                            <td>{{ job.created_at }}</td>
+                            <td>{{ job.updated_at }}</td>
+                            <td>
+                                <a class="ui blue left floated button" style="margin-top: 1px" href="#">Applicants</a>
+                                <a class="ui red left floated button" style="margin-top: 1px"
+                                   href="#" onclick="return confirmDeleteJob('{{ job.id | tojson }}');" data-content="{{ job.id }}">Delete</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <br>
+            <br>
+            <br>
+            <div class="ui centered grid ">
+                <div class="ui pagination menu">
+                    {% for page in jobs.iter_pages() %}
+                        {% if page %}
+                            {% if page != jobs.page %}
+                                <a class="item" href="{{ url_for('admin.jobs', page=page) }}">
+                                    {{ page }}
+                                </a>
+                            {% else %}
+                                <a class="item active">
+                                    {{ page }}
+                                </a>
+                            {% endif %}
+                        {% else %}
+                            <div class="disabled item">
+                                ...
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+
+
+        </div>
+        <form method="POST" action="{{ url_for('admin.delete_job', job_id=0) }}" id="delete-job-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        </form>
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+    <script>
+        function confirmDeleteJob(job_id){
+            swal({
+                title: "Are you sure?",
+                text: "Once deleted, you will not be able to recover this job",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        let form = $("#delete-job-form");
+                        form.attr('action', "{{ url_for('admin.delete_job', job_id=0) }}".replace('0',job_id));
+                        form.submit();
+                    } else {
+                        return false;
+                    }
+                });
+            return false;
+        }
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#search-users').keyup(function () {
+                var searchText = $(this).val();
+                if (searchText.length > 0) {
+                    $('tbody td:icontains(' + searchText + ')').addClass('positive');
+                    $('td.positive').not(':icontains(' + searchText + ')').removeClass('positive');
+                    $('tbody td').not(':icontains(' + searchText + ')').closest('tr').addClass('hidden').hide();
+                    $('tr.hidden:icontains(' + searchText + ')').removeClass('hidden').show();
+                } else {
+                    $('td.positive').removeClass('positive');
+                    $('tr.hidden').removeClass('hidden').show();
+                }
+            });
+
+            $('#select-role').dropdown({
+                onChange: function (value, text, $selectedItem) {
+                    $('td.user.role:contains(' + value + ')').closest('tr').removeClass('hidden').show();
+                    $('td.user.role').not(':contains(' + value + ')').closest('tr').addClass('hidden').hide();
+                }
+            });
+        });
+    </script>
+{% endblock %}

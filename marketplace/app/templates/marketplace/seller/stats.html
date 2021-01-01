@@ -1,0 +1,40 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+    <div class="ui stackable centered grid marketplace container">
+        <div class="four wide column">
+            {% include 'marketplace/seller/nav.html' %}
+        </div>
+        <div class="twelve wide column">
+            <h2 class="ui header">
+                Seller Statistics
+            </h2>
+            <hr>
+            <div class="ui sixteen wide column stackable grid">
+                <div class="ui centered cards">
+                    <div class="ui card">
+                        <a href="{{ url_for('marketplace.seller_orders') }}">
+                            <h1 style="text-align: center; padding: 50px 10px">{{ orders_count }}</h1>
+                            <div class="content">
+                                <a class="header" href="#">Total Orders</a>
+                                <div class="meta">
+                                    <a>{{ today_orders_count }} orders today</a>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    {% for curr in revenue %}
+                        <div class="ui small card" style="cursor: pointer">
+                            <h1 style="text-align: center; padding: 50px 10px">{{ curr['revenue'] }} {{ curr['currency'].symbol }}</h1>
+                            <div class="content">
+                                <p class="header">Total Revenue</p>
+                                <div class="meta">
+                                    <p>in {{ curr['currency'].name }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

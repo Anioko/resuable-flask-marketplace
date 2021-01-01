@@ -1,0 +1,40 @@
+{% extends 'layouts/ecommerce_base.html' %}
+{% import 'macros/category_macros.html' as category_macros %}
+{% import 'macros/product_macros.html' as products_macros %}
+
+{% block content %}
+<nav class="navbar navbar-main navbar-expand-lg navbar-light border-bottom">
+  <div class="container">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main_nav" aria-controls="main_nav" aria-expanded="true" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="navbar-collapse collapse show" id="main_nav" style="">
+      <ul class="navbar-nav">
+      	<li class="nav-item dropdown">
+          <a class="nav-link pl-0" data-toggle="dropdown" href="#"><strong> <i class="fa fa-bars"></i> &nbsp;  All category</strong></a>
+        </li>
+                {% for category in categories %}
+                    {{ category_macros.category_wid(category) }}
+                {% endfor %}
+      </ul>
+    </div> <!-- collapse .// -->
+  </div> <!-- container .// -->
+</nav>
+
+<!-- ========================= SECTION  ========================= -->
+<section class="section-name  padding-y-sm">
+<div class="container">
+
+<header class="section-heading">
+	<a href="#" class="btn btn-outline-primary float-right">See all</a>
+	<h3 class="section-title">Popular products</h3>
+</header><!-- sect-heading -->
+                {% for product in products %}
+                    {{ products_macros.product_wid(product) }}
+                {% endfor %}
+
+</div><!-- container // -->
+</section>
+<!-- ========================= SECTION  END// ========================= -->
+{% endblock %}

@@ -1,0 +1,165 @@
+.steps-section {
+  box-sizing: border-box;
+}
+
+.steps-section *,.steps-section *:before,.steps-section *:after {
+  box-sizing: inherit;
+}
+
+.steps-section {
+  font-family: lato;
+}
+
+.section-header, .steps-header, .steps-name {
+  color: #3498DB;
+  font-weight: 400;
+  font-size: 1.4em;
+}
+
+.steps-header {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.steps-timeline {
+  outline: 1px dashed rgba(255, 0, 0, 0);
+  position: relative;
+}
+@media screen and (max-width: 500px) {
+  .step {
+    margin-left: 2%;
+  }
+  .steps-timeline .sep{
+    position: absolute;
+    height: 100%;
+    width: 1%;
+    background: #3498db;
+    left: 0;
+  }
+  .step:before {
+    content: '';
+    position: absolute;
+    left: -2%;
+    top: 40%;
+    border-top: 2px solid #3498db;
+    width: 15px;
+  }
+}
+@media screen and (min-width: 500px) {
+  .steps-timeline .sep{
+    position: absolute;
+    height: 100%;
+    width: 1%;
+    background: #3498db;
+    left: 50%;
+  }
+  .steps-timeline {
+    padding-top: 20px;
+    margin-top: 40px;
+    margin-left: 16.65%;
+    margin-right: 16.65%;
+  }
+}
+.steps-timeline:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+
+.step {
+  outline: 1px dashed rgba(0, 128, 0, 0);
+  padding: 20px 15px;
+  position: relative;
+}
+@media screen and (min-width: 500px) {
+  .step {
+    float: left;
+    width: 49%;
+  }
+  .step:nth-child(even) {
+    margin-left: 1%;
+    margin-top: 30px;
+  }
+  .step:nth-child(odd):after {
+    content: '';
+    position: absolute;
+    right: -2%;
+    top: 40%;
+    border-top: 2px solid #3498db;
+    width: 30px;
+  }
+  .step:nth-child(even):before {
+    content: '';
+    position: absolute;
+    left: 2%;
+    top: 40%;
+    border-top: 2px solid #3498db;
+    width: 30px;
+  }
+
+}
+
+@media screen and (max-width: 500px) {
+  .step {
+    padding-bottom: -40px;
+  }
+}
+
+@media screen and (min-width: 500px) {
+
+}
+
+@media screen and (max-width: 500px) {
+
+}
+@media screen and (min-width: 500px) {
+
+}
+
+.steps-img {
+  display: block;
+  margin: auto;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #3498db;
+}
+.steps-img .icon {
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  color: white;
+}
+@media screen and (max-width: 500px) {
+  .steps-img {
+    float: left;
+    margin-right: 20px;
+  }
+}
+
+.steps-name,
+.steps-description {
+  margin: 0;
+}
+
+@media screen and (min-width: 500px) {
+  .steps-name {
+    text-align: center;
+  }
+}
+
+.steps-description {
+  overflow: hidden;
+}
+@media screen and (min-width: 500px) {
+  .steps-description {
+    text-align: center;
+  }
+  .steps-time {
+    text-align: center;
+  }
+}
+.steps-time {
+  margin: 0;
+}

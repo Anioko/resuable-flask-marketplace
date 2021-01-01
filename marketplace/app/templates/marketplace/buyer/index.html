@@ -1,0 +1,17 @@
+{% extends 'layouts/base.html' %}
+{% from 'macros/nav_macros.html' import dashboard_option %}
+{% block content %}
+    <div class="ui stackable centered grid marketplace container">
+        <div class="four wide column">
+            {% include 'marketplace/buyer/nav.html' %}
+        </div>
+        <div class="twelve wide column">
+            <h2 class="ui header">
+                Buyer MarketPlace Dashboard
+            </h2>
+            <div class="ui two column stackable grid">
+                {% include 'marketplace/partials/buyer_nav_items.html' %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

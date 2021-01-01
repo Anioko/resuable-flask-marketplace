@@ -1,0 +1,213 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        let d = $('input[name=delivery_term]')
+        if (d.length){
+            d.change(function () {
+                let val = $(this).val();
+                updateOrderSummary(2, val);
+            });
+            d.ready(function () {
+                let val = d.val();
+                updateOrderSummary(2, val);
+
+            })
+        }
+    })
+    function updateOrderSummary(step, delivery=0){
+        axios.get('{{ url_for("api.ordersummary", step=0, delivery=1) }}'.replace(/0/, step).replace(/1/, delivery) )
+            .then(function (response) {
+                $('#summary-table').html(response.data);
+            })
+    }
+    function updateCartCount(){
+        axios.get('{{ url_for("api.cartcount") }}' )
+            .then(function (response) {
+                if (response.data.status === 1) {
+                    let count = response.data.count;
+                    let label =$('.main.shopping.cart.icon').next('.floating.ui.blue.label');
+                    if (count > 0){
+                        if (! label.length){
+                            $('.main.shopping.cart.icon').parent().append('<div class="floating ui blue label active" style="top:0"></div>');
+                            label =$('.main.shopping.cart.icon').next('.floating.ui.blue.label');
+                        }
+                        label.addClass('active');
+                        label.html(count);
+                        if (! label.hasClass('active')){
+                            label.addClass('active')
+                        }
+                    }
+                    else
+                    {
+                        label.html('');
+                        label.removeClass('active');
+                    }
+                }
+            })
+    }
+    function addOneToCart(product_id){
+        let count_holder = $('#product-'+product_id+'-count');
+        let data = new FormData();
+        data.set('csrf_token', "{{ csrf_token()  }}");
+        data.set('product_id', product_id);
+        axios.post('{{ url_for("api.addtocart") }}', data )
+            .then(function (response) {
+                if (response.data.status === 1) {
+                    count_holder.html(response.data.count);
+                    updateOrderSummary(1);
+                    updateCartCount();
+                }
+            })
+    }
+    function subOneFromCart(product_id) {
+        let count_holder = $('#product-' + product_id + '-count');
+        let count = parseInt(count_holder.html());
+        if (count == 1) {
+            swal({
+                title: "Are you sure?",
+                text: "This will remove the item entirly from your cart",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        let data = new FormData();
+                        data.set('csrf_token', "{{ csrf_token()  }}");
+                        data.set('product_id', product_id);
+                        axios.post('{{ url_for("api.subfromcart") }}', data)
+                            .then(function (response) {
+                                if (response.data.status === 1) {
+                                    if (response.data.count == 0) {
+                                        count_holder.parent().parent().remove();
+                                    } else {
+                                        count_holder.html(response.data.count);
+                                    }
+                                    updateOrderSummary(1);
+                                    updateCartCount();
+
+                                }
+                            })
+                    } else {
+                        return false;
+                    }
+                });
+            return false;
+        }
+        else {
+            let data = new FormData();
+            data.set('csrf_token', "{{ csrf_token()  }}");
+            data.set('product_id', product_id);
+            axios.post('{{ url_for("api.subfromcart") }}', data )
+                .then(function (response) {
+                    if (response.data.status === 1) {
+                        if(response.data.count == 0){
+                            count_holder.parent().parent().remove();
+                        }
+                        else {
+                            count_holder.html(response.data.count);
+                        }
+                        updateOrderSummary(1);
+                        updateCartCount();
+                    }
+                })
+        }
+    }
+    function addToCart(product_id){
+        let data = new FormData();
+        data.set('csrf_token', "{{ csrf_token()  }}");
+        data.set('product_id', product_id);
+        axios.post('{{ url_for("api.addtocart") }}', data )
+            .then(function (response) {
+                if (response.data.status === 1) {
+                    toastr.options = {
+                        "closeButton": false,
+                        "debug": false,
+                        "newestOnTop": false,
+                        "progressBar": false,
+                        "positionClass": "toast-bottom-left",
+                        "preventDuplicates": false,
+                        "showDuration": "5000",
+                        "hideDuration": "1000",
+                        "timeOut": "5000",
+                        "extendedTimeOut": "1000",
+                        "showEasing": "swing",
+                        "hideEasing": "linear",
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut",
+                        "onclick": function() {location.href= '{{url_for('marketplace.cart')}}';}
+                    };
+                    playSound('{{url_for("static", filename="sounds/notif.mp3", _external=True)}}');
+                    toastr["info"](response.data.message, response.data.title);
+                    updateCartCount();
+                }
+                else {
+                    toastr.options = {
+                        "closeButton": false,
+                        "debug": false,
+                        "newestOnTop": false,
+                        "progressBar": false,
+                        "positionClass": "toast-bottom-left",
+                        "preventDuplicates": false,
+                        "showDuration": "5000",
+                        "hideDuration": "1000",
+                        "timeOut": "5000",
+                        "extendedTimeOut": "1000",
+                        "showEasing": "swing",
+                        "hideEasing": "linear",
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut",
+                    };
+                    playSound('{{url_for("static", filename="sounds/notif.mp3", _external=True)}}');
+                    toastr["error"](response.data.message, response.data.title);
+                    updateCartCount();
+                }
+            })
+            .catch(function (error) {
+                // handle error
+                console.log("error")
+            })
+            .finally(function () {
+            });
+    }
+    function BuyNow(product_id){
+        let data = new FormData();
+        data.set('csrf_token', "{{ csrf_token()  }}");
+        data.set('product_id', product_id);
+        axios.post('{{ url_for("api.addtocart") }}', data )
+            .then(function (response) {
+                if (response.data.status === 1) {
+                    location.href='{{ url_for('marketplace.cart') }}';
+                }
+                else {
+                    toastr.options = {
+                        "closeButton": false,
+                        "debug": false,
+                        "newestOnTop": false,
+                        "progressBar": false,
+                        "positionClass": "toast-bottom-left",
+                        "preventDuplicates": false,
+                        "showDuration": "5000",
+                        "hideDuration": "1000",
+                        "timeOut": "5000",
+                        "extendedTimeOut": "1000",
+                        "showEasing": "swing",
+                        "hideEasing": "linear",
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut",
+                    };
+                    playSound('{{url_for("static", filename="sounds/notif.mp3", _external=True)}}');
+                    toastr["error"](response.data.message, response.data.title);
+                    updateCartCount();
+                }
+            })
+            .catch(function (error) {
+                // handle error
+                console.log("error")
+            })
+            .finally(function () {
+            });
+    }
+</script>

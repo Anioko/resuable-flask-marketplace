@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emojione@4.0.0/extras/css/emojione.min.css"/>
+    <link rel="stylesheet" href="http://cdn.jsdelivr.net/qtip2/3.0.3/jquery.qtip.min.css"/>
+    <link rel="stylesheet" href="emoji.css"/>
+    <style>
+        @supports (-moz-appearance:none) {
+            .Hema-Emoji-Picker-Input::after {
+                right: 16px;
+            }
+        }
+    </style>
+</head>
+<body style="font-size: 50px">
+<div id="content"></div>
+<form>
+    <div style="width: 50%">
+        <div id="emoji_enabled" name="text"></div>
+    </div>
+</form>
+<script src="//code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/emojione@4.0.0/lib/js/emojione.min.js"></script>
+<script src="http://cdn.jsdelivr.net/qtip2/3.0.3/jquery.qtip.min.js"></script>
+<script src="emoji.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        EmojiPicker('#emoji_enabled');
+    });
+    // $(document).ready(function(){
+    // })
+</script>
+</body>
+</html>
+

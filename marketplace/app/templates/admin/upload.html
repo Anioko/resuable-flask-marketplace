@@ -1,0 +1,74 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+
+{% block scripts %}
+{% endblock %}
+
+{% block content %}
+    <div class="ui stackable centered grid container">
+            <div class="four wide column">
+                {% include 'admin/partials/nav.html' %}
+        </div>
+        <div class="twelve wide column">
+            <a class="ui basic compact button" href="{{ url_for('admin.frontend_dashboard') }}">
+                <i class="caret left icon"></i>
+                Back to frontend dashboard
+            </a>
+            <h2 class="ui header">
+                Edit Landing Page Images
+                <div class="sub header">Upload landing page images</div>
+            </h2>
+
+		<div class="ui list">
+		  <a class="item">
+			<i class="comment icon"></i>
+			<div class="content">
+			  <div class="header">Logo</div>
+			  <div class="description">To add the logo please name the file as 'logo' before you upload it</div>
+			</div>
+		  </a>
+		  <a class="item">
+			<i class="comment icon"></i>
+			<div class="content">
+			  <div class="header">Favicon</div>
+			  <div class="description">To add a favicon please make sure the name is 'favicon' and its ending is .ico</div>
+			</div>
+		  </a>
+		  <a class="item">
+			<i class="comment icon"></i>
+			<div class="content">
+			  <div class="header">Icons</div>
+			  <div class="description">To add a icons please make sure the names follow these formats 'apple-touch-icon-144-precomposed', 'apple-touch-icon-114-precomposed', 'apple-touch-icon-72-precomposed' and 'apple-touch-icon-57-precomposed'  </div>
+			</div>
+		  </a>
+		</div>
+
+            {% set flashes = {
+                'error':   get_flashed_messages(category_filter=['form-error']),
+                'warning': get_flashed_messages(category_filter=['form-check-email']),
+                'info':    get_flashed_messages(category_filter=['form-info']),
+                'success': get_flashed_messages(category_filter=['form-success'])
+            } %}
+
+            {{ f.begin_form(form, flashes) }}
+
+
+
+
+            {{ f.render_form_field(form.image) }}
+
+			
+            {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
+            {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
+            {{ f.form_message(flashes['info'], header='Information', class='info') }}
+            {{ f.form_message(flashes['success'], header='Success!', class='success') }}
+
+            {% for field in form | selectattr('type', 'equalto', 'SubmitField') %}
+                {{ f.render_form_field(field) }}
+            {% endfor %}
+
+            {{ f.end_form() }}
+
+        </div>
+    </div>
+{% endblock %}

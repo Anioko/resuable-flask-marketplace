@@ -1,0 +1,131 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/product_macros.html' as products_macros %}
+{% block custom_head_tags %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='slick/slick.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='slick/slick-theme.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lightbox/css/lightbox.min.css') }}">
+    <style>
+        .slick-prev:before, .slick-next:before {
+            color: black;
+        }
+        .slick-prev {
+            left: 0px;
+            z-index: 100;
+        }
+        .slick-next {
+            right: 0px;
+            z-index: 100;
+        }
+
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="ui stackable centered grid container">
+        <div class="sixteen wide column">
+            <h2 class="ui header">
+                Search Mediville
+                <span class="sub header">Search results for '{{ query }}'.</span>
+            </h2>
+            <form class="ui inline form fluid" style="width: 100%" method="GET" action="{{ url_for('main.search') }}">
+                <div class="fields" style="margin-bottom: 0">
+                    <div class="fourteen wide field">
+                        <input type="text" name="query"  placeholder="Search across mediville platform" value="{{ query }}" required autocomplete minlength="3">
+                    </div>
+                    <div class="two wide field">
+                        <button type="submit" class="ui button" style="width: 100%"><i class="search icon"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="four wide column">
+            <div class="ui vertical fluid tabular menu">
+                <a class="{% if search_type == '' %} active {% endif %}item" href="{{ url_for('main.search') }}?query={{ query }}&type=&sort_by={{ sort_by }}&sort_dir={{ sort_dir }}">
+                    <i class="home icon"></i>All Results
+                </a>
+                <a class="{% if search_type == 'products' %} active {% endif %}item" href="{{ url_for('main.search') }}?query={{ query }}&type=products&sort_by={{ sort_by }}&sort_dir={{ sort_dir }}">
+                    <i class="shopping basket icon"></i>Marketplace products
+                </a>
+            </div>
+        </div>
+        <div class="twelve wide column">
+            {% if results.total != 0 %}
+                <div class="ui centered grid " style="overflow: hidden">
+                    <br>
+
+                    <hr>
+                </div>
+				{% else %}
+            {% endif %}
+            {% if results.items | length == 0 %}
+                <br>
+                <br>
+                <br>
+                <div class="ui very padded container centered grid">
+                    <p class="ui grey label">No Results where found , please change the search query and try again...</p>
+                </div>
+            {% endif %}
+            <div class="ui computer only grid centered three cards">
+
+                {% for result in results.items %}
+                    {% if result | product %}
+                        {{ products_macros.product_wid(result, corner=True) }}
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="ui tablet only grid centered two cards">
+                {% for result in results.items %}
+                    {% if result | product %}
+                        {{ products_macros.product_wid(result, corner=True) }}
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            <div class="ui mobile only grid centered one cards">
+                {% for result in results.items %}
+                    {% if result | product %}
+                        {{ products_macros.product_wid(result, corner=True) }}
+                    {% endif %}
+                {% endfor %}
+            </div>
+            {% if results.total != 0 %}
+
+                <div class="ui centered grid " style="overflow: hidden">
+                    <hr>
+                    <div class="ui pagination menu">
+                        {% for page in results.iter_pages() %}
+                            {% if page %}
+                                {% if page != results.page %}
+                                    <a class="item" href="{{ url_for(request.endpoint) }}?page={{ page }}&query={{ query }}&type={{ type }}&sort_by={{ sort_by }}&sort_dir={{ sort_dir }}">
+                                        {{ page }}
+                                    </a>
+                                {% else %}
+                                    <a class="item active">
+                                        {{ page }}
+                                    </a>
+                                {% endif %}
+                            {% else %}
+                                <div class="disabled item">
+                                    ...
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <br>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    {% include 'marketplace/partials/scripts.html' %}
+    <script type="text/javascript" src="{{ url_for('static', filename='slick/slick.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='lightbox/js/lightbox.min.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            $('.slick').slick({
+                infinite: false,
+            });
+        });
+
+    </script>
+{% endblock %}

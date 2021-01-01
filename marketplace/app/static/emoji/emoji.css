@@ -1,0 +1,116 @@
+#emoji_enabled {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    padding: 10px;
+    height: 50px;
+}
+.Hema-Emoji-Picker-Container{
+    max-height: 260px;
+    overflow-y: scroll;
+    font-size: 20px;
+    padding-bottom: 40px;
+}
+.Hema-Emoji-Picker-Toggle {
+    text-decoration: none;
+    position: absolute;
+    line-height: 30px;
+    right: 5px;
+    top:3px;
+}
+.Hema-Emoji-Picker-Cats {
+    position: absolute;
+    bottom: 0;
+    background: white;
+    width: 100%;
+}
+.Hema-Emoji-Picker-Cats ul{
+    list-style: none none;
+    padding: 0;
+    float: left;
+    font-size: 20px;
+    height: 30px;
+    margin-bottom: 2px;
+    margin-top: 10px;
+    border-top: 1px solid #cccccccc;
+}
+.Hema-Emoji-Picker-Cats ul li {
+    float: left;
+    font-size: 19px;
+    line-height: 30px;
+    cursor: pointer;
+    padding-left: 7px;
+    padding-right: 7px;
+
+}
+.Hema-Emoji-Picker-Cats ul li:hover {
+    background: #ccc;
+}
+.Hema-Emoji-Picker-Cats ul li:not(:first-child){
+    border-left: 1px solid #ccc;
+}
+.qtip {
+    max-width: 325px !important;
+}
+.qtip-default {
+    border: 1px solid #ccc !important;
+    background-color: #ffffff !important;
+}
+.Hema-Emoji-Picker-Tab {
+    margin-bottom: 40px;
+}
+.Hema-Emoji-Picker-Tab:not(.active){
+    display: none;
+}
+.Hema-Emoji-Picker-Tab span {
+    line-height: 25px;
+    height: 30px;
+    width: 30px;
+    float: left;
+    text-align: center;
+}
+.Hema-Emoji-Picker-Input .emojione {
+    height: 25px !important;
+    line-height: 30px !important;
+    margin: 0 !important;
+}
+.Hema-Emoji-Picker-Input *
+{
+    display:inline;
+    white-space:nowrap;
+}
+.Hema-Emoji-Picker-Input br {
+    display: none;
+}
+.Hema-Emoji-Picker-Input {
+    padding: 1px 3px 1px 3px;
+    font-size: 15px;
+    min-height: 30px;
+    height: 38px;
+    line-height: 38px;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    min-width: 200px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    position: absolute;
+    top: 0;
+    white-space: nowrap;
+    vertical-align: middle;
+    bottom: 0;
+    left: 0;
+    right: -17px; /* Increase/Decrease this value for cross-browser compatibility */
+}
+.Hema-Emoji-Picker-Input::after {
+    content: '';
+    border-left: 1px solid #ccc;
+    height: 40px;
+    right: 6px;
+    position: absolute
+}
+.Hema-Emoji-Picker-Tab>span{
+    cursor: pointer;
+}
+.emojione {
+    height: 30px !important;
+}

@@ -1,0 +1,136 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+
+{% block custom_head_tags %}
+    <style>
+        .conversation-holder:hover, .conversation-holder.not-read:hover{
+            background: rgba(100, 100, 120, 0.5);
+        }
+        .conversation-holder.not-read{
+            background: rgba(200, 200, 220, 0.5);
+        }
+        .conversation-holder .header {
+            text-align: right;
+            margin-left: 3.5em !important;
+            text-decoration: underline;
+            font-size: small !important;
+            font-weight: normal !important;
+            font-style: italic;
+            padding-bottom: 2px;
+        }
+        .ui.celled.list>.item {
+            padding-top: .51428571em;
+            margin-bottom: 1px;
+        }
+        .ui.list>.item>img.image {
+            display: inline-block;
+            position: absolute;
+        }
+        .ui.avatar.image {
+            margin-right: .25em;
+            display: inline-block;
+            width: 3em;
+            height: 3em;
+            border-radius: 500rem;
+        }
+        .conversation-holder .content {
+            margin-left: 3.5em;
+            padding-left: 0 !important;
+            min-height: 2em;
+        }
+    </style>
+
+{% endblock %}
+{% block content %}
+    <div class="ui grid container" id="example3">
+        <div class="eight wide computer sixteen wide mobile centered column">
+            <!----<div class="ui segment">----> <!-----Will need to rectify this ui segment thingy ----->
+            <div class="left ui rail">
+                <p></p>
+            </div>
+            <div class="ui grid">
+                <div class="sixteen wide column">
+                    <h2 class="ui header">Notifications</h2>
+                <hr>
+                    <div class="ui celled list" id="scroller">
+                        {% for notification in notifications %}
+                            <div class="item conversation-holder {% if notification.read != true %} not-read {% endif %}" onclick="location.href='{{ notification.link }}';">
+                                <img class="ui avatar image" src="{{ notification.user.get_photo() }}">
+                                <div class="content">
+                                    {{ notification.text | safe }}
+                                </div>
+                                <div class="header">{{ notification.timestamp }}</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% if notifications | length == 0 %}
+                    No Notifications Yet
+                {% endif %}
+                    <br>
+                    <div class="ui centered grid ">
+                    </div>
+                </div>
+            </div>
+
+            {#            {% for notification in notifications %}#}
+            {#                <a href="{{ notification.link }}" class="conversation-holder">#}
+            {#                    <div class="ui fluid card" style="{{ notification.border }}">#}
+            {#                        <div class="content">#}
+            {#                            <div class="description">#}
+            {#                                {{ notification.text | safe }}#}
+            {#                            </div>#}
+            {#                        </div>#}
+            {#                    </div>#}
+            {#                </a>#}
+            {#                <br>#}
+            {#            {% endfor %}#}
+        </div>
+        <div class="sixteen wide computer sixteen wide mobile centered column">
+            <div class="ui">
+                <p></p>
+                <div class="ui active inverted dimmer" id="sentinel">
+                    <div class="ui loader"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script>
+        $(document).ready(function() {
+            $('.ui.sticky')
+                .sticky({
+                    offset: 50,
+                    bottomOffset: 50,
+                    context: '#example3'
+                })
+            ;
+        });
+    </script>
+        <script>
+        var counter = parseInt($('.conversation-holder').length);
+        if (counter == 0){
+            $('#sentinel').hide();
+        }
+        function loadItems() {
+            $.get("{{url_for('main.more_notifications', count=0)}}".replace(/0/, counter), function (data, status) {
+                if (data == "<br><br><h2>No more Notifications</h2>") {
+                    $('#scroller').append($(data));
+                    $('#sentinel').hide();
+                    return;
+                }
+                $('#scroller').append($(data));
+                counter = parseInt($('.conversation-holder').length)
+            });
+        }
+
+        var intersectionObserver = new IntersectionObserver(entries => {
+            if (entries[0].intersectionRatio <= 0) {
+                return;
+            }
+            loadItems();
+
+        });
+        intersectionObserver.observe(sentinel);
+    </script>
+{% endblock %}

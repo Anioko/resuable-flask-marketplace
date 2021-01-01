@@ -1,0 +1,180 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/product_macros.html' as products_macros %}
+{% import 'macros/form_macros.html' as f %}
+
+{% block custom_head_tags %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='slick/slick.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='slick/slick-theme.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lightbox/css/lightbox.min.css') }}">
+    <style>
+        .slick-prev:before, .slick-next:before {
+            color: black;
+        }
+        .slick-prev {
+            left: 0px;
+            z-index: 100;
+        }
+        .slick-next {
+            right: 0px;
+            z-index: 100;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="ui stackable centered grid marketplace container">
+        <div class="sixteen wide column">
+            <h1 class="ui header">
+                Market Place
+            </h1>
+            <div class="ui four steps">
+                <div class="completed step">
+                    <i class="tasks icon"></i>
+                    <div class="content">
+                        <div class="title">Items</div>
+                        <div class="description">Confirm Order Items</div>
+                    </div>
+                </div>
+                <div class="active step">
+                    <i class="truck icon"></i>
+                    <div class="content">
+                        <div class="title">Shipping</div>
+                        <div class="description">Choose your shipping options</div>
+                    </div>
+                </div>
+                <div class="disabled step">
+                    <i class="payment icon"></i>
+                    <div class="content">
+                        <div class="title">Billing</div>
+                        <div class="description">Enter billing information</div>
+                    </div>
+                </div>
+                <div class="disabled step">
+                    <i class="info icon"></i>
+                    <div class="content">
+                        <div class="title">Order Details</div>
+                    </div>
+                </div>
+            </div>
+            {% set products = cart.products() %}
+            {% set orders = cart.orders() %}
+            <br>
+            <br>
+            <div class="ui stackable grid">
+                <div class="ten wide column">
+                    <h2 class="ui header">
+                        Shipping Details
+                    </h2>
+                    <hr>
+                    <div style="margin-left: 20px">
+                        {% set flashes = {
+                'error':   get_flashed_messages(category_filter=['form-error']),
+                'warning': get_flashed_messages(category_filter=['form-check-email']),
+                'info':    get_flashed_messages(category_filter=['form-info']),
+                'success': get_flashed_messages(category_filter=['form-success'])
+            } %}
+
+                        {{ f.begin_form(form, flashes, _id='go-to-step3', action=url_for('marketplace.order', step=3)) }}
+
+
+                        <h3>Shipping Methods</h3>
+                        <hr>
+                        {% for order in cart.orders() %}
+                            <div class="{% if 'shipping[{}]'.format(order['seller'].id) in  form.errors.keys() %}error{% endif %} field">
+                                <label for="shipping-{{ order['seller'].id }}">Shipping Method For Order from {{ order['seller'].full_name }}</label>
+                                <select id="shipping-{{ order['seller'].id }}" name="shipping[{{order['seller'].id}}]">
+                                    {% for shipping_method in order['seller'].shipping_methods %}
+                                        <option value="{{ shipping_method.id }}">{{ shipping_method.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                {% if 'shipping[{}]'.format(order['seller'].id) in  form.errors.keys() %}
+                                    <div class="ui red pointing label">
+                                        {{ form.errors['shipping[{}]'.format(order['seller'].id)][0] | safe }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                        {% endfor %}
+                        <hr>
+                        <h3>Invoice Details</h3>
+                        <hr>
+                        <div class="two fields">
+                            {{ f.render_form_field(form.first_name) }}
+                            {{ f.render_form_field(form.last_name) }}
+                        </div>
+                        <div class="two fields">
+                            {{ f.render_form_field(form.email) }}
+                            {% if 'email' in  form.errors.keys() %}
+                                <div class="ui red pointing label">
+                                    {{ form.errors['email'][0] | safe }}
+                                </div>
+                            {% endif %}
+                            {{ f.render_form_field(form.mobile_phone) }}
+                        </div>
+                        <div class="two fields">
+                            {{ f.render_form_field(form.country) }}
+                            {{ f.render_form_field(form.state) }}
+                        </div>
+                        <div class="two fields">
+                            {{ f.render_form_field(form.city) }}
+                            {{ f.render_form_field(form.zip) }}
+                        </div>
+
+                        {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
+                        {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
+                        {{ f.form_message(flashes['info'], header='Information', class='info') }}
+                        {{ f.form_message(flashes['success'], header='Success!', class='success') }}
+
+                        {% for field in form | selectattr('type', 'equalto', 'SubmitField') %}
+                            {{ f.render_form_field(field) }}
+                        {% endfor %}
+
+                        {{ f.end_form() }}
+                    </div>
+                    <hr>
+                    <div class="ui centered grid">
+                        <a class="ui orange button" href="javascript:$('#go-to-step1').submit();"><i class="tasks icon"></i>Go Back</a>
+                        <a class="ui green button" href="javascript:$('#go-to-step3').submit();"><i class="credit card icon"></i>Continue Order</a>
+                    </div>
+                </div>
+                <div class="six wide column">
+                    <div class="ui raised segment">
+                        <h2 class="ui header">
+                            Order Summary
+                            <i class="ui right floated indigo shopping cart icon"></i>
+                        </h2>
+
+                        <hr>
+                        <div id="summary-table">
+                            {{ products_macros.order_summary(cart, step) }}
+                        </div>
+                        <br>
+                        <br>
+                        <br>
+                        <div class="ui centered very padded grid">
+                            <a class="ui orange button" href="javascript:$('#go-to-step1').submit();"><i class="tasks icon"></i>Go Back</a>
+                            <a class="ui green button" href="javascript:$('#go-to-step3').submit();"><i class="credit card icon"></i>Continue Order</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form id="go-to-step1" method="POST" action="{{ url_for('marketplace.order', step=1) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    </form>
+    <form id="go-to-step2" method="POST" action="{{ url_for('marketplace.order', step=2) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    </form>
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript" src="{{ url_for('static', filename='slick/slick.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='lightbox/js/lightbox.min.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            $('.slick').slick({
+                infinite: false,
+            });
+        });
+
+    </script>
+{% endblock %}

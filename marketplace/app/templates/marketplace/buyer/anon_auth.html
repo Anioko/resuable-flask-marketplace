@@ -1,0 +1,27 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+    <div class="ui grid container">
+        <div class="eight wide computer sixteen wide mobile centered column">
+            <h2 class="ui dividing header">View Orders You made as anonymous
+            </h2>
+            <form class="ui form" method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <div class="field">
+                    <label for="email">Email</label>
+                    <input id="email" type="email" name="email">
+                </div>
+                <div class="field  ">
+                    <input class="ui button" id="submit" name="submit" type="submit" value="Send Link">
+                </div>
+            </form>
+            <hr>
+            <p>
+                <small>We will send you a one-time link to login to your buyer dashboard.<br>
+                    Made orders as mediville user ? <a href="{{ url_for('account.login') }}">Login </a> to view them..
+
+                </small>
+
+            </p>
+        </div>
+    </div>
+{% endblock %}

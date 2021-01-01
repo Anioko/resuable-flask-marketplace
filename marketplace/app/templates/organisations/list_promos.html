@@ -1,0 +1,30 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/promo_macros.html' as promo_wid %}
+
+{% block content %}
+    <div class="ui grid">
+        <div class="ui stackable grid container">
+            <div class="sixteen wide column">
+                <a class="ui basic compact button" href="{{ url_for('organisations.select_org', org_id=org.id) }}">
+                    <i class="caret left icon"></i>
+                    Back to "{{ org.org_name }}"
+                </a>
+                <div class="ui header">
+                    <h2>Organisation Dashboard : {{ org.org_name }}
+                        <div class="sub header">list of organisation's promos</div>
+                    </h2>
+                </div>
+                <div class="ui header" style="width: 100%; height: 50px">
+                    <a class="ui green right floated button" href="{{ url_for('organisations.create_promo', org_id=org.id) }}">Create New Promotion Ad</a>
+                </div>
+            </div>
+            <div class="sixteen wide column">
+                <div class="ui cards">
+                    {% for promo in promos %}
+                        {{ promo_wid.promo_wid(promo) }}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

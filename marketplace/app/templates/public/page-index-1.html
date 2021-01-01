@@ -1,0 +1,237 @@
+{% extends 'layouts/ecommerce_base.html' %}
+{% import 'macros/category_macros.html' as category_macros %}
+{% import 'macros/product_macros.html' as products_macros %}
+
+{% block content %}
+
+
+<nav class="navbar navbar-main navbar-expand-lg navbar-light border-bottom">
+  <div class="container">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main_nav" aria-controls="main_nav" aria-expanded="true" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="navbar-collapse collapse show" id="main_nav" style="">
+      <ul class="navbar-nav">
+      	<li class="nav-item dropdown">
+          <a class="nav-link pl-0" data-toggle="dropdown" href="#"><strong> <i class="fa fa-bars"></i> &nbsp;  All category</strong></a>
+        </li>
+                {% for category in categories %}
+                    {{ category_macros.category_wid(category) }}
+                {% endfor %}
+      </ul>
+    </div> <!-- collapse .// -->
+  </div> <!-- container .// -->
+</nav>
+
+</header> <!-- section-header.// -->
+
+
+<!-- ========================= SECTION INTRO ========================= -->
+<section class="section-intro padding-y-sm">
+<div class="container">
+
+<div class="intro-banner-wrap">
+	<img src="{{ url_for('static', filename='frontend/images/banners/1.jpg') }}" class="img-fluid rounded">
+</div>
+
+</div> <!-- container //  -->
+</section>
+<!-- ========================= SECTION INTRO END// ========================= -->
+
+{% for setting in settings %}
+<!-- ========================= SECTION FEATURE ========================= -->
+<section class="section-content padding-y-sm">
+<div class="container">
+<article class="card card-body">
+<div class="row">
+	<div class="col-md-4">	
+		<figure class="item-feature">
+			<span class="text-primary"><i class="fa fa-2x {{setting.featured_title_one_icon}}"></i></span>
+			<figcaption class="pt-3">
+				<h5 class="title">{{setting.featured_title_one}}</h5>
+				<p>{{setting.featured_title_one_text}}</p>
+			</figcaption>
+		</figure> <!-- iconbox // -->
+	</div><!-- col // -->
+	<div class="col-md-4">
+		<figure  class="item-feature">
+			<span class="text-primary"><i class="fa fa-2x {{setting.featured_title_two_icon}}"></i></span>	
+			<figcaption class="pt-3">
+				<h5 class="title">{{setting.featured_title_two}}</h5>
+				<p>{{setting.featured_title_two_text}}
+				 </p>
+			</figcaption>
+		</figure> <!-- iconbox // -->
+	</div><!-- col // -->
+    <div class="col-md-4">
+		<figure  class="item-feature">
+			<span class="text-primary"><i class="fa fa-2x {{setting.featured_title_three_icon}}"></i></span>
+			<figcaption class="pt-3">
+				<h5 class="title">{{setting.featured_title_three}}</h5>
+				<p>{{setting.featured_title_three_text}}
+				 </p>
+			</figcaption>
+		</figure> <!-- iconbox // -->
+	</div> <!-- col // -->
+</div>
+</article>
+
+</div> <!-- container .//  -->
+</section>
+<!-- ========================= SECTION FEATURE END// ========================= -->
+{% endfor %}
+
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-content">
+<div class="container">
+
+<header class="section-heading">
+	<h3 class="section-title">Featured Products</h3>
+</header><!-- sect-heading -->
+
+	
+<div class="row">
+                {% for product in products %}
+                    {{ products_macros.product_wid(product) }}
+                {% endfor %}
+
+</div> <!-- row.// -->
+
+</div> <!-- container .//  -->
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+
+{% for brand in brands %}
+<!-- ========================= SECTION  ========================= -->
+<section class="section-name bg padding-y-sm">
+<div class="container">
+{% if brand %}
+<header class="section-heading">
+	<h3 class="section-title">Our Brands</h3> <!---this could be used to link to all our brands----->
+</header><!-- sect-heading -->
+{% endif %}
+
+<div class="row">
+{% if brand.brand_name_one %}
+	<div class="col-md-2 col-6">
+		<figure class="box item-logo">
+			<a href="{{brand.brand_url_one}}"><img src="frontend/images/{{brand.brand_name_one}}.png"></a>
+			<figcaption class="border-top pt-2">{{brand.brand_name_one}}</figcaption>
+		</figure> <!-- item-logo.// -->
+	</div> <!-- col.// -->
+	{% endif %}
+{% if brand.brand_name_two %}
+	<div class="col-md-2  col-6">
+		<figure class="box item-logo">
+			<a href="{{brand.brand_url_two}}"><img src="frontend/images/{{brand.brand_name_two}}.png"></a>
+			<figcaption class="border-top pt-2">{{brand.brand_name_two}}</figcaption>
+		</figure> <!-- item-logo.// -->
+	</div> <!-- col.// -->
+	{% endif %}
+{% if brand.brand_name_three %}
+	<div class="col-md-2  col-6">
+		<figure class="box item-logo">
+			<a href="{{brand.brand_url_three}}"><img src="frontend/images/{{brand.brand_name_three}}.png"></a>
+			<figcaption class="border-top pt-2">{{brand.brand_name_three}}</figcaption>
+		</figure> <!-- item-logo.// -->
+	</div> <!-- col.// -->
+	{% endif %}
+{% if brand.brand_name_four %}
+	<div class="col-md-2  col-6">
+		<figure class="box item-logo">
+			<a href="{{brand.brand_url_four}}"><img src="frontend/images/{{brand.brand_name_four}}.png"></a>
+			<figcaption class="border-top pt-2">{{brand.brand_name_four}}</figcaption>
+		</figure> <!-- item-logo.// -->
+	</div> <!-- col.// -->
+	{% endif %}
+{% if brand.brand_name_five %}
+	<div class="col-md-2  col-6">
+		<figure class="box item-logo">
+			<a href="{{brand.brand_url_five}}"><img src="frontend/images/{{brand.brand_name_five}}.png"></a>
+			<figcaption class="border-top pt-2">{{brand.brand_name_five}}</figcaption>
+		</figure> <!-- item-logo.// -->
+	</div> <!-- col.// -->
+			{% else %}
+		{% endif %}
+
+</div> <!-- row.// -->
+</div><!-- container // -->
+</section>
+{% endfor %}
+
+
+<!-- ========================= SECTION  ========================= -->
+<!----<section class="section-name padding-y">
+<div class="container">
+
+<h3 class="mb-3">Download app demo text</h3>
+
+<a href="#"><img src="frontend/images/misc/appstore.png" height="40"></a>
+<a href="#"><img src="frontend/images/misc/appstore.png" height="40"></a>
+
+</div><!-- container // -->
+<!----</section>---->
+<!-- ========================= SECTION  END// ======================= -->
+
+{% for news in newslinks %}
+<!-- ========================= SECTION  ========================= -->
+<section class="section-name bg padding-y-sm">
+<div class="container">
+{% if news %}
+<header class="section-heading">
+	<h3 class="section-title">Our Brands</h3> <!---this could be used to link to all our brands----->
+</header><!-- sect-heading -->
+{% endif %}
+
+<div class="row">
+{% if news.news_site_one %}
+	<div class="col-md-2 col-6">
+		<figure class="box item-logo">
+			<a href="{{news.news_url_one}}"><img src="frontend/images/{{news.news_site_one}}.png"></a>
+			<figcaption class="border-top pt-2">{{news.news_site_one}}</figcaption>
+		</figure> <!-- item-logo.// -->
+	</div> <!-- col.// -->
+	{% endif %}
+{% if news.news_site_two %}
+	<div class="col-md-2  col-6">
+		<figure class="box item-logo">
+			<a href="{{news.news_url_two}}"><img src="frontend/images/{{news.news_site_two}}.png"></a>
+			<figcaption class="border-top pt-2">{{news.news_site_two}}</figcaption>
+		</figure> <!-- item-logo.// -->
+	</div> <!-- col.// -->
+	{% endif %}
+{% if news.news_site_three %}
+	<div class="col-md-2  col-6">
+		<figure class="box item-logo">
+			<a href="{{news.news_url_three}}"><img src="frontend/images/{{news.news_site_three}}.png"></a>
+			<figcaption class="border-top pt-2">{{news.news_site_three}}</figcaption>
+		</figure> <!-- item-logo.// -->
+	</div> <!-- col.// -->
+	{% endif %}
+{% if news.news_site_four %}
+	<div class="col-md-2  col-6">
+		<figure class="box item-logo">
+			<a href="{{news.news_url_four}}"><img src="frontend/images/{{news.news_site_four}}.png"></a>
+			<figcaption class="border-top pt-2">{{news.news_site_four}}</figcaption>
+		</figure> <!-- item-logo.// -->
+	</div> <!-- col.// -->
+	{% endif %}
+{% if news.news_site_five %}
+	<div class="col-md-2  col-6">
+		<figure class="box item-logo">
+			<a href="{{news.news_url_five}}"><img src="frontend/images/{{news.news_site_five}}.png"></a>
+			<figcaption class="border-top pt-2">{{news.news_site_five}}</figcaption>
+		</figure> <!-- item-logo.// -->
+	</div> <!-- col.// -->
+			{% else %}
+		{% endif %}
+
+</div> <!-- row.// -->
+</div><!-- container // -->
+</section>
+
+
+
+{% endfor %}
+{% endblock %}

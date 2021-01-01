@@ -1,0 +1,63 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/product_macros.html' as products_macros %}
+{% block custom_head_tags %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='slick/slick.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='slick/slick-theme.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lightbox/css/lightbox.min.css') }}">
+    <style>
+        .slick-prev:before, .slick-next:before {
+            color: black;
+        }
+        .slick-prev {
+            left: 0px;
+            z-index: 100;
+        }
+        .slick-next {
+            right: 0px;
+            z-index: 100;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="ui stackable centered grid marketplace container">
+        <div class="sixteen wide column">
+            <h1 class="ui header">
+                Market Place
+            </h1>
+            {% if category_instance.children | length != 0 %}
+                <h2 class="ui header">
+                    Sub Categories
+                </h2>
+                <hr>
+                <div class="ui link cards">
+                    {% for child in category_instance.children %}
+                        {{ products_macros.category_wid(child) }}
+                    {% endfor %}
+                </div>
+                <hr>
+            {% endif %}
+            <h2 class="ui header">
+                Category Products
+            </h2>
+            <hr>
+            <div class="ui link cards">
+                {% for product in category_instance.products %}
+                    {{ products_macros.product_wid(product) }}
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript" src="{{ url_for('static', filename='slick/slick.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='lightbox/js/lightbox.min.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            $('.slick').slick({
+                infinite: false,
+            });
+        });
+
+    </script>
+{% endblock %}

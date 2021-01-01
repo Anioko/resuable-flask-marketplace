@@ -1,0 +1,138 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+
+{% block content %}
+    <div class="ui stackable grid container">
+        <div class="four wide column">
+            {% include 'admin/partials/nav.html' %}
+        </div>
+        <div class="twelve wide tablet twelve wide computer centered column">
+            <a class="ui basic compact button" href="{{ url_for('admin.marketplace_index') }}">
+                <i class="caret left icon"></i>
+                Back to MarketPlace dashboard
+            </a>
+            <h2 class="ui header">
+                Manage Currencies ({{ currencies_count }})
+                <div class="sub header">
+                    View and manage currencies.
+                </div>
+                <div class="right aligned sub header" >
+                    <a class="ui green  button" href="{{ url_for('admin.marketplace_currency_create') }}">Add New</a>
+                </div>
+            </h2>
+
+            <div class="ui menu">
+                <div class="ui right search item">
+                    <div class="ui transparent icon input">
+                        <input id="search-currencies" type="text" placeholder="Search currencies…">
+                        <i class="search icon"></i>
+                    </div>
+                </div>
+            </div>
+
+            {# Use overflow-x: scroll so that mobile views don't freak out
+             # when the table is too wide #}
+            <div style="overflow-x: scroll;">
+                <table class="ui searchable sortable unstackable selectable celled table">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th class="sorted ascending">Name</th>
+                        <th>Symbol</th>
+                        <th>Is Default ?</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for u in currencies.items | sort(attribute='name') %}
+                        <tr>
+
+                            <td>{{ loop.index }}</td>
+                            <td>{{ u.name }}</td>
+                            <td>{{ u.symbol }}</td>
+                            <td>{{ u.default }}</td>
+                            <td>
+                                <a class="ui blue button" href="{{ url_for('admin.marketplace_currency_edit', currency_id=u.id) }}">Edit</a>
+                                <a href="#" onclick="return confirmDeleteCurrency('{{ u.id | tojson }}');">Delete</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+
+            </div>
+
+        </div>
+
+    </div>
+    <div class="ui centered grid ">
+        {% if currencies.pages > 0 %}
+            <div class="ui pagination menu">
+                {% for page in currencies.iter_pages() %}
+                    {% if page %}
+                        {% if page != currencies.page %}
+                            <a class="item"
+                               href="{{ url_for(request.endpoint,  page=page) }}">
+                                {{ page }}
+                            </a>
+                        {% else %}
+                            <a class="item active">
+                                {{ page }}
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        <div class="disabled item">
+                            ...
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+        <form method="POST" action="{{ url_for('admin.marketplace_currency_delete', currency_id=0) }}" id="delete-currency-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        </form>
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#search-currencies').keyup(function () {
+                var searchText = $(this).val();
+                if (searchText.length > 0) {
+                    $('tbody td:icontains(' + searchText + ')').addClass('positive');
+                    $('td.positive').not(':icontains(' + searchText + ')').removeClass('positive');
+                    $('tbody td').not(':icontains(' + searchText + ')').closest('tr').addClass('hidden').hide();
+                    $('tr.hidden:icontains(' + searchText + ')').removeClass('hidden').show();
+                } else {
+                    $('td.positive').removeClass('positive');
+                    $('tr.hidden').removeClass('hidden').show();
+                }
+            });
+
+        });
+    </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+    <script>
+        function confirmDeleteCurrency(currency_id){
+            swal({
+                title: "Are you sure?",
+                text: "Once deleted, you will not be able to recover this currency",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        let form = $("#delete-currency-form");
+                        form.attr('action', "{{ url_for('admin.marketplace_currency_delete', currency_id=0) }}".replace('0',currency_id));
+                        form.submit();
+                    } else {
+                        return false;
+                    }
+                });
+            return false;
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,108 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/follow_macros.html' as follow %}
+{% macro dashboard_option(title, endpoint, description=None, icon=None) %}
+    <a class="column" href="{{ url_for(endpoint) }}">
+        <div class="ui padded segment">
+            <h3 class="ui header">
+                {% if icon is not none %}
+                    <i class="{{ icon }}"></i>
+                {% endif %}
+                <div class="content">
+                    {{ title }}
+                    {% if description is not none %}
+                        <div class="sub header">
+                            {{ description }}
+                        </div>
+                    {% endif %}
+                </div>
+            </h3>
+        </div>
+    </a>
+{% endmacro %}
+
+{% block content %}
+    <div class="ui centered grid">
+        <div class="thirteen wide column">
+            <h2 class="ui header">
+                <br>
+                {% if title is defined %}
+                    {{ title }}
+                {% else %}
+                    Browse Our Network
+                {% endif %}
+            </h2>
+
+        </div>
+        <div class="thirteen wide column">
+            <div class="ui centered grid ">
+                <div class="ui pagination menu">
+                    {% for page in paginated.iter_pages() %}
+                        {% if page %}
+                            {% if page != paginated.page %}
+                                {% if request.endpoint != 'main.select_section' %}
+                                    <a class="item" href="{{ url_for(request.endpoint, user_id=user_id, page=page) }}">
+                                        {{ page }}
+                                    </a>
+                                {% else %}
+                                    <a class="item" href="{{ url_for(request.endpoint, page=page) }}">
+                                        {{ page }}
+                                    </a>
+                                {% endif %}
+                            {% else %}
+                                <a class="item active">
+                                    {{ page }}
+                                </a>
+                            {% endif %}
+                        {% else %}
+                            <div class="disabled item">
+                                ...
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <hr>
+        </div>
+        <div class="fourteen wide column">
+            <div class="ui centered cards">
+                {% for user in paginated.items %}
+                    {{ follow.user_wid(user, current_user) }}
+                {% endfor %}
+            </div>
+        </div>
+        <br>
+        <div class="thirteen wide column">
+            <hr>
+            <div class="ui centered grid ">
+                <div class="ui pagination menu">
+                    {% for page in paginated.iter_pages() %}
+                        {% if page %}
+                            {% if page != paginated.page %}
+                                {% if request.endpoint != 'main.select_section' %}
+                                    <a class="item" href="{{ url_for(request.endpoint, user_id=user_id, page=page) }}">
+                                        {{ page }}
+                                    </a>
+                                {% else %}
+                                    <a class="item" href="{{ url_for(request.endpoint, page=page) }}">
+                                        {{ page }}
+                                    </a>
+                                {% endif %}
+                            {% else %}
+                                <a class="item active">
+                                    {{ page }}
+                                </a>
+                            {% endif %}
+                        {% else %}
+                            <div class="disabled item">
+                                ...
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+

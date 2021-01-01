@@ -1,0 +1,64 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+
+{% block content %}
+    <div class="ui stackable grid container">
+        <div class="four wide column">
+            {% include 'admin/partials/nav.html' %}
+        </div>
+        <div class="twelve wide tablet twelve wide computer centered column">
+            <a class="ui basic compact button" href="{{ url_for('marketplace.seller_orders') }}">
+                <i class="caret left icon"></i>
+                Back to Orders
+            </a>
+            <h2 class="ui header">
+                View Order
+                <div class="sub header">
+                    Order: {{ order.order.order_number }}
+                </div>
+            </h2>
+            <hr>
+            {% set currency = order.currency %}
+
+            <p>Order number : {{ order.order.order_number }}</p>
+            <p>Product Total Price : {{ order.product_total }}{{ currency.symbol }}</p>
+            <p>Shipping Price : {{ order.shipping_cost }}{{ currency.symbol }}</p>
+            <p>Total Paid : {{ order.total_price }}{{ currency.symbol }}</p>
+            <h5>Items</h5>
+            <table class="ui very basic small celled table">
+                <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Piece Price</th>
+                    <th>Count</th>
+                    <th>Total</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.order_items %}
+                        <tr>
+                            <td>{{ item.product.name }}</td>
+                            <td>{{ item.product.price }} {{ currency.symbol }}</td>
+                            <td>{{ item.count }}</td>
+                            <td>{{ item.count * item.product.price }} {{ currency.symbol }}</td>
+                        </tr>
+                    {% endfor %}
+                    {% if order.shipping_method  %}
+                        <tr>
+                            <td colspan="3"><b><i>Shipping</i></b></td>
+                            <td>{{ order.shipping_cost }} {{ currency.symbol }}</td>
+                        </tr>
+                    {% endif %}
+                    <tr style="height: 20px"></tr>
+                <tr style="height: 10px"></tr>
+                <tr class="no-border-top">
+                    <td colspan="3"><b><u><i><em>Total</em></i></u></b></td>
+                    <td><b>{{ order.total_price }} {{ currency.symbol }}</b></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <hr>
+        </div>
+    </div>
+{% endblock %}

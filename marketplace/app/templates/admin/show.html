@@ -1,0 +1,27 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+
+{% block scripts %}
+{% endblock %}
+
+{% block content %}
+    <div class="ui stackable centered grid container">
+            <div class="four wide column">
+                {% include 'admin/partials/nav.html' %}
+        </div>
+        <div class="twelve wide column">
+            <a class="ui basic compact button" href="{{ url_for('admin.frontend_dashboard') }}">
+                <i class="caret left icon"></i>
+                Back to dashboard
+            </a>
+            <h2 class="ui header">
+                Edit Landing Page Images
+                <div class="sub header">Upload landing page images</div>
+            </h2>
+                <div class="ui small image" style="flex-grow: 0">
+                    <img src="{{url}}">
+                </div>
+
+        </div>
+    </div>
+{% endblock %}

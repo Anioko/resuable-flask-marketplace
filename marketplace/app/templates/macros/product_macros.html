@@ -1,0 +1,143 @@
+
+{% macro product_wid(product) -%}
+	<div class="col-md-3">
+		<div href="#" class="card card-product-grid">
+		{% for image in json_load(product.images) %}
+			<a href="{{ url_for('marketplace.product', product_id=product.id, product_name=product.name) }}" class="img-wrap"> 
+						                       <div style="width:100%; height: 300px; background-image: url('{{ url_for('_uploads.uploaded_file', setname='images',
+                           filename=image , _external=True) }}'); background-position: center;background-size: cover"
+                         class="product-image" data-content="{{ product.id }}" data-size="{{ image_size(image ) }}">
+                    </div>
+						   </a>
+			<figcaption class="info-wrap">
+				<a href="{{ url_for('marketplace.product', product_id=product.id, product_name=product.name) }}" class="title">{{ product.name }}</a>
+				<div class="price mt-1">{{ product.price_currency.symbol }}{{ product.price }}</div> <!-- price-wrap.// -->
+			</figcaption>
+			{% endfor %}
+		</div>
+	</div> <!-- col.// -->
+
+    {% if product.availability %}
+        <div class="extra content center aligned ui icon two item menu">
+            <a class="item" data-tooltip="Buy Now" href="javascript:BuyNow('{{ product.id }}');">
+                <i class="handshake large icon"></i>
+            </a>
+            <a class="item" data-tooltip="Add To Cart" href="#" onclick="addToCart('{{ product.id }}'); return false">
+                <i class="cart plus large icon"></i>
+            </a>
+        </div>
+    {% endif %}
+    </div>
+{% endmacro %}
+{% macro cart_product_wid(product) -%}
+    <div class="ui card">
+        <div class="slick image" >
+            {% for image in json_load(product['object'].images) %}
+                <a href="{{ url_for('_uploads.uploaded_file', setname='images',
+                           filename=image , _external=True) }}" data-lightbox="product-{{ product['object'].id }}">
+                    <div style="width:100%; height: 200px; background-image: url('{{ url_for('_uploads.uploaded_file', setname='images',
+                           filename=image , _external=True) }}'); background-position: center;background-size: cover"
+                         class="product-image" data-content="{{ product['object'].id }}" data-size="{{ image_size(image ) }}">
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+        <div class="content">
+            <div class="header">{{ product['object'].price }}{{ product['object'].price_currency.symbol }}</div>
+            <div class="description" style="white-space: normal">
+                <b><strong><a href="{{ url_for('marketplace.product', product_id=product['object'].id, product_name=product['object'].name)}}">{{ product['object'].name }} </a>from <a href="{{ url_for('marketplace.view_seller_products', seller_id=product['object'].seller.id) }}">{{ product['object'].seller.full_name }}</a></strong></b>
+            </div>
+            <div class="meta">
+                <span class="date">{{ product['object'].description }}</span><br>
+                <span>
+                    {% for category in product['object'].categories %}
+                        <small><a href="{{url_for('marketplace.category', category_id=category.id, category_name=category.name) }}">{{ category.name }}</a></small>{% if loop.index != product['object'].categories | length %}, {% endif %}
+                    {% endfor %}
+                </span>
+            </div>
+        </div>
+        <div class="extra content center aligned ui icon three item menu">
+            <a class="item" href="#" onclick="subOneFromCart('{{ product['object'].id }}'); return false">
+                <i class="minus  icon"></i>
+            </a>
+            <p class="item count" id="product-{{ product['object'].id }}-count">
+                {{ product['count'] }}
+            </p>
+            <a class="item"  href="#" onclick="addOneToCart('{{ product['object'].id }}'); return false">
+                <i class="plus  icon"></i>
+            </a>
+
+        </div>
+    </div>
+{% endmacro %}
+{% macro order_summary(cart, step, delivery=None) %}
+    {% set orders = cart.orders() %}
+    {% set currency = cart.currency %}
+    <table class="ui very basic small celled table">
+        <thead>
+        <tr>
+            <th>Item</th>
+            <th>Piece Price</th>
+            <th>Count</th>
+            <th>Total</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% set ns = namespace(sum=0) %}
+        {% for order in orders %}
+            <tr class="no-border-top">
+                <td colspan="4>" class="no-border-top">
+                    <b><u>Order from {{ order['seller'].full_name }}</u></b>
+                </td>
+            </tr>
+            {% for product in order['items'] %}
+                <tr>
+                    <td>{{ product['object'].name }}</td>
+                    <td>{{ product['object'].price }} {{ currency.symbol }}</td>
+                    <td>{{ product['count'] }}</td>
+                    <td>{{ product['count'] * product['object'].price }} {{ currency.symbol }}</td>
+                    {% set ns.sum = ns.sum + (product['count'] * product['object'].price) %}
+                </tr>
+            {% endfor %}
+            {% if order['shipping']  %}
+                <tr>
+                    <td colspan="3"><b><i>Shipping</i></b></td>
+                    {% set shipping_price =  order['shipping'].get_price(currency, order['seller']) %}
+                    <td>{{ shipping_price }} {{ currency.symbol }}</td>
+                    {% set ns.sum = ns.sum + shipping_price %}
+                </tr>
+            {% endif %}
+            <tr style="height: 20px"></tr>
+        {% endfor %}
+        <tr style="height: 10px"></tr>
+        <tr class="no-border-top">
+            <td colspan="3"><b><u><i><em>Total</em></i></u></b></td>
+            <td><b>{{ ns.sum }} {{ currency.symbol }}</b></td>
+        </tr>
+        </tbody>
+    </table>
+{% endmacro %}
+{% macro category_wid(category) %}
+    <div class="ui card" onclick="location.href='{{ url_for('marketplace.category', category_id=category.id, category_name=category.name) }}'">
+        <div class="image">
+            <img src="{{ url_for('_uploads.uploaded_file', setname='images',
+                           filename=category.image , _external=True) }}" height="200" style="height: 200px">
+        </div>
+        <div class="content">
+            <a class="header">{{ category.name }}</a>
+        </div>
+        <div class="extra content">
+            {% if category.children | length != 0 %}
+                <a>
+                    <i class="chevron down icon"></i>
+                    {{ category.children | length }} Sub Categories
+                </a> |
+            {% endif %}
+            <a>
+                <i class="cubes icon"></i>
+                {{ category.products | length }} Products
+            </a>
+
+        </div>
+    </div>
+{% endmacro %}

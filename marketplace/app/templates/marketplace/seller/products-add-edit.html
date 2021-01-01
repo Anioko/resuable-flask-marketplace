@@ -1,0 +1,86 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+
+{% block scripts %}
+{% endblock %}
+
+{% block content %}
+    <div class="ui stackable centered grid marketplace container">
+        <div class="four wide column">
+            {% include 'marketplace/seller/nav.html' %}
+        </div>
+        <div class="twelve wide column">
+            <a class="ui basic compact button" href="{{ url_for('marketplace.seller_products') }}">
+                <i class="caret left icon"></i>
+                Back to Products
+            </a>
+            {% if request.endpoint == 'admin.marketplace_product_create' %}
+                <h2 class="ui header">
+                    Add New Marketplace Product
+                    <div class="sub header">Create a new product</div>
+                </h2>
+            {% else %}
+                <h2 class="ui header">
+                    Edit a Marketplace Product
+                    <div class="sub header">Edit current product</div>
+                </h2>
+            {% endif %}
+            {% set flashes = {
+                'error':   get_flashed_messages(category_filter=['form-error']),
+                'warning': get_flashed_messages(category_filter=['form-check-email']),
+                'info':    get_flashed_messages(category_filter=['form-info']),
+                'success': get_flashed_messages(category_filter=['form-success'])
+            } %}
+
+            {{ f.begin_form(form, flashes) }}
+            {{ f.render_form_field(form.name) }}
+            {{ f.render_form_field(form.description) }}
+            {{ f.render_form_field(form.images) }}
+            <div class="field">
+                {% if request.endpoint == 'marketplace.seller_product_edit' %}
+                    <div class="ui cards">
+                        {% for image in json_load(product.images) %}
+                            <div class="ui card">
+                                <input type="hidden" name="old_images[]" value="{{ image }}">
+                                <img src="{{ url_for('_uploads.uploaded_file', setname='images',
+                           filename=image, _external=True) }}" height="200">
+                                <br>
+                                <a href="#" onclick="$(this).parent().remove();return false">Remove</a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            {{ f.render_form_field(form.categories) }}
+            <div class="two fields">
+                {{ f.render_form_field(form.is_featured) }}{{ f.render_form_field(form.availability) }}
+            </div>
+            <div class="two fields">
+                {{ f.render_form_field(form.min_order_quantity) }}
+                {{ f.render_form_field(form.length) }}
+            </div>
+            <div class="two fields">
+                {{ f.render_form_field(form.weight) }}
+                {{ f.render_form_field(form.height) }}
+            </div>
+            <div class="two fields">
+                {{ f.render_form_field(form.price) }}
+                {{ f.render_form_field(form.price_currency) }}
+            </div>
+
+            {{ f.render_form_field(form.lead_time) }}
+            {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
+            {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
+            {{ f.form_message(flashes['info'], header='Information', class='info') }}
+            {{ f.form_message(flashes['success'], header='Success!', class='success') }}
+
+            {% for field in form | selectattr('type', 'equalto', 'SubmitField') %}
+                {{ f.render_form_field(field) }}
+            {% endfor %}
+
+            {{ f.end_form() }}
+
+        </div>
+    </div>
+{% endblock %}

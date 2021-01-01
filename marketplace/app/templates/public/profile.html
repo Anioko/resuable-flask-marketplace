@@ -1,0 +1,150 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+{% import 'macros/check_password.html' as check %}
+{#{% import 'macros/post_macros.html' as post_wid %}#}
+{% block page_title %}{{ user.first_name }} {{ user.last_name }}, {{ user.profession }},{{ user.city }}, {{ user.state }}{% endblock %}
+{% block custom_head_tags %}
+    <meta name="description"
+          content="{{ user.first_name }} {{ user.last_name }}, {{ user.profession }},{{ user.summary_text }}, {{ user.city }}, {{ user.state }}, {{ user.country }}">
+    <meta name="author" content="{{ config.APP_NAME }}">
+    <meta name="og:title" content="{{ user.first_name }} {{ user.last_name }}, {{ user.profession }},{{ user.city }}, {{ user.state }}"/>
+    <meta name="og:type" content="website"/>
+    <meta name="og:url" content="https://www.{{ config.APP_NAME }}.com"/>
+    <meta name="og:image" content="{{ url_for('static', filename='images/home/slider/hill.png') }}"/>
+    <meta name="og:site_name" content="{{ config.APP_NAME }}"/>
+    <meta name="og:description"
+          content="{{ user.first_name }} {{ user.last_name }}, {{ user.profession }},{{ user.summary_text }}, {{ user.city }}, {{ user.state }}, {{ user.country }}"/>
+    <meta name="twitter:card" content="summary"/>
+    <meta name="twitter:site" content="@medivillenetwork"/>
+    <meta name="twitter:creator" content="@anioko1"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='slick/slick.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='slick/slick-theme.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lightbox/css/lightbox.min.css') }}">
+    <style>
+        .ui.vertical.divider:after, .ui.vertical.divider:before {
+            height: 100%;
+        }
+
+        .display-none {
+            display: none;
+        }
+        .slick-prev:before, .slick-next:before {
+            color: black;
+        }
+        .comment i.icon.ellipsis.vertical:before {
+            font-size: 15px;
+        }
+        .comment .popup li a {
+            color: rgba(0,0,0,.4);
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    {% set flashes = {
+            'error':   get_flashed_messages(category_filter=['form-error']),
+            'warning': get_flashed_messages(category_filter=['form-check-email']),
+            'info':    get_flashed_messages(category_filter=['form-info']),
+            'success': get_flashed_messages(category_filter=['form-success'])
+		} %}
+
+    <div class="ui grid container">
+        <div class="one wide column"></div>
+        <div class="ten wide computer sixteen wide mobile centered column">
+            <div class="ui very padded segment">
+                <div class="ui relaxed divided items">
+                    <div class="item">
+                        <div class="content">
+                            <a class="header">{{ user.first_name }} {{ user.last_name }}</a>
+                            <!---full name goes here --->
+                            <div class="meta"><a>{{ user.profession }}</a></div>
+                            <div class="meta"><a>Joined : {{ user.created_day }}</a></div>
+                            <!----year joined goes here---->
+                            <div class="meta"><a> {{ user.city }}</a></div>
+                            <div class="meta"><a> {{ user.state }}</a></div>
+                            <div class="meta"><a> {{ user.country }}</a></div>
+                            <div class="description"> <!---Profile description or summary goes here--->
+                                {{ user.summary_text }}
+                            </div>
+                                <div class="extra">
+                                        <div class="ui button">
+                                            <a href="{{ url_for('main.follow', id=user.id, full_name=user.full_name) }}">Follow</a>
+                                        </div>
+                                    <div class="ui button">
+                                        <a href="{{ url_for('main.send_message', recipient=user.id, full_name=user.full_name) }}">Message</a>
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="ui small image">
+                            <img src="{{ user.get_photo() }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ui segment">
+                <div class="ui two column very relaxed grid">
+                    <div class="column">
+                        <p>Following</p>
+                        <a href="{{ url_for('main.following', user_id=user.id) }}">
+                            <p>( {{ user.followed.all() | length }} )</p>
+                        </a>
+                    </div>
+                    <div class="column">
+                        <p>Followers</p>
+                        <a href="{{ url_for('main.followers', user_id=user.id) }}">
+                            <p>( {{ user.followers.all() | length }} )</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="ui vertical divider" style="height: 50%">
+                </div>
+            </div>
+            <div class="ui segment">
+                <div class="ui two column very relaxed grid">
+                    <div class="column">
+                        <p>Posts</p>
+                            <p>( {{ user.posts.all() | length }} )</p>
+                    </div>
+                    <div class="column">
+                        <p>Questions</p>
+                            <p>( {{ user.questions.all() | length }} )</p>
+                    </div>
+                </div>
+                <div class="ui vertical divider" style="height: 50%">
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+{#    {% include 'partials/_post_modals.html' %}#}
+
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript" src="{{ url_for('static', filename='slick/slick.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='lightbox/js/lightbox.min.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            $('.slick').slick({
+                infinite: false,
+            });
+        });
+
+        function like(post_id, user_id) {
+            $.post("{{url_for('post.like_post', post_id=100, user_id=1000)}}".replace(/100/, post_id).replace(/1000/, user_id),
+                {
+                    csrf_token: "{{csrf_token()}}",
+                },
+                function (data, status) {
+                    data = JSON.parse(data)
+                    if (data.status == 'success') {
+                        $("#like-count-" + post_id).html("(" + data.count + " likes) ");
+                        if (data.liked == 1) {
+                            $("#like-icon-" + post_id).removeClass("outline")
+                        } else {
+                            $("#like-icon-" + post_id).addClass("outline");
+                        }
+                    }
+                });
+        }
+    </script>
+{% endblock %}

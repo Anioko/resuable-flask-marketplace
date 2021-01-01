@@ -1,0 +1,16 @@
+{
+    "dbConfig": {
+        "host": "localhost",
+        "port": 5432,
+        "user": "ec2-user",
+        "password": "Aaz51215zZ",
+        "database": "healthcare"
+    },
+    "pool": {
+        "user": "ec2-user",
+        "host": "localhost",
+        "database": "healthcare",
+        "password": "Aaz51215zZ",
+        "port": 5432
+    }
+}

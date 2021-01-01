@@ -1,0 +1,27 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/product_macros.html' as products_macros %}
+
+
+{% block content %}
+                            <button class="ui basic button" data-tooltip="Buy Now" href="javascript:BuyNow('{{ product_instance.id }}');">
+                                <i class="credit card large icon"></i>
+								Buy Now
+                            </button>
+							<button class="ui blue button" data-tooltip="Add To Cart" onclick="addToCart('{{ product_instance.id }}'); return false">
+							  <i class="shopping cart icon"></i>
+							 Add to cart
+							</button>
+
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript" src="{{ url_for('static', filename='slick/slick.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='lightbox/js/lightbox.min.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            $('.slick').slick({
+                infinite: false,
+            });
+        });
+
+    </script>
+{% endblock %}

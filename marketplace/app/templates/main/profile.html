@@ -1,0 +1,91 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+{% import 'macros/check_password.html' as check %}
+{% block page_title %}{{ user.first_name }} {{ user.last_name }}, {{ user.profession }},{{ user.city }}, {{ user.state }}{% endblock %}
+
+{% block  custom_head_tags %}
+    <meta name="description"
+          content="{{ user.first_name }} {{ user.last_name }}, {{ user.profession }},{{ user.summary_text }}, {{ user.city }}, {{ user.state }}, {{ user.country }}">
+    <meta name="author" content="{{ config.APP_NAME }}">
+    <meta name="og:title" content="{{ user.first_name }} {{ user.last_name }}, {{ user.profession }},{{ user.city }}, {{ user.state }}"/>
+    <meta name="og:type" content="website"/>
+    <meta name="og:url" content="https://www.{{ config.APP_NAME }}.ng"/>
+    <meta name="og:image" content="{{ url_for('static', filename='images/home/slider/hill.png') }}"/>
+    <meta name="og:site_name" content="{{ config.APP_NAME }}"/>
+    <meta name="og:description"
+          content="{{ user.first_name }} {{ user.last_name }}, {{ user.profession }},{{ user.summary_text }}, {{ user.city }}, {{ user.state }}, {{ user.country }}"/>
+    <meta name="twitter:card" content="summary"/>
+    <meta name="twitter:site" content="@medivillenetwork"/>
+    <meta name="twitter:creator" content="@anioko1"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='slick/slick.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='slick/slick-theme.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lightbox/css/lightbox.min.css') }}">
+    <style>
+        .ui.vertical.divider:after, .ui.vertical.divider:before {
+            height: 100%;
+        }
+
+        .display-none {
+            display: none;
+        }
+        .slick-prev:before, .slick-next:before {
+            color: black;
+        }
+        .comment i.icon.ellipsis.vertical:before {
+            font-size: 15px;
+        }
+        .comment .popup li a {
+            color: rgba(0,0,0,.4);
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    {% set flashes = {
+            'error':   get_flashed_messages(category_filter=['form-error']),
+            'warning': get_flashed_messages(category_filter=['form-check-email']),
+            'info':    get_flashed_messages(category_filter=['form-info']),
+            'success': get_flashed_messages(category_filter=['form-success'])
+		} %}
+
+    <div class="ui grid container">
+        <div class="one wide column"></div>
+        <div class="ten wide computer sixteen wide mobile centered column">
+            <div class="ui very padded segment">
+                <div class="ui relaxed divided items">
+                    <div class="item">
+                        <div class="content">
+                            <a class="header">{{ user.first_name }} {{ user.last_name }}</a>
+                            <!---full name goes here --->
+                            <div class="meta"><a>{{ user.profession }}</a></div>
+                            <div class="meta"><a>Joined : {{ user.created_day }}</a></div>
+                            <!----year joined goes here---->
+                            <div class="meta"><a> {{ user.city }}</a>,
+                            <a> {{ user.state }}</a>,
+                            <a> {{ user.country }}</a></div>
+                            <div class="description"> <!---Profile description or summary goes here--->
+                                {{ user.summary_text }}
+                            </div>
+                            {% if user != current_user %}
+                                <div class="extra">
+                                    <div class="ui button">
+                                        <a href="{{ url_for('main.send_message', recipient=user.id, full_name=user.full_name) }}">Message</a>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="ui small image">
+                            <a href="{{ user.get_photo() }}" data-lightbox="user-image"><img src="{{ user.get_photo() }}"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        <br>
+        </div>
+    </div>
+
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript" src="{{ url_for('static', filename='slick/slick.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='lightbox/js/lightbox.min.js') }}"></script>
+{% endblock %}

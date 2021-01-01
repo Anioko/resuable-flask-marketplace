@@ -1,0 +1,45 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+    <div class="ui stackable grid container">
+        <div class="sixteen wide tablet twelve wide computer centered column">
+            <a class="ui basic compact button" href="{{ url_for('main.index') }}">
+                <i class="caret left icon"></i>
+                Back to dashboard
+            </a>
+            <h2 class="ui header">
+                Lists of Posts
+                <div class="sub header">
+                    View and manage your published posts.
+                </div>
+            </h2>
+
+
+            {# Use overflow-x: scroll so that mobile views don't freak out
+             # when the table is too wide #}
+            <div style="overflow-x: scroll;">
+                <table class="ui searchable sortable unstackable selectable celled table">
+                    <thead>
+                    <tr>
+                        <th>Post Id</th>
+                        <th class="sorted ascending">Created On</th>
+                        <th>Post Text</th>
+                        <th>Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for p in posts | sort(attribute='created_at') %}
+                        <td>{{ p.id }}</td>
+                        <td>{{ p.created_at }}</td>
+                        <td>{{ p.text }}</td>
+                        <td><a href="{{ url_for('account.delete_post', id=p.id) }}">Delete</a></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

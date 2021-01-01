@@ -1,0 +1,192 @@
+<div style="width: 100%">
+    <div style="width: 100%; background: #62AAAF">
+        <a href="{{ url_for('main.index', _external=True) }}">
+            <img class="footer-img" src="{{ url_for('static', filename='images/footer_logo.png', _external=True) }}" height="100" alt="Mediville">
+        </a>
+        <a href="{{ url_for('main.read_notification', notification_id=notification.id, _external=True) }}"
+           style="float: right; line-height: 100px; color:white; padding: 0 20px">
+            View On Mediville
+        </a>
+    </div>
+    <hr>
+    <p>Dear {{ user.full_name }},</p>
+    <p>
+        {% if 'unread_message' in notification.name %}
+            <h2>You Have a new Message</h2>
+            <div style="width:100%; overflow: hidden">
+                <img class="footer-img" src="{{ related.get_photo() }}" height="100" width="100" alt="Mediville" style="float: left">
+                <div style="float:left; margin-left: 10px; margin-top: 2px;">
+                    <h3 style="margin-top: 0">{{ related.full_name }}</h3>
+                    <p>{{ message.timestamp.ctime() }}</p>
+                </div>
+            </div>
+            <div style="margin-left: 110px; margin-top: -20px; background: lightgray; padding: 20px">
+                {{ message.body }}
+            </div>
+            <div style="width:100%; text-align: center; margin-top: 50px">
+                <a href="{{ url_for('main.read_notification', notification_id=notification.id, _external=True) }}"
+                   style="background: #62AAAF; color:white; padding: 10px 20px; text-decoration: none; border-radius: 5px">Go To Conversation</a>
+            </div>
+        {% elif 'post_likes' in notification.name %}
+            <h2>You have a New Post Like</h2>
+            <div style="width:100%; overflow: hidden">
+                <img class="footer-img" src="{{ current_user.get_photo() }}" height="100" width="100" alt="Mediville" style="float: left">
+                <div style="float:left; margin-left: 10px; margin-top: 2px;">
+                    <h3 style="margin-top: 0">{{ current_user.full_name }}</h3>
+                    <p>{{ post.created_at.ctime() }}</p>
+                </div>
+            </div>
+            <div style="margin-left: 110px; margin-top: -20px; background: lightgray; padding: 20px">
+                {{ post.text }}
+
+                {% if post.image_url %}
+                    <hr>
+                    <div class="slick" style="margin: 0 20px;">
+                        {% for image in json_load(post.image_filename) %}
+                            <a href="{{ url_for('_uploads.uploaded_file', setname='images',
+                           filename=image.values() | list | first , _external=True) }}" data-lightbox="post-{{ post.id }}">
+                                <div style="width:100%; height: 400px; background-image: url('{{ url_for('_uploads.uploaded_file', setname='images',
+                           filename=image.values() | list | first , _external=True) }}'); background-position: center;background-size: cover"
+                                     class="post-image" data-content="{{ post.id }}" data-size="{{ post.image_size(image.values() | list | first ) }}">
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div style="width:100%; text-align: center; margin-top: 50px">
+                <a href="{{ url_for('main.read_notification', notification_id=notification.id, _external=True) }}"
+                   style="background: #62AAAF; color:white; padding: 10px 20px; text-decoration: none; border-radius: 5px">Go To Post</a>
+            </div>
+        {% elif 'post_replies' in notification.name %}
+            <h2>You have a New Post Comment</h2>
+            <div style="width:100%; overflow: hidden">
+                <img class="footer-img" src="{{ current_user.get_photo() }}" height="100" width="100" alt="Mediville" style="float: left">
+                <div style="float:left; margin-left: 10px; margin-top: 2px;">
+                    <h3 style="margin-top: 0">{{ current_user.full_name }}</h3>
+                    <p>{{ post.created_at.ctime() }}</p>
+                </div>
+            </div>
+            <div style="margin-left: 110px; margin-top: -20px; background: lightgray; padding: 20px">
+                {{ post.text }}
+                {% if post.image_url %}
+                    <hr>
+                    <div class="slick" style="margin: 0 20px;">
+                        {% for image in json_load(post.image_filename) %}
+                            <a href="{{ url_for('_uploads.uploaded_file', setname='images',
+                           filename=image.values() | list | first , _external=True) }}" data-lightbox="post-{{ post.id }}">
+                                <div style="width:100%; height: 400px; background-image: url('{{ url_for('_uploads.uploaded_file', setname='images',
+                           filename=image.values() | list | first , _external=True) }}'); background-position: center;background-size: cover"
+                                     class="post-image" data-content="{{ post.id }}" data-size="{{ post.image_size(image.values() | list | first ) }}">
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div style="margin-left: 20px; margin-top: 20px; padding: 20px">
+                <div style="width:100%; overflow: hidden">
+                    <img class="footer-img" src="{{ related.get_photo() }}" height="100" width="100" alt="Mediville" style="float: left">
+                    <div style="float:left; margin-left: 10px; margin-top: 2px;">
+                        <h3 style="margin-top: 0">{{ related.full_name }}</h3>
+                        <p>{{ comment.created_at.ctime() }}</p>
+                    </div>
+                </div>
+                <div style="margin-left: 110px; margin-top: -20px; background: lightgray; padding: 20px">
+                    {{ comment.text }}
+                </div>
+            </div>
+
+            <div style="width:100%; text-align: center; margin-top: 50px">
+                <a href="{{ url_for('main.read_notification', notification_id=notification.id, _external=True) }}"
+                   style="background: #62AAAF; color:white; padding: 10px 20px; text-decoration: none; border-radius: 5px">Go To Post</a>
+            </div>
+
+        {% elif 'answer' in notification.name %}
+            <h2>You have New Answer to your question : <i>{{ question.title }}</i></h2>
+            <div style="width:100%; overflow: hidden">
+                <img class="footer-img" src="{{ current_user.get_photo() }}" height="100" width="100" alt="Mediville" style="float: left">
+                <div style="float:left; margin-left: 10px; margin-top: 2px;">
+                    <h3 style="margin-top: 0">{{ current_user.full_name }}</h3>
+                    <p>{{ question.created_at.ctime() }}</p>
+                </div>
+            </div>
+            <div style="margin-left: 110px; margin-top: -20px; background: lightgray; padding: 20px">
+                {{ question.description }}
+            </div>
+            <div style="margin-left: 20px; margin-top: 20px; padding: 20px">
+                <div style="width:100%; overflow: hidden">
+                    <img class="footer-img" src="{{ related.get_photo() }}" height="100" width="100" alt="Mediville" style="float: left">
+                    <div style="float:left; margin-left: 10px; margin-top: 2px;">
+                        <h3 style="margin-top: 0">{{ related.full_name }}</h3>
+                        <p>{{ answer.created_at.ctime() }}</p>
+                    </div>
+                </div>
+                <div style="margin-left: 110px; margin-top: -20px; background: lightgray; padding: 20px">
+                    {{ answer.body }}
+                </div>
+            </div>
+
+            <div style="width:100%; text-align: center; margin-top: 50px">
+                <a href="{{ url_for('main.read_notification', notification_id=notification.id, _external=True) }}"
+                   style="background: #62AAAF; color:white; padding: 10px 20px; text-decoration: none; border-radius: 5px">Go To Question</a>
+            </div>
+        {% elif 'new_follower' in notification.name %}
+            <h2>You have New Follower</h2>
+            <div style="width:100%; overflow: hidden">
+                <img class="footer-img" src="{{ related.get_photo() }}" height="100" width="100" alt="Mediville" style="float: left">
+                <div style="float:left; margin-left: 10px; margin-top: 2px;">
+                    <h3 style="margin-top: 0">{{ related.full_name }}</h3>
+                    <p>{{ related.profession }}, {{ related.state }}, {{ related.country }}</p>
+                </div>
+            </div>
+
+            <div style="width:100%; text-align: center; margin-top: 50px">
+                <a href="{{ url_for('main.read_notification', notification_id=notification.id, _external=True) }}"
+                   style="background: #62AAAF; color:white; padding: 10px 20px; text-decoration: none; border-radius: 5px">Go To His Profile</a>
+            </div>
+        {% elif 'new_post_of_followers' in notification.name %}
+            <h2>Someone You Follow Added A new Post</h2>
+            <div style="width:100%; overflow: hidden">
+                <img class="footer-img" src="{{ related.get_photo() }}" height="100" width="100" alt="Mediville" style="float: left">
+                <div style="float:left; margin-left: 10px; margin-top: 2px;">
+                    <h3 style="margin-top: 0">{{ related.full_name }}</h3>
+                    <p>{{ post.created_at.ctime() }}</p>
+                </div>
+            </div>
+            <div style="margin-left: 110px; margin-top: -20px; background: lightgray; padding: 20px">
+                {{ post.text }}
+            </div>
+            <div style="width:100%; text-align: center; margin-top: 50px">
+                <a href="{{ url_for('main.read_notification', notification_id=notification.id, _external=True) }}"
+                   style="background: #62AAAF; color:white; padding: 10px 20px; text-decoration: none; border-radius: 5px">Go To Post</a>
+            </div>
+        {% elif 'new_job' in notification.name %}
+            <h2>There is a New Job Near You, Be quick and get it now.</h2>
+            <div style="width:100%; overflow: hidden">
+                <img class="footer-img" src="{{ related.get_photo() }}" height="100" width="100" alt="Mediville" style="float: left">
+                <div style="float:left; margin-left: 10px; margin-top: 2px;">
+                    <h3 style="margin-top: 0">{{ related.full_name }}</h3>
+                    <p>{{ job.created_at.ctime() }}</p>
+                </div>
+            </div>
+            <div style="margin-left: 110px; margin-top: -20px; background: lightgray; padding: 20px">
+                <h3 style="border-bottom: 2px solid black; margin-top: 2px">{{ job.position_title }}</h3>
+                {{ job.description }}
+            </div>
+            <div style="width:100%; text-align: center; margin-top: 50px">
+                <a href="{{ url_for('main.read_notification', notification_id=notification.id, _external=True) }}"
+                   style="background: #62AAAF; color:white; padding: 10px 20px; text-decoration: none; border-radius: 5px">Go To Job</a>
+            </div>
+        {% endif %}
+    </p>
+    <hr>
+    <p>Please Go to <a href="{{ link }}">Notifications</a> To access your account and see the new notification.</p>
+    <p>Alternatively, you can paste the following link in your browser's address bar:</p>
+    <p>{{ link }}</p>
+    <p>Sincerely,</p>
+    <p>The {{ config.APP_NAME }} Team</p>
+    <p>
+        <small>Note: replies to this email address are not monitored.</small>
+    </p>
+</div>

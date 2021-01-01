@@ -1,0 +1,70 @@
+<script>
+    const WS_URL = $('meta[name=ws_url]').attr("content");
+    const USER_ID = String($('meta[name=user_id]').attr("content"));
+    {% if config['DEBUG']  != True %}
+        var socket = io(WS_URL, { query: "token= "+USER_ID, path: '/sockets/socket.io'});
+    {% else %}
+        var socket = io(WS_URL, { query: "token= "+USER_ID});
+    {% endif %}
+    socket.on('connect', function() {
+        socket.emit('connected');
+    });
+    socket.on('message_received', function(data) {
+        getStats();
+        playSound('{{url_for("static", filename="sounds/notif.mp3", _external=True)}}');
+    })
+    socket.on('new_notification', function(data) {
+        if (typeof(app) !== 'undefined'){
+            if(data.notification.type == "unread_message" && data.notification.user.id == app.toId && data.notification.touser.id == app.sender_id){
+                return;
+            }
+        }
+        toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": false,
+            "positionClass": "toast-bottom-left",
+            "preventDuplicates": false,
+            "showDuration": "5000",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut",
+            "onclick": function() {location.href=data.notification.link}
+        };
+        playSound('{{url_for("static", filename="sounds/notif.mp3", _external=True)}}');
+        toastr["info"](data.notification.text, data.notification.title);
+    });
+
+</script>
+<script type="text/javascript" charset="utf-8">
+    let context = null;
+    window.onload = function() {
+        context = new AudioContext();
+    }
+    function runContext(){
+        context.resume().then(() => {
+            document.querySelector('body').removeEventListener('touchstart', ensureRunContext, true);
+            document.querySelector('body').removeEventListener('mousedown', ensureRunContext, true);
+        });
+    }
+    function ensureRunContext(){
+        if(context.state !== 'running'){
+            runContext();
+        }
+    }
+    $(document).ready(function () {
+        document.querySelector('body').addEventListener('touchstart', ensureRunContext, true);
+        document.querySelector('body').addEventListener('mousedown', ensureRunContext, true);
+    })
+    function playSound (sound) {
+        if(sound) {
+            var audio = new Audio(sound);
+            var promise = audio.play();
+        }
+    }
+</script>

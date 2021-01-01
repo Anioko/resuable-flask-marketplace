@@ -1,0 +1,9 @@
+                        {% for notification in notifications %}
+                            <div class="item conversation-holder {% if notification.read != true %} not-read {% endif %}" onclick="location.href='{{ notification.link }}';">
+                                <img class="ui avatar image" src="{{ notification.user.get_photo() }}">
+                                <div class="content">
+                                    {{ notification.text | safe }}
+                                </div>
+                                <div class="header">{{ notification.timestamp }}</div>
+                            </div>
+                        {% endfor %}

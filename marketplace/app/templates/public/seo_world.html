@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+          content="{{ config.APP_NAME }} is a {{keywordone}} {{keywordtwo}} in {{location}}">
+    <meta name="author" content="{{ config.APP_NAME }}">
+    <meta name="og:title" content="{{ config.APP_NAME }} healthcare community network"/>
+    <meta name="og:type" content="website"/>
+    <meta name="og:url" content="https://www.{{ config.APP_NAME }}.com"/>
+    <meta name="og:image" content="{{ url_for('static', filename='images/home/slider/hill.png') }}"/>
+    <meta name="og:site_name" content="{{ config.APP_NAME }}"/>
+    <meta name="og:description"
+          content="{{ config.APP_NAME }} is a {{keywordone}} {{keywordtwo}} in {{location}}"/>
+    <meta name="twitter:card" content="summary"/>
+    <meta name="twitter:site" content="@corralhealth"/>
+    <meta name="twitter:creator" content="@anioko1"/>
+    <meta property="og:url" content="https://www.{{ config.APP_NAME }}.com"/>
+    <meta property="og:title" content="{{ config.APP_NAME }} healthcare community network"/>
+    <meta property="og:description"
+          content="{{ config.APP_NAME }} is a {{keywordone}} {{keywordtwo}} in {{location}}."/>
+    <meta property="og:image" content="{{ url_for('static', filename='images/home/slider/hill.png') }}"/>
+    <title>{% block page_title %}{{ config.APP_NAME }} healthcare social network{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/animate.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/lightbox.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/responsive.css') }}">
+
+    <!--[if lt IE 9]>
+	    <script src="js/html5shiv.js"></script>
+	    <script src="js/respond.min.js"></script>
+    <![endif]-->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/ico/favicon.ico') }}">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144"
+          href="{{ url_for('static', filename='images/ico/apple-touch-icon-144-precomposed.png') }}">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114"
+          href="{{ url_for('static', filename='images/ico/apple-touch-icon-114-precomposed.png') }}">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72"
+          href="{{ url_for('static', filename='images/ico/apple-touch-icon-72-precomposed.png') }}">
+    <link rel="apple-touch-icon-precomposed"
+          href="{{ url_for('static', filename='images/ico/apple-touch-icon-57-precomposed.png') }}">
+    <meta name="google-site-verification" content="eO7v2aO6uakHOD3gSnChM4_GSUpar3MVqPZzr9cWENE" />
+
+</head>
+
+<body>
+<header id="header">
+    <div class="navbar navbar-inverse" role="banner">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <a class="navbar-brand" href="{{ url_for('public.index') }}">
+                    <h1><img src="{{ url_for('static', filename='images/logo.png') }}" alt="CorralHealth"></h1>
+                </a>
+
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="{{ url_for('account.register') }}">Signup</a></li>
+                    <li><a href="{{ url_for('account.login') }}">Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+<!--/#header-->
+
+<section id="home-slider">
+    <div class="container">
+        <div class="row">
+            <div class="main-slider">
+                <div class="slide-text">
+                    <h1 style="color: green; font-size: 40px">Welcome to {{ config.APP_NAME }} {{keywordone}} {{keywordtwo}} in {{location}}</h1>
+                    <p>A {{keywordone}} {{keywordtwo}} in {{location}} built in collaboration with doctors,
+                        nurses and other health and allied care professionals. </p>
+                    <a href="{{ url_for('account.register') }}" class="btn btn-common">SIGN UP</a>
+                </div>
+                <img src="{{ url_for('static', filename='images/home/slider/hill.png') }}" class="slider-hill"
+                     alt="slider image">
+            </div>
+        </div>
+    </div>
+    <div class="preloader"><i class="fa fa-sun-o fa-spin"></i></div>
+</section>
+<!--/#home-slider-->
+
+<section id="services">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4 text-center padding wow fadeIn" data-wow-duration="1000ms" data-wow-delay="300ms">
+                <div class="single-service">
+                    <div class="wow scaleIn" data-wow-duration="500ms" data-wow-delay="300ms">
+                        <img src="{{ url_for('static', filename='images/home/icon1.png') }}" alt="">
+                    </div>
+                    <h2>A platform for Healthcare and Allied Health Jobs in {{location}}(Apply Now)</h2>
+                    <p>A powerful job searching tools for Healthcare and allied health professionals. its targeting capabilities allows employers to reach qualified candidates based on skills, interests and experience.</p>
+                </div>
+            </div>
+            <div class="col-sm-4 text-center padding wow fadeIn" data-wow-duration="1000ms" data-wow-delay="600ms">
+                <div class="single-service">
+                    <div class="wow scaleIn" data-wow-duration="500ms" data-wow-delay="600ms">
+                        <img src="{{ url_for('static', filename='images/home/icon2.png') }}" alt="">
+                    </div>
+                    <h2>Healthcare and Allied Health Professional Networking Community in {{location}}</h2>
+                    <p>It allows healthcare and allied health professionals to easily connect or network with other health care professionals. Users can share or send out useful content to their followers.</p>
+                </div>
+            </div>
+            <div class="col-sm-4 text-center padding wow fadeIn" data-wow-duration="1000ms" data-wow-delay="900ms">
+                <div class="single-service">
+                    <div class="wow scaleIn" data-wow-duration="500ms" data-wow-delay="900ms">
+                        <img src="{{ url_for('static', filename='images/home/icon3.png') }}" alt="">
+                    </div>
+                    <h2>A {{keywordone}} {{keywordtwo}} in {{location}} to get answers to professional questions</h2>
+                    <p>A place that {{location}} healthcare and allied health professionals gain and share knowledge. Itâ€™s a professional platform to ask questions and connect with experienced professionals who bring unique and quality ideas and answers.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--/#services-->
+
+<section id="action" class="responsive">
+    <div class="vertical-center">
+        <div class="container">
+            <div class="row">
+                <div class="action take-tour">
+                    <div class="col-sm-7 wow fadeInLeft" data-wow-duration="500ms" data-wow-delay="300ms">
+                        <h1 class="title">Mediville core Goal</h1>
+                        <p>Connecting health professionals communities closer together.</p>
+                    </div>
+                    <div class="col-sm-5 text-center wow fadeInRight" data-wow-duration="500ms" data-wow-delay="300ms">
+                        <div class="tour-button">
+                            <a href="/account/register" class="btn btn-common">GET STARTED</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--/#action-->
+
+<section id="features">
+    <div class="container">
+        <div class="row">
+            <div class="single-features">
+                <div class="col-sm-5 wow fadeInLeft" data-wow-duration="500ms" data-wow-delay="300ms">
+                    <img src="{{ url_for('static', filename='images/home/image1.png') }}" class="img-responsive" alt="">
+                </div>
+                <div class="col-sm-6 wow fadeInRight" data-wow-duration="500ms" data-wow-delay="300ms">
+                    <h2 style="color: red">Who should use Mediville?</h2>
+                    <P>All healthcare and allied health professionals from different walks of life</P>
+                </div>
+            </div>
+            <div class="single-features">
+                <div class="col-sm-6 col-sm-offset-1 align-right wow fadeInLeft" data-wow-duration="500ms"
+                     data-wow-delay="300ms">
+                    <h2>Connect with healthcare  and allied health professionals</h2>
+                    <P>
+                        <!-- CONTENT GOES HERE-->
+                    </P>
+                </div>
+                <div class="col-sm-5 wow fadeInRight" data-wow-duration="500ms" data-wow-delay="300ms">
+                    <img src="{{ url_for('static', filename='images/home/image2.png') }}" class="img-responsive" alt="">
+                </div>
+            </div>
+            <div class="single-features">
+                <div class="col-sm-5 wow fadeInLeft" data-wow-duration="500ms" data-wow-delay="300ms">
+                    <img src="{{ url_for('static', filename='images/home/image3.png') }}" class="img-responsive" alt="">
+                </div>
+                <div class="col-sm-6 wow fadeInRight" data-wow-duration="500ms" data-wow-delay="300ms">
+                    <h2 style="color: green">Join your colleagues, classmates, coworkers and friends on Mediville</h2>
+                    <P>
+                        <!-- CONTENT GOES HERE-->
+                    </P>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--/#features-->
+
+<section id="clients">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="clients text-center wow fadeInUp" data-wow-duration="500ms" data-wow-delay="300ms">
+                    <p><img src="{{ url_for('static', filename='images/home/clients.jpg') }}" class="img-responsive"
+                            alt=""></p>
+                    <h1 class="title">{{keywordone}} {{keywordtwo}} in {{location}}</h1>
+                    <p></p>
+                    <ul class="list-inline">
+                    </ul>
+					
+                    <ul class="list-inline">
+                        <li><a href="/about">About</a></li>
+                        <li><a href="/faq">Faq</a></li>
+                        <li><a href="/contact">contact</a></li>
+                        <li><a href="/terms">Terms & Conditions</a></li>
+                        <li><a href="/privacy">Privacy</a></li>
+                        <!---<li><p>&copy; CorralHealth 2019. All Rights Reserved.</p></li>--->
+                    </ul>
+                </div>
+                <div class="clients-logo wow fadeIn" data-wow-duration="1000ms" data-wow-delay="600ms">
+                </div>
+            </div>
+        </div>
+</section>
+<!--/#clients-->
+
+<footer id="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 text-center bottom-separator">
+            </div>
+            <div class="col-sm-12">
+                <div class="copyright-text text-center">
+                    <!---<p>&copy; Your Company 2014. All Rights Reserved.</p>---->
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+<!--/#footer-->
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/lightbox.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/wow.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

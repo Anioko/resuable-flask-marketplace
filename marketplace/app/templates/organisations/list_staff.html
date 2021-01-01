@@ -1,0 +1,61 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+    <div class="ui grid">
+        <div class="ui stackable grid container">
+            <div class="sixteen wide column">
+                <a class="ui basic compact button" href="{{ url_for('organisations.select_org', org_id=org.id) }}">
+                    <i class="caret left icon"></i>
+                    Back to "{{ org.org_name }}"
+                </a>
+                <div class="ui header">
+                    <h2>Organisation Dashboard : {{ org.org_name }}
+                        <div class="sub header">list of organisation's staff</div>
+                    </h2>
+                </div>
+                <div class="ui header" style="width: 100%; height: 50px">
+                    <a class="ui green right floated button" href="{{ url_for('organisations.invite_user', org_id=org.id) }}">Invite Staff</a>
+                </div>
+            </div>
+            <div class="sixteen wide column">
+                <div class="column">
+                    <div class="ui cards">
+                        {% for user in staff %}
+                            <div class="card">
+                                <div class="content">
+                                    <img class="right floated mini ui image" src="{{ user.get_photo() }}">
+                                    <div class="header">
+                                        <a href="{{ url_for('main.user', id=user.id, full_name=user.full_name) }}">{{ user.full_name }}</a>
+                                    </div>
+                                    <div class="meta">
+                                        {{ user.profession }}, {{ user.state }}, {{ user.country }}
+                                    </div>
+                                    <div class="description">
+
+                                    </div>
+                                    <div class="extra content">
+                                        {% if user == current_user %}
+
+                                        {% elif not current_user.is_following(user) %}
+                                            <div class="ui bottom attached button"><a
+                                                    href="{{ url_for('main.follow', id=user.id, full_name=user.full_name) }}">
+                                                <i class="add icon"></i> Follow</a>
+                                            </div>
+                                        {% else %}
+                                            <div class="ui bottom attached button"><a
+                                                    href="{{ url_for('main.unfollow', id=user.id, full_name=user.full_name) }}">
+                                                <i class="add icon"></i> UnFollow</a>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="column"></div>
+                    <br>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

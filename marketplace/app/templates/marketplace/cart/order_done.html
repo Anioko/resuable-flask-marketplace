@@ -1,0 +1,151 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/product_macros.html' as products_macros %}
+{% import 'macros/form_macros.html' as f %}
+
+{% block custom_head_tags %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='slick/slick.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='slick/slick-theme.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lightbox/css/lightbox.min.css') }}">
+    <style>
+        .slick-prev:before, .slick-next:before {
+            color: black;
+        }
+        .slick-prev {
+            left: 0px;
+            z-index: 100;
+        }
+        .slick-next {
+            right: 0px;
+            z-index: 100;
+        }
+    </style>
+
+{% endblock %}
+{% block content %}
+    <div class="ui stackable centered grid marketplace container">
+        <div class="sixteen wide column">
+            <h1 class="ui header">
+                Market Place
+            </h1>
+            <div class="ui four steps">
+                <div class="completed step">
+                    <i class="tasks icon"></i>
+                    <div class="content">
+                        <div class="title">Items</div>
+                        <div class="description">Confirm Order Items</div>
+                    </div>
+                </div>
+                <div class="completed step">
+                    <i class="truck icon"></i>
+                    <div class="content">
+                        <div class="title">Shipping</div>
+                        <div class="description">Choose your shipping options</div>
+                    </div>
+                </div>
+                <div class="completed step">
+                    <i class="payment icon"></i>
+                    <div class="content">
+                        <div class="title">Billing</div>
+                        <div class="description">Enter billing information</div>
+                    </div>
+                </div>
+                <div class="active step">
+                    <i class="info icon"></i>
+                    <div class="content">
+                        <div class="title">Order Details</div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="ui centered grid">
+                <div class="ten wide column">
+                    <h2 class="ui header">
+                        Congratulations
+                    </h2>
+                    <p>
+                        Your Order <b>{{ order.order_number }}</b> Of <b>{{ order.order_pay_amount }}{{ order.price_currency.symbol }}</b> Is Completed
+                    </p>
+                    <h4>
+                        Order Details
+                    </h4>
+                    <hr>
+                                    {% set currency = order.price_currency %}
+                    <p>Order number : {{ order.order_number }}</p>
+                    <p>Product Total Price : {{ order.products_total }}{{ currency.symbol }}</p>
+                    <p>Shipping Price : {{ order.shipping_cost }}{{ currency.symbol }}</p>
+                    <p>Total Paid : {{ order.order_pay_amount }}{{ currency.symbol }}</p>
+                    <h5>Items</h5>
+                    <table class="ui very basic small celled table">
+                        <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Piece Price</th>
+                            <th>Count</th>
+                            <th>Total</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% set ns = namespace(sum=0) %}
+                        {% for order_by_seller in order.order_items_grouped() %}
+                            <tr class="no-border-top">
+                                <td colspan="4>" class="no-border-top">
+                                    <b><u>Order from {{ order_by_seller['seller'].full_name }}</u></b>
+                                </td>
+                            </tr>
+                            {% for item in order_by_seller['items'] %}
+                                <tr>
+                                    <td>{{ item.product.name }}</td>
+                                    <td>{{ item.product.price }} {{ currency.symbol }}</td>
+                                    <td>{{ item.count }}</td>
+                                    <td>{{ item.count * item.product.price }} {{ currency.symbol }}</td>
+                                    {% set ns.sum = ns.sum + (item.count * item.product.price) %}
+                                </tr>
+                            {% endfor %}
+                            {% if order_by_seller['shipping']  %}
+                                <tr>
+                                    <td colspan="3"><b><i>Shipping</i></b></td>
+                                    {% set shipping_price =  order_by_seller['shipping'].get_price(currency, order_by_seller['seller']) %}
+                                    <td>{{ shipping_price }} {{ currency.symbol }}</td>
+                                    {% set ns.sum = ns.sum + shipping_price %}
+                                </tr>
+                            {% endif %}
+                            <tr style="height: 20px"></tr>
+                        {% endfor %}
+                        <tr style="height: 10px"></tr>
+                        <tr class="no-border-top">
+                            <td colspan="3"><b><u><i><em>Total</em></i></u></b></td>
+                            <td><b>{{ ns.sum }} {{ currency.symbol }}</b></td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <hr>
+                    <div class="ui centered grid">
+                        <a class="ui blue button" href="{{ url_for('marketplace.index') }}"><i class="shopping basket icon"></i>Continue Shopping</a>
+                        <a class="ui green button" href="{{ url_for('marketplace.buyer_orders')}}"><i class="credit card icon"></i>My Orders</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form id="go-to-step2" method="POST" action="{{ url_for('marketplace.order', step=2) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    </form>
+    <form id="go-to-step4" method="POST" action="{{ url_for('marketplace.order', step=4) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    </form>
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript" src="{{ url_for('static', filename='slick/slick.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='lightbox/js/lightbox.min.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            $('.slick').slick({
+                infinite: false,
+            });
+        });
+
+    </script>
+
+{% endblock %}

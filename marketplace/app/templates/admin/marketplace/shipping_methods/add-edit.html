@@ -1,0 +1,64 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+
+{% block scripts %}
+{% endblock %}
+
+{% block content %}
+    <div class="ui stackable centered grid container">
+        <div class="four wide column">
+            {% include 'admin/partials/nav.html' %}
+        </div>
+        <div class="twelve wide column">
+            <a class="ui basic compact button" href="{{ url_for('admin.marketplace_shipping_methods') }}">
+                <i class="caret left icon"></i>
+                Back to Shipping Methods
+            </a>
+            {% if request.endpoint == 'admin.marketplace_Shipping Method_create' %}
+                <h2 class="ui header">
+                    Add New Marketplace Shipping Method
+                    <div class="sub header">Create a new Shipping Method</div>
+                </h2>
+            {% else %}
+                <h2 class="ui header">
+                    Edit a Marketplace Shipping Method
+                    <div class="sub header">Edit current Shipping Method</div>
+                </h2>
+            {% endif %}
+            {% set flashes = {
+                'error':   get_flashed_messages(category_filter=['form-error']),
+                'warning': get_flashed_messages(category_filter=['form-check-email']),
+                'info':    get_flashed_messages(category_filter=['form-info']),
+                'success': get_flashed_messages(category_filter=['form-success'])
+            } %}
+
+            {{ f.begin_form(form, flashes) }}
+            {{ f.render_form_field(form.seller) }}
+            {{ f.render_form_field(form.name) }}
+            <div class="field">
+                {% for currency in currencies %}
+                    <div class="{% if 'price[{}]'.format(currency.id) in  form.errors.keys() %}error{% endif %} field">
+                        <label for="currency-{{ currency.id }}">Price in {{ currency.name }} ( {{ currency.symbol }} )</label>
+                        <input id="currency-{{ currency.id }}" type="number" step="0.1" name="price[{{ currency.id }}]" value="0">
+                        {% if 'price[{}]'.format(currency.id) in  form.errors.keys() %}
+                            <div class="ui red pointing label">
+                                {{ form.errors['price[{}]'.format(currency.id)][0] | safe }}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
+            {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
+            {{ f.form_message(flashes['info'], header='Information', class='info') }}
+            {{ f.form_message(flashes['success'], header='Success!', class='success') }}
+
+            {% for field in form | selectattr('type', 'equalto', 'SubmitField') %}
+                {{ f.render_form_field(field) }}
+            {% endfor %}
+
+            {{ f.end_form() }}
+
+        </div>
+    </div>
+{% endblock %}

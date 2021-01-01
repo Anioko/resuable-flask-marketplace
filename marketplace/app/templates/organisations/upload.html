@@ -1,0 +1,57 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+{% import 'macros/check_password.html' as check %}
+
+
+{% block scripts %}
+{% endblock %}
+
+{% block content %}
+    <div class="ui stackable centered grid container">
+        <div class="twelve wide column">
+
+            <h2 class="ui header">
+                Upload a logo for your organisation
+                <div class="sub header"><p> Please kindly upload your logo before you proceed. </p>
+                </div>
+            </h2>
+
+            {% set flashes = {
+                'error':   get_flashed_messages(category_filter=['form-error']),
+                'warning': get_flashed_messages(category_filter=['form-check-email']),
+                'info':    get_flashed_messages(category_filter=['form-info']),
+                'success': get_flashed_messages(category_filter=['form-success'])
+            } %}
+
+            {{ f.begin_form(form, flashes) }}
+
+            <div class="field">
+                {{ f.render_form_field(form.logo) }}
+
+            </div>
+
+            {% if form.password %}
+
+                <div class="two fields">
+                    {{ f.render_form_field(form.password) }}
+                    {{ f.render_form_field(form.password2) }}
+                </div>
+
+            {% endif %}
+
+            {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
+            {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
+            {{ f.form_message(flashes['info'], header='Information', class='info') }}
+            {{ f.form_message(flashes['success'], header='Success!', class='success') }}
+
+            {% for field in form | selectattr('type', 'equalto', 'SubmitField') %}
+                {{ f.render_form_field(field) }}
+            {% endfor %}
+
+            {{ f.end_form() }}
+            {% if form.password %}
+                {{ check.password_check('password', 0) }}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

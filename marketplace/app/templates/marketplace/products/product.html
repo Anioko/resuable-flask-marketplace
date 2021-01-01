@@ -1,0 +1,112 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/product_macros.html' as products_macros %}
+{% block page_title %}
+    Marketplace - {{ product_instance.name }}
+{% endblock %}
+{% block custom_head_tags %}
+    <meta name="description" content="Mediville Marketplace Product : {{ product_instance.name }}, {{ product_instance.description }}">
+    <link rel="canonical" href="{{ url_for('marketplace.product', product_id=product_instance.id, product_name=product_instance.name,_external=True) }}">
+    <meta property="og:url"                content="{{ url_for('marketplace.product', product_id=product_instance.id, product_name=product_instance.name,_external=True) }}" />
+    <meta property="og:type"               content="article" />
+    <meta property="og:title"              content="Mediville Marketplace - {{ product_instance.name }}" />
+    <meta property="og:description"        content="Mediville Marketplace Product : {{ product_instance.name }}, {{ product_instance.description }}" />
+    {% if json_load(product_instance.images) | length %}
+        <meta property="og:image"              content="{{ url_for('_uploads.uploaded_file', setname='images',
+                           filename=json_load(product_instance.images)[0] , _external=True) }}" />
+    {% endif %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='slick/slick.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='slick/slick-theme.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lightbox/css/lightbox.min.css') }}">
+    <style>
+        .slick-prev:before, .slick-next:before {
+            color: black;
+        }
+        .slick-prev {
+            left: 0px;
+            z-index: 100;
+        }
+        .slick-next {
+            right: 0px;
+            z-index: 100;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="ui stackable centered grid marketplace container">
+        <div class="sixteen wide column">
+            <h1 class="ui header">
+                Market Place
+            </h1>
+            <h2 class="ui header">
+                Product Details : {{ product_instance.name }}
+            </h2>
+            <hr>
+            <div class="ui centered grid">
+                <div class="eight wide  column">
+                    <div class="slick image" >
+                        {% for image in json_load(product_instance.images) %}
+                            <a href="{{ url_for('_uploads.uploaded_file', setname='images',
+                           filename=image , _external=True) }}" data-lightbox="product_instance-{{ product_instance.id }}">
+                                <div style="width:100%; height: 400px; background-image: url('{{ url_for('_uploads.uploaded_file', setname='images',
+                           filename=image , _external=True) }}'); background-position: center;background-size: cover"
+                                     class="product_instance-image" data-content="{{ product_instance.id }}" data-size="{{ image_size(image ) }}">
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                    <div class="ui center aligned header">
+                        {{ product_instance.price }}{{ product_instance.price_currency.symbol }}
+                    </div>
+                    {% if product_instance.availability %}
+                        <div class="extra content center aligned ui icon two item menu">
+                            <a class="item" data-tooltip="Buy Now" href="javascript:BuyNow('{{ product_instance.id }}');">
+                                <i class="handshake large icon"></i>
+                            </a>
+                            <a class="item" data-tooltip="Add To Cart" onclick="addToCart('{{ product_instance.id }}'); return false">
+                                <i class="cart plus large icon"></i>
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="ui centered center aligned segment">
+                            <label class="ui red centered center aligned label" >Out Of Stock</label>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <hr>
+            <div class="content">
+                <h3>
+                    <b><strong><a href="{{ url_for('marketplace.product', product_id=product_instance.id, product_name=product_instance.name) }}">{{ product_instance.name }} </a>from <a href="{{ url_for('marketplace.view_seller_products', seller_id=product_instance.seller.id) }}">{{ product_instance.seller.full_name }}</a></strong></b>
+                </h3>
+                <div class="meta">
+                    <p><b><strong>Price: </strong></b>{{ product_instance.price }}{{ product_instance.price_currency.symbol }}</p>
+                    <p><b><strong>Description: </strong></b>{{ product_instance.description }}</p>
+                    <p><b><strong>Length:</strong></b> {{ product_instance.length }}</p>
+                    <p><b><strong>Weight:</strong></b> {{ product_instance.weight }}</p>
+                    <p><b><strong>Height:</strong></b> {{ product_instance.height }}</p>
+                    <p><b><strong>Delivery:</strong></b> {{ product_instance.deliver_time }}</p>
+                    <hr>
+                    <div>
+                        <b><strong>Categories: </strong></b>
+                        {% for category in product_instance.categories %}
+                            {{ products_macros.category_wid(category) }}
+                        {% endfor %}
+                        <hr>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript" src="{{ url_for('static', filename='slick/slick.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='lightbox/js/lightbox.min.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            $('.slick').slick({
+                infinite: false,
+            });
+        });
+
+    </script>
+{% endblock %}

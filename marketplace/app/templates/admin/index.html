@@ -1,0 +1,52 @@
+{% extends 'layouts/base.html' %}
+
+{% macro dashboard_option(title, endpoint, description=None, icon=None) %}
+    <a class="column" href="{{ url_for(endpoint) }}">
+        <div class="ui padded segment">
+            <h3 class="ui header">
+                {% if icon is not none %}
+                    <i class="{{ icon }}"></i>
+                {% endif %}
+                <div class="content">
+                    {{ title }}
+                    {% if description is not none %}
+                        <div class="sub header">
+                            {{ description }}
+                        </div>
+                    {% endif %}
+                </div>
+            </h3>
+        </div>
+    </a>
+{% endmacro %}
+
+{% block content %}
+    <div class="ui stackable centered grid container">
+        <div class="twelve wide column">
+            <h2 class="ui header">
+                Admin Dashboard
+            </h2>
+            <div class="ui two column stackable grid">
+                {{ dashboard_option('Registered Users', 'admin.registered_users',
+                                    description='View and manage user accounts', icon='users icon') }}
+                {{ dashboard_option('Add New User', 'admin.new_user',
+                                    description='Create a new user account', icon='add user icon') }}
+                {{ dashboard_option('Invite New User', 'admin.invite_user',
+                                    description='Invites a new user to create their own account', icon='add user icon') }}
+                {{ dashboard_option('All Organisations', 'admin.orgs',
+                                    description='View and manage users\' Organisations', icon='user outline icon') }}
+                {{ dashboard_option('All Messages', 'admin.messages',
+                                    description='View and manage users\' sent messages', icon='comments icon') }}
+                {{ dashboard_option('Miscellaneous Texts', 'admin.texts',
+                                    description='View and manage Miscellaneous Texts', icon='settings icon') }}
+                {{ dashboard_option('Contact Messages', 'admin.contact_messages',
+                                    description='View and manage Contact Messages', icon='mail icon') }}
+                {{ dashboard_option('MarkePlace Dashboard', 'admin.marketplace_index',
+                                    description='View and manage MarketPlace Items', icon='shopping basket icon') }}
+                {{ dashboard_option('Frontend Settings Dashboard', 'admin.frontend_dashboard',
+                                    description='View and manage frontend settings', icon='settings icon') }}
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

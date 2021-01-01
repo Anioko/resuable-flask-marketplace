@@ -1,0 +1,64 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/page_macros.html' as page %}
+{% import 'macros/form_macros.html' as f %}
+{% block page_title %}{{ config.APP_NAME }} - Contact Us{% endblock %}
+{% block custom_head_tags %}
+    <meta name="description"
+          content="Contact Us, {{ config.APP_NAME }} is a social network and community for health and allied care professionals">
+    <meta name="author" content="{{ config.APP_NAME }}">
+    <meta name="og:title" content="Contact Us, {{ config.APP_NAME }} healthcare community network"/>
+    <meta name="og:type" content="website"/>
+    <meta name="og:url" content="https://www.{{ config.APP_NAME }}.com"/>
+    <meta name="og:image" content="{{ url_for('static', filename='images/home/slider/hill.png') }}"/>
+    <meta name="og:site_name" content="{{ config.APP_NAME }}"/>
+    <meta name="og:description"
+          content="Contact Us, {{ config.APP_NAME }} is a social network and community for health and allied care professionals"/>
+    <meta name="twitter:card" content="summary"/>
+    <meta name="twitter:site" content="@corralhealth"/>
+    <meta name="twitter:creator" content="@anioko1"/>
+{% endblock %}
+{% block content %}
+    <div class="ui text container">
+
+        {% set flashes = {
+            'error':   get_flashed_messages(category_filter=['form-error']),
+            'warning': get_flashed_messages(category_filter=['form-check-email']),
+            'info':    get_flashed_messages(category_filter=['form-info']),
+            'success': get_flashed_messages(category_filter=['form-success'])
+		} %}
+        {{ f.begin_form(form, flashes) }}
+
+        <h1>Contact Us</h1>
+        {{ editable_html_obj.value|safe }}
+        <form>
+            {% if not current_user.is_authenticated %}
+                <div class="field">
+                    {{ f.render_form_field(form.name) }}
+                </div>
+                <div class="field">
+                    {{ f.render_form_field(form.email) }}
+                </div>
+            {% endif %}
+            <div class="field">
+                {{ f.render_form_field(form.text) }}
+            </div>
+
+            {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
+            {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
+            {{ f.form_message(flashes['info'], header='Information', class='info') }}
+            {{ f.form_message(flashes['success'], header='Success!', class='success') }}
+
+            {% for field in form | selectattr('type', 'equalto', 'SubmitField') %}
+                {{ f.render_form_field(field) }}
+            {% endfor %}
+
+        </form>
+    </div>
+
+{% endblock %}
+{% block scripts %}
+    <script src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>
+    <script>
+
+    </script>
+{% endblock %}
