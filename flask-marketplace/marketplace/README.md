@@ -3,12 +3,9 @@
 [![Code Climate](https://codeclimate.com/github/hack4impact/flask-base/badges/gpa.svg)](https://codeclimate.com/github/hack4impact/flask-base/coverage)
 [![Issue Count](https://codeclimate.com/github/hack4impact/flask-base/badges/issue_count.svg)](https://codeclimate.com/github/hack4impact/flask-base) ![python3.x](https://img.shields.io/badge/python-3.x-brightgreen.svg)  ![python2.x](https://img.shields.io/badge/python-2.x-yellow.svg)
 
-![flask-base](readme_media/logo.png)
+![flask-base marketplace](readme_media/logo.png)
 
-A Flask application template with the boilerplate code already done for you.
-
-
-**Documentation available at [http://hack4impact.github.io/flask-base](http://hack4impact.github.io/flask-base).**
+This Flask Marketplace application template boilerplate with code is built from Flask-base. **Documentation for flask-base is available at [http://hack4impact.github.io/flask-base](http://hack4impact.github.io/flask-base).**
 
 ## What's included?
 
@@ -30,9 +27,6 @@ Marketplace:
 
 ![landing page](readme_media/marketplace_1.png "landing page")
 
-Home Page:
-
-![home](readme_media/home.gif "home")
 
 Registering User:
 
