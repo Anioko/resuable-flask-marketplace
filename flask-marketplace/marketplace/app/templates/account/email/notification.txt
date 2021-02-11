@@ -1,0 +1,22 @@
+Dear {{ user.full_name }},
+
+You have a new notification on  {{ config.APP_NAME }}
+
+Please Go to {{ link }}  To access your account and see the new notification.
+
+Notification Summary
+    {% if 'unread_message' in notification.name %}
+    You Have a new Message
+    {% elif 'post_likes' in notification.name %}
+    You have a New Post Like
+    {% elif 'post_replies' in notification.name %}
+    You have a New Post Reply
+    {% elif 'answer' in notification.name %}
+    You have New Question Answer
+    {% endif %}
+
+Sincerely,
+
+The {{ config.APP_NAME }} Team
+
+Note: replies to this email address are not monitored.

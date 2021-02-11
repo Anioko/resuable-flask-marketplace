@@ -1,0 +1,44 @@
+{% extends 'layouts/base.html' %}
+
+{% macro dashboard_option(title, endpoint, description=None, icon=None) %}
+    <a class="column" href="{{ url_for(endpoint) }}">
+        <div class="ui padded segment">
+            <h3 class="ui header">
+                {% if icon is not none %}
+                    <i class="{{ icon }}"></i>
+                {% endif %}
+                <div class="content">
+                    {{ title }}
+                    {% if description is not none %}
+                        <div class="sub header">
+                            {{ description }}
+                        </div>
+                    {% endif %}
+                </div>
+            </h3>
+        </div>
+    </a>
+{% endmacro %}
+
+{% block content %}
+    <div class="ui stackable centered grid container">
+        <div class="twelve wide column">
+            <h2 class="ui header">
+                Dashboard
+            </h2>
+            <div class="ui two column stackable grid">
+                {{ dashboard_option('Invite a colleague', 'main.invite_user',
+                                    description='Invite a fellow co worker to create their own account', icon='add user icon') }}
+                {% if check_org_exist.user_id is none %}
+                    {{ dashboard_option('Add an organization', 'organisations.create_org',description='Add a hospital or healthcare job agency or any other health and allied care organisation', icon='building icon') }}
+                {% else %}
+                    {{ dashboard_option('Organizations', 'organisations.org_home',description='List of your organizations', icon='suitcase icon') }}
+                {% endif %}
+
+                            {{ dashboard_option('Market Place', 'marketplace.index',
+                                    description='A Place where you can buy and sell medical products.', icon='shopping basket icon') }}
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

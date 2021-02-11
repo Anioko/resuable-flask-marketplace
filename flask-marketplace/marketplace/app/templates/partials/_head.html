@@ -1,0 +1,76 @@
+<meta name="charset" content="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+{% assets 'vendor_css' %}
+    <link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}">{% endassets %}
+{% assets 'app_css' %}
+    <link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}">{% endassets %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/checkbox.min.css"/>
+<style>
+    .ui.inverted.menu {
+        border: 0 solid transparent;
+        background: #62AAAF;
+        background-image: initial;
+        background-position-x: initial;
+        background-position-y: initial;
+        background-size: initial;
+        background-repeat-x: initial;
+        background-repeat-y: initial;
+        background-attachment: initial;
+        background-origin: initial;
+        background-clip: initial;
+        background-color: rgb(98, 170, 175);
+        -webkit-box-shadow: none;
+        box-shadow: none;
+    }
+
+    .button {
+        background: #000;
+        color: #fff;
+        text-align: center;
+        font-weight: bold;
+        padding: 10px 30px;
+        border-radius: 3px;
+    }
+
+    #overlay {
+        position: fixed;
+        height: 100%;
+        width: 100%;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: rgba(0, 0, 0, 0.8);
+        display: none;
+    }
+
+    #popup {
+        max-width: 600px;
+        width: 80%;
+        max-height: 300px;
+        height: 80%;
+        padding: 20px;
+        position: relative;
+        background: #fff;
+        margin: 20px auto;
+    }
+
+    #close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+        color: #000;
+    }
+
+    .popup .item:hover {
+        cursor: pointer;
+        background: #4267b2;
+    }
+
+    .popup .item:hover a {
+        color: white !important;
+        font-weight: bold !important;
+    }
+</style>

@@ -1,0 +1,312 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/answer_macros.html' as traverse %}
+{% import 'macros/form_macros.html' as f %}
+{% block page_title %}{{ config.APP_NAME }} - {{ post.title or '(No Title)' }}{% endblock %}
+{% block custom_head_tags %}
+    <meta name="description"
+          content="{{ post.description }}, asked by {{ post.user.full_name or '(No Name)' }} on {{ post.timestamp.strftime( '%d %B, %Y ') }}">
+    <meta name="author" content="{{ config.APP_NAME }}">
+    <meta name="og:title" content="{{ post.title or '(No Title)' }}"/>
+    <meta name="og:type" content="website"/>
+    <meta name="og:url" content="https://www.{{ config.APP_NAME }}.com"/>
+    <meta name="og:image" content="{{ url_for('static', filename='images/home/slider/hill.png') }}"/>
+    <meta name="og:site_name" content="{{ config.APP_NAME }}"/>
+    <meta name="og:description"
+          content="{{ post.description }}, asked by {{ post.user.full_name or '(No Name)' }} on {{ post.timestamp.strftime( '%d %B, %Y ') }}"/>
+    <meta name="twitter:card" content="summary"/>
+    <meta name="twitter:site" content="@medivillenetwork"/>
+    <meta name="twitter:creator" content="@anioko1"/>
+    <style>
+        .display-none {
+            display: none;
+        }
+        .question .popup li a {
+            color: rgba(0,0,0,.4);
+            font-weight: normal;
+            border-bottom: none;
+        }
+        .comment i.icon.ellipsis.vertical:before {
+            font-size: 15px;
+        }
+    </style>
+    <style>
+        body {
+
+            font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 15px;
+            line-height: 1.42857;
+        }
+
+        .applicants table {
+            font-size: 1.2em;
+            color: #1C3766;
+        }
+
+        .created_position {
+            font-family: 'Lato', sans-serif;
+            color: #1C3766;
+        }
+
+        .created_position h1 {
+            font-size: 4em;
+            font-weight: 600;
+        }
+
+        .created_position h2 {
+            font-size: 2.5em;
+            font-weight: 400;
+        }
+
+        .created_position h3 {
+            font-size: 1.6em;
+            margin: 10px 0 15px 0;
+            font-weight: 500;
+        }
+
+        .created_position h4 {
+            font-size: 1.6em;
+            font-weight: bold;
+        }
+
+        .created_position p,
+        .created_position li {
+            font-size: 1.3em;
+        }
+
+        .created_position a {
+            color: #5B6C7E;
+            text-decoration: none;
+            -webkit-transition: color .3s;
+            -o-transition: color .3s;
+            transition: color .3s;
+            font-weight: 500;
+        }
+
+        .created_position a:hover {
+            color: #EC5805;
+            text-decoration: none;
+        }
+
+        .created_position h1,
+        .created_position h2,
+        .created_position h3 {
+            text-align: center;
+        }
+
+        .created_position .requirements ul li {
+            position: relative;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .organisation_details {
+            padding: 60px 15px 10px 15px;
+        }
+
+        .share {
+            padding-bottom: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .created_position h1 {
+                font-size: 2.7em;
+            }
+
+            .created_position h2 {
+                font-size: 2em;
+            }
+
+            .created_position h3 {
+                font-size: 1.4em;
+            }
+        }
+
+
+    </style>
+{% endblock %}
+{% block content %}
+
+    {% set flashes = {
+		'error':   get_flashed_messages(category_filter=['form-error']),
+		'warning': get_flashed_messages(category_filter=['form-check-email']),
+		'info':    get_flashed_messages(category_filter=['form-info']),
+		'success': get_flashed_messages(category_filter=['form-success'])
+		} %}
+
+    <div class="ui centered grid">
+        <div class="sixteen wide column">
+            <div class="row edit-controls" align="center">
+            </div>
+            <div class="created_position">
+                <h1>{{ post.title or '(No Title)' }}</h1>
+
+                {{ share.load() }}
+                <h3><i class="calendar outline icon"></i> Posted on: {{ post.timestamp.strftime( '%d %B, %Y ') }}</h3>
+                <h3><i class="building outline icon"></i> Posted by: {{ post.user.full_name or '(No Name)' }}</h3>
+
+                <div class="ui two column centered grid">
+                    <div class="column question">
+                        <hr>
+                        <h4></h4><!---I took out |default('')|markdown here---->
+
+                        {% if post.user.id == current_user.id %}
+                            <p class="options btn" style="cursor: pointer; float: right;">
+                                <i class="large ellipsis vertical icon right floated" style="margin-right: -0.5rem;">
+                                </i>
+                            </p>
+                            <div class="ui special popup" style="margin-right: -1rem;margin-top: 2rem;padding-left: 1px;padding-right: 1px; padding-bottom: 1px">
+                                <ul style="list-style-type: none;padding:0;margin-bottom: 1px;margin-top: 0">
+                                    <li class="item" style="padding: 5px 35px 3px 15px"
+                                        onclick='editQuestion("{{ post.id }}", {{ post.title | tojson  }}, {{ post.description | tojson }})'>
+                                        <a href="#">Edit Question</a>
+                                    </li>
+                                    <li class="item" style="padding: 5px 35px 3px 15px" onclick='deleteQuestion("{{ post.id }}")'>
+                                        <a href="#">Delete Question</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        {% endif %}
+
+                        {{ post.description }}
+                        {{ share.create(title='Share with: ') }}
+                        <h2 class="ui divider text-center"><br></h2>
+                        <div class="ui comments" style="max-width: none">
+                            {% for answer in post.answers %}
+                                {% if answer.parent_id == None %}
+                                    <div class="comment">
+                                        <a class="avatar">
+                                            <img src="{{ answer.image_url }}">
+                                        </a>
+                                        <div class="content">
+                                            <a class="author">{{ answer.author }}</a>
+
+                                            {% if answer.creator.id == current_user.id %}
+                                                <p class="options btn" style="cursor: pointer; float: right;">
+                                                    <i class="large ellipsis vertical icon right floated" style="margin-right: -0.5rem;">
+                                                    </i>
+                                                </p>
+                                                <div class="ui special popup" style="margin-right: -1rem;margin-top: 2rem;padding-left: 1px;padding-right: 1px; padding-bottom: 1px">
+                                                    <ul style="list-style-type: none;padding:0;margin-bottom: 1px;margin-top: 0">
+                                                        <li class="item" style="padding: 5px 35px 3px 15px"
+                                                            onclick='editAnswer("{{ answer.id }}",  {{ answer.body | tojson }})'>
+                                                            <a href="#">Edit Answer</a>
+                                                        </li>
+                                                        <li class="item" style="padding: 5px 35px 3px 15px" onclick='deleteAnswer("{{ answer.id }}")'>
+                                                            <a href="#">Delete Answer</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            {% endif %}
+
+                                            <div class="metadata">
+                                                <span class="date">{{ moment(answer.timestamp).fromNow() }}</span>
+                                            </div>
+                                            <div class="text">
+                                                {{ answer.body }}
+                                            </div>
+                                            <div class="actions">
+                                                {% if current_user.is_authenticated %}
+                                                    <a class="reply" href="#"
+                                                       onclick="$('#answer-'+{{ answer.id }}).toggleClass('display-none');return false;">Reply</a>
+                                                    <form id="answer-{{ answer.id }}" class="ui reply form display-none"
+                                                          method="POST" action="{{ url_for('main.parent_answers') }}">
+                                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                                        <input type="hidden" name="question_id" value="{{ post.id }}"/>
+                                                        <input type="hidden" name="parent_id" value="{{ answer.id }}"/>
+                                                        <div class="field">
+                                                            <!---<textarea id="replyid" name="reply"></textarea>--->
+															<input id="replyid" name="reply" style="background: #eee;border-radius: 15px">
+                                                        </div>
+                                                        <button class="ui button">
+                                                            Reply
+                                                        </button>
+                                                    </form>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        {% if 'children' in answer.drilldown_tree()[0].keys() %}
+                                            <div class="comments">
+                                                {{ traverse.traverse(answer.drilldown_tree()[0]['children'], post.id, moment, current_user) }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                            {% if current_user.is_authenticated %}
+                                <form class="ui reply form" method="POST" action="{{ url_for('main.parent_answers') }}">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                    <input type="hidden" name="question_id" value="{{ post.id }}"/>
+                                    <input type="hidden" name="parent_id" value="0"/>
+                                    <div class="sixteen wide field">
+                                        <!----<textarea id="answer_reply" name="reply"></textarea>--->
+										<input id="replyid" name="reply" style="background: #eee;border-radius: 15px">
+                                    </div>
+                                    <button class="ui button">
+                                        Answer
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ui two column centered grid">
+            <div class="column">
+                <!--<div style="text-align:center;" class="row btn-group">-->
+
+                <a href="http://www.facebook.com/sharer.php?u={{ url_for('main.question_details',question_id=post.id, title=post.title, _external=True) }}"
+                   title="On Facebook" target="_blank" class="btn btn-default" style="margin-right:-10px;">
+                    <i class="fa fa-facebook fa-2x"></i>
+                </a>
+
+                <a href="http://www.facebook.com/sharer.php?u={{ url_for('main.question_details',question_id=post.id, title=post.title, _external=True) }}"
+                   title="On Facebook" target="_blank" class="btn btn-default" style="margin-right:-10px;">
+                    <i class="fa fa-facebook fa-2x"></i>
+                </a>
+
+                <a href="https://twitter.com/intent/tweet?url={{ url_for('main.question_details',question_id=post.id, title=post.title, _external=True) }}&via=Teachera&text={{ post.title }}%20-%20Teachera.org!&hashtags={{ post.title }},{{ post.position_city }}"
+                   title="On Twitter" target="_blank" class="btn btn-default" style="margin-right:-10px;">
+                    <i class="fa fa-twitter fa-2x"></i>
+                </a>
+
+
+                <a href="http://www.linkedin.com/shareArticle?mini=true&url={{ url_for('main.question_details',question_id=post.id, title=post.title, _external=True) }}&title={{ post.title }}&summary=Teachera.org!&source=http://website.com"
+                   title="On LinkedIn" target="_blank" class="btn btn-default" style="margin-right:-10px;">
+                    <i class="fa fa-linkedin fa-2x"></i>
+                </a>
+
+                <a href="http://vk.com/share.php?url={{ url_for('main.question_details',question_id=post.id, title=post.title, _external=True) }}&title={{ post.title }}&description=Teachera.org!&image=https%3A%2F%2Ffbcdn-sphotos-g-a.akamaihd.net%2Fhphotos-ak-frc3%2Ft1%2F10007500_219483098251971_1640217409_n.jpg"
+                   title="On VK.com" target="_blank" class="btn btn-default" style="margin-right:-10px;">
+                    <i class="fa fa-vk fa-2x"></i>
+                </a>
+
+                <a data-toggle="modal" href="#share-email-modal" class="btn btn-default" style="margin-right:-10px;">
+                    <i class="fa fa-share-alt fa-2x"></i>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    {% include 'partials/_question_modals.html' %}
+{% endblock %}
+{% block scripts %}
+    <script>
+        $(function () {
+            $('.ui.button').on('submit', function (event) {
+                $.ajax({
+                    data: {body: $('reply').val()},
+                    type: 'POST',
+                    url: '/answer'
+                })
+                event.preventDefault();
+            });
+        });
+
+        function toggleAnswer(answer_id) {
+            $('#answer-' + answer_id).toggleClass('display-none');
+        }
+    </script>
+{% endblock %}

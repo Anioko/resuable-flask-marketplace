@@ -1,0 +1,224 @@
+{% import 'macros/custom_nav_macros.html' as nav %}
+{% import 'macros/footer_macros.html' as footer %}
+
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="max-age=604800" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% for setting in settings %}
+<meta name="description"
+          content="{{ settings.description }}">
+<meta name="author" content="{{ setting.site_name }}">
+<meta name="og:title" content="{{ setting.title }}"/>
+<meta name="og:type" content="website"/>
+<meta name="og:url" content="https://www.{{ setting.site_name }}"/>
+<meta name="og:image" content="{{ url_for('static', filename='images/home/slider/hill.png') }}"/>
+<meta name="og:site_name" content="{{ settings.site_name }}"/>
+<meta name="og:description"
+          content="{{ setting.description }}"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:site" content="@{{ setting.site_name }}"/>
+<meta name="twitter:creator" content="@anioko1"/>
+<meta property="og:url" content="https://www.{{ setting.site_name }}"/>
+<meta property="og:title" content="{{ setting.title }}"/>
+<meta property="og:description"
+          content="{{ setting.description }}"/>
+<meta property="og:image" content="{{ url_for('static', filename='images/home/slider/hill.png') }}"/>
+{% endfor %}
+
+
+{% include 'partials/_head.html' %}
+{% if config['DEBUG']  != True %}
+	<meta name="ws_url" content="https://www.{{ config.APP_NAME }}.ng">
+{% else %}
+	<meta name="ws_url" content="http://localhost:3000">
+{% endif %}
+{% if current_user.is_authenticated %}
+	<meta name="user_id" content="{{ request.cookies.get('jwt_token') }}">
+{% endif %}
+{% block custom_head_tags %}{% endblock %}
+<link rel="shortcut icon" href="{{ url_for('static', filename='images/ico/favicon.ico') }}">
+<link rel="apple-touch-icon-precomposed" sizes="144x144"
+	  href="{{ url_for('static', filename='images/ico/apple-touch-icon-144-precomposed.png') }}">
+<link rel="apple-touch-icon-precomposed" sizes="114x114"
+	  href="{{ url_for('static', filename='images/ico/apple-touch-icon-114-precomposed.png') }}">
+<link rel="apple-touch-icon-precomposed" sizes="72x72"
+	  href="{{ url_for('static', filename='images/ico/apple-touch-icon-72-precomposed.png') }}">
+<link rel="apple-touch-icon-precomposed"
+	  href="{{ url_for('static', filename='images/ico/apple-touch-icon-57-precomposed.png') }}">
+<meta name="google-site-verification" content="eO7v2aO6uakHOD3gSnChM4_GSUpar3MVqPZzr9cWENE" />
+<style>
+	.ui.menu.fixed {
+		z-index: 1001;
+	}
+</style>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/toastr.min.css') }}">
+<script type="text/javascript">
+	window._mfq = window._mfq || [];
+	(function() {
+		var mf = document.createElement("script");
+		mf.type = "text/javascript"; mf.async = true;
+		mf.src = "//cdn.mouseflow.com/projects/2307558d-5b70-43db-bf63-ad4dd77ceead.js";
+		document.getElementsByTagName("head")[0].appendChild(mf);
+	})();
+</script>
+
+<link href="{{ url_for('static', filename='frontend/images/favicon.ico') }}" rel="shortcut icon" type="image/x-icon">
+
+<!-- jQuery -->
+<script src="{{ url_for('static', filename='frontend/js/jquery-2.0.0.min.js') }}" type="text/javascript"></script>
+
+<!-- Bootstrap4 files-->
+<script src="{{ url_for('static', filename='frontend/js/bootstrap.bundle.min.js') }}" type="text/javascript"></script>
+<link href="{{ url_for('static', filename='frontend/css/bootstrap.css') }}" rel="stylesheet" type="text/css"/>
+
+<!-- Font awesome 5 -->
+<link href="{{ url_for('static', filename='frontend/fonts/fontawesome/css/all.min.css') }}" type="text/css" rel="stylesheet">
+
+<!-- custom style -->
+<link href="{{ url_for('static', filename='frontend/css/ui.css') }}" rel="stylesheet" type="text/css"/>
+<link href="{{ url_for('static', filename='frontend/css/responsive.css') }}" rel="stylesheet" media="only screen and (max-width: 1200px)" />
+
+<!-- custom javascript -->
+<script src="{{ url_for('static', filename='frontend/js/script.js') }}" type="text/javascript"></script>
+
+<script type="text/javascript">
+/// some script
+
+// jquery ready start
+$(document).ready(function() {
+	// jQuery code
+
+}); 
+// jquery end
+</script>
+{% for setting in settings %}
+{{setting.other_tracking_analytics_one|safe}}
+{{setting.other_tracking_analytics_two|safe}}
+{{setting.other_tracking_analytics_three|safe}}
+{{setting.other_tracking_analytics_four|safe}}
+{% endfor %}
+</head>
+<body>
+
+{{ nav.render_nav(current_user) }}
+
+<header class="section-header">
+<section class="header-main border-bottom">
+	<div class="container">
+<div class="row align-items-center">
+	<div class="col-lg-2 col-6">
+		<a href="{{url_for('marketplace.index')}}" class="brand-wrap">
+			<img class="logo" src="{{ url_for('_uploads.uploaded_file', setname='images',
+			filename=website_settings.brand_image , _external=True) }}">
+		</a> <!-- brand-wrap.// -->
+	</div>
+	<div class="col-lg-6 col-12 col-sm-12">
+		<form action="{{ url_for('main.search', query=0) }}">
+			<div class="input-group w-100">
+				{{ form.query(class_="form-control") }}
+			    <div class="input-group-append">
+			      <button class="btn btn-primary" type="submit">
+			        <i class="fa fa-search"></i>
+			      </button>
+			    </div>
+			</div>
+		</form>
+	</div> <!-- col.// -->
+	<div class="col-lg-4 col-sm-6 col-12">
+		<div class="widgets-wrap float-md-right">
+			<div class="widget-header  mr-3">
+				<a href="{{url_for('marketplace.cart')}}" class="icon icon-sm rounded-circle border"><i class="fa fa-shopping-cart"></i></a>
+				<span class="badge badge-pill badge-danger notify">0</span>
+			</div>
+			<div class="widget-header icontext">
+				<a href="{{url_for('account.profile')}}" class="icon icon-sm rounded-circle border"><i class="fa fa-user"></i></a>
+				<div class="text">
+					<span class="text-muted">Welcome!</span>
+					{% if current_user.is_authenticated %}
+					<div> 
+						{{current_user.full_name}}
+						<a href="{{url_for('account.logout')}}">Log out</a> 
+					</div>
+					{% else %}
+					<div> 
+						<a href="{{url_for('account.login')}}">Sign in</a> |  
+						<a href="{{url_for('account.register')}}"> Register</a>
+					</div>
+					{% endif %}
+				</div>
+			</div>
+		</div> <!-- widgets-wrap.// -->
+	</div> <!-- col.// -->
+</div> <!-- row.// -->
+	</div> <!-- container.// -->
+</section> <!-- header-main .// -->
+</header> <!-- section-header.// -->
+
+    {% block content %}{% endblock %}
+    {% if csrf_token()|safe %}
+        <div style="visibility: hidden; display: none">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token()|safe }}">
+        </div>
+    {% endif %}
+
+
+	{% include 'partials/_footer.html' %}
+	
+	
+<!-- ========================= FOOTER ========================= -->
+<!-- <footer class="section-footer border-top padding-y">
+	<div class="container">
+		<p class="float-md-right"> 
+		e.preventDefault();
+	}
+		</p>
+	</div>
+</footer> -->
+{{ footer.footer_macro(current_user, website_settings) }}
+<!-- ========================= FOOTER END // ========================= -->
+
+<script src="//code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+{% assets 'vendor_js' %}
+    <script type="text/javascript" src="{{ ASSET_URL }}"></script>{% endassets %}
+{% assets 'app_js' %}
+    <script type="text/javascript" src="{{ ASSET_URL }}"></script>{% endassets %}
+<script type="text/javascript" src="/static/scripts/custom.js"></script>
+{% include 'partials/_analytics.html' %}
+{{ moment.include_moment() }}
+<script src="{{ url_for('static', filename='messaging/checkbox.min.js') }}"></script>
+<script src="{{ url_for('static', filename='messaging/vue.js') }}"></script>
+<script src="{{ url_for('static', filename='messaging/socket.io.js') }}"></script>
+<script src="{{ url_for('static', filename='messaging/moment.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/toastr.min.js') }}"></script>
+<script>
+
+	let form = document.getElementById('search-form');
+	let searchInput = document.getElementById('search-input');
+	let searchBtn = document.getElementById('search-btn');
+	searchBtn.addEventListener('click', function(e) {
+		e.preventDefault();
+		query = searchInput.value;
+		fetch(`/search`, {
+			method: "GET",
+			headers: {
+			'Content-Type': 'application/json'
+			// 'Content-Type': 'application/x-www-form-urlencoded',
+			}
+		}).then(result => console.log(result));
+
+	});
+
+</script>
+{% include 'partials/_realtime.html' %}
+{% block scripts %}{% endblock %}
+{% if request.blueprint == 'marketplace' %}
+    {% include 'marketplace/partials/scripts.html' %}
+{% endif %}
+</body>
+</html>

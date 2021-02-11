@@ -1,0 +1,99 @@
+{% extends 'layouts/base.html' %}
+{% block page_title %}{{ org.org_name }} in {{ org.org_city }}{% endblock %}
+{% block custom_head_tags %}
+    <meta name="description"
+          content="{{ org.org_industry }}">
+    <meta name="author" content="{{ config.APP_NAME }}">
+    <meta name="og:title" content="{{ org.org_name }}, {{ config.APP_NAME }} healthcare community network"/>
+    <meta name="og:type" content="website"/>
+    <meta name="og:url" content="https://www.{{ config.APP_NAME }}.com"/>
+    <meta name="og:image" content="{{ url_for('static', filename='images/home/slider/hill.png') }}"/>
+    <meta name="og:site_name" content="{{ config.APP_NAME }}"/>
+    <meta name="og:description"
+          content="{{ org.org_industry }}"/>
+    <meta name="twitter:card" content="summary"/>
+    <meta name="twitter:site" content="@medivillenetwork"/>
+    <meta name="twitter:creator" content="@anioko1"/>
+{% endblock %}
+{% macro dashboard_option(org, title, endpoint, description=None, icon=None) %}
+    <a class="column" href="{{ url_for(endpoint, org_id=org.id) }}">
+        <div class="ui padded segment">
+            <h3 class="ui header">
+                {% if icon is not none %}
+                    <i class="{{ icon }}"></i>
+                {% endif %}
+                <div class="content">
+                    {{ title }}
+                    {% if description is not none %}
+                        <div class="sub header">
+                            {{ description }}
+                        </div>
+                    {% endif %}
+                </div>
+            </h3>
+        </div>
+    </a>
+{% endmacro %}
+
+{% macro org_info(org) %}
+    <table class="ui compact definition table">
+        <tr>
+            <td>Name</td>
+            <td>{{ org.org_name }}</td>
+        </tr>
+        <tr>
+            <td>Default Logo</td>
+            <td><img height="200" src="{{ org.get_photo() }}"></td>
+        </tr>
+        <tr>
+            <td>Creator</td>
+            <td>{{ org.user.full_name }}</td>
+        </tr>
+        <tr>
+            <td>City</td>
+            <td>{{ org.org_city }}</td>
+        </tr>
+        <tr>
+            <td>State</td>
+            <td>{{ org.org_country }}</td>
+        </tr>
+        <tr>
+            <td>Country</td>
+            <td>{{ org.name }}</td>
+        </tr>
+        <tr>
+            <td>Website</td>
+            <td>{{ org.org_website }}</td>
+        </tr>
+        <tr>
+            <td>Industry</td>
+            <td>{{ org.org_industry }}</td>
+        </tr>
+        <tr>
+            <td>Description</td>
+            <td>{{ org.org_description }}</td>
+        </tr>
+        <tr>
+            <td>Created</td>
+            <td>{{ org.created_at }}</td>
+        </tr>
+
+    </table>
+{% endmacro %}
+
+{% block content %}
+    <div class="ui stackable centered grid container">
+        <div class="twelve wide column">
+            <h2 class="ui header">
+                            </h2>
+            {{ org_info(org) }}
+{#            <div class="ui two column stackable grid">#}
+{#                {{ dashboard_option(org, 'job adverts', 'organisations.list_positions',#}
+{#                                    description='Adverts created are viewable by all members within the network and outside.', icon='write square icon') }}#}
+{#                {{ dashboard_option(org, 'Your Staff', 'organisations.list_staff',#}
+{#                                    description='Send invites to your staffs to create their own accounts', icon='add user icon') }}#}
+{#            </div>#}
+        </div>
+    </div>
+
+{% endblock %}

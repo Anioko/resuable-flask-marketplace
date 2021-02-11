@@ -1,0 +1,896 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+{% import 'macros/check_password.html' as check %}
+{% import 'macros/post_macros.html' as post_wid %}
+{% block page_title %}{{ user.full_name }} - Professional Profiles - Manage your "{{ profile.title }}"
+    profile.{% endblock %}
+{% block custom_head_tags %}
+    <style>
+        .profile-card {
+            cursor: pointer;
+        }
+
+        form.left-bordered {
+            border-left: 1px solid gray;
+            padding-left: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% set flashes = {
+        'error':   get_flashed_messages(category_filter=['form-error']),
+        'warning': get_flashed_messages(category_filter=['form-check-email']),
+        'info':    get_flashed_messages(category_filter=['form-info']),
+        'success': get_flashed_messages(category_filter=['form-success'])
+     } %}
+    <div class="ui stackable centered grid container">
+        <div class="stretched divided very relaxed row">
+            {% include 'account/includes/proff_nav.html' %}
+
+            <div class="twelve wide column">
+                <h2 class="ui header" style="flex-grow: 0">
+                    Professional Profiles
+                    <span class="sub header">Manage your <strong>{{ profile.title }}</strong> profile.</span>
+                </h2>
+                <hr style="flex-grow: 0">
+                <div class="content">
+                    <div id="app-root">
+                        <div v-if="profile" class="ui segment">
+                            <div class="image" style="position: relative">
+                                <div style="position: absolute;bottom: -80px;left: 1%;width: 100%; height: 180px;float: left;text-align: left;padding:05px;">
+                                    <img style="height: 100%;width: 25%;min-width: 180px;border:4px solid rgb(98, 170, 175)"
+                                         :src="'{{ url_for('_uploads.uploaded_file', setname='images',
+                           filename='', _external=True) }}'+profile.image">
+                                </div>
+                                <img :src="'{{ url_for('_uploads.uploaded_file', setname='images',
+                           filename='', _external=True) }}'+profile.cover" height="260" width="100%">
+                            </div>
+                            <div style="height: 90px"></div>
+                            <div>
+                                <button class="ui right floated red  icon button"
+                                        v-on:click="deleteProfile()"><i
+                                        class="ui minus icon"></i></button>
+                                <button class="ui right floated icon primary button" v-on:click="editModal()"><i class="ui edit icon"></i></button>
+                                <div class="content"><h3>[[ profile.full_name ]]</h3></div>
+                                <div class="content"><h4>[[ profile.title ]] - [[ profile.type_of_work ]] - [[
+                                    profile.commitment ]]</h4></div>
+                                <div class="content"><h5>[[ profile.header ]]</h5></div>
+                            </div>
+                            <br>
+                            <div class="ui indicating progress">
+                                <div class="bar">
+                                </div>
+                                <div class="label" style="top:0">[[ profile.completeness ]]% complete</div>
+                                <div class="label">Complete your profile to appear more in searches !</div>
+                            </div>
+                        </div>
+
+                        <div v-if="profile" class="ui segment">
+                            <h2>Skills</h2>
+                            <hr>
+                            <div v-for="skill in profile.skills"
+                                 style="background: #EEEEEE;margin-bottom: 1px;padding: 10px">
+                                <form v-if="editing == 'skill' && editing_id == skill.id"
+                                      :action="'/api/profile/{{ profile.id }}/skill/edit/'+skill.id" method="POST"
+                                      type="edit" class="ui form left-bordered">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                    <h5>Edit a Skill</h5>
+                                    <div class="four fields">
+                                        <div class="field">
+                                            <div class="field  ">
+                                                <label for="name">Title</label>
+                                                <input id="name" name="name" placeholder="Title" required="required"
+                                                       type="text" :value="skill.name">
+                                            </div>
+                                        </div>
+                                        <div class="field">
+                                            <div class="field  ">
+                                                <label for="description">Description</label>
+                                                <input id="description" name="description" placeholder="Description"
+                                                       required="required" type="text" :value="skill.description">
+                                            </div>
+                                        </div>
+                                        <div class="field">
+                                            <div class="field  ">
+                                                <label for="exp">Experience</label>
+                                                <select id="exp" name="exp" placeholder="Experience">
+                                                    <option value="Newbie" :selected="skill.exp=='Newbie'">Newbie
+                                                    </option>
+                                                    <option value="Intermediate" :selected="skill.exp=='Intermediate'">
+                                                        Intermediate
+                                                    </option>
+                                                    <option value="Experienced" :selected="skill.exp=='Experienced'">
+                                                        Experienced
+                                                    </option>
+                                                    <option value="Guru" :selected="skill.exp=='Guru'">Guru</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="centered field" style="text-align: center;">
+                                            <label style="opacity: 0;">|</label>
+                                            <button type="submit" class="ui left floated primary button"
+                                                    style="width: 40%;"><i class="ui edit icon"></i></button>
+                                            <button v-on:click="endEdit()" class="ui left floated green button"
+                                                    style="width: 40%;"><i class="ui undo icon"></i></button>
+                                        </div>
+                                    </div>
+                                </form>
+                                <div v-else>
+                                    <h4>
+                                        <i class="ui hand point right outline icon"></i>
+                                        <strong><u>[[skill.exp]]</u></strong>
+                                        <small>at</small>
+                                        <strong><u>[[ skill.name ]]</u></strong>
+                                        <a href="javascript:;" class="ui right floated red small icon button"
+                                           v-on:click="postTo('/api/profile/{{ profile.id }}/skill/delete/'+skill.id)"><i
+                                                class="ui minus icon"></i></a>
+                                        <a href="javascript:;" class="ui right floated primary small icon button"
+                                           v-on:click="startEdit('skill', skill.id)"><i class="ui edit icon"></i></a>
+                                    </h4>
+                                    <p style="text-indent: 20px;">[[skill.description]]</p>
+                                </div>
+                            </div>
+                            <hr v-if="profile.skills.length > 0">
+                            {{ f.begin_form(skill_form, flashes, extra_classes='left-bordered', action=url_for('api.addprofileskill', profile_id=profile.id)) }}
+                            <h5>Add a Skill</h5>
+                            <div class="four fields">
+                                <div class="field">
+                                    {{ f.render_form_field(skill_form.name) }}
+                                </div>
+                                <div class="field">
+                                    {{ f.render_form_field(skill_form.description) }}
+                                </div>
+                                <div class="field">
+                                    {{ f.render_form_field(skill_form.exp) }}
+                                </div>
+                                <div class="centered field" style="text-align: center">
+                                    <label style="opacity: 0">|</label>
+                                    <button class="ui centered green button" style="width: 100%;" type="submit"><i
+                                            class="ui plus icon"></i>Submit</button>
+                                </div>
+                            </div>
+                            {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
+                            {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
+                            {{ f.form_message(flashes['info'], header='Information', class='info') }}
+                            {{ f.form_message(flashes['success'], header='Success!', class='success') }}
+
+
+                            {{ f.end_form(form) }}
+                        </div>
+                        <!-- EDUCATION -->
+                        <div v-if="profile" class="ui segment">
+                            <h2>Education</h2>
+                            <hr>
+                            <div v-for="edu in profile.education"
+                                 style="background: #EEEEEE;margin-bottom: 1px;padding: 10px">
+                                <form v-if="editing == 'edu' && editing_id == edu.id"
+                                      :action="'/api/profile/{{ profile.id }}/edu/edit/'+edu.id" method="POST"
+                                      type="edit" class="ui form left-bordered">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                    <h5>Edit an Education degree</h5>
+                                    <div class="three fields">
+                                        <div class="field  "><label for="school">School</label> <input id="school"
+                                                                                                       name="school"
+                                                                                                       placeholder="School"
+                                                                                                       required="required"
+                                                                                                       type="text"
+                                                                                                       :value="edu.school">
+                                        </div>
+                                        <div class="field  "><label for="degree">Degree</label> <select id="degree"
+                                                                                                        name="degree"
+                                                                                                        placeholder="Degree">
+                                            <option value="Associate" :selected="edu.degree=='Associate'">Associate
+                                            </option>
+                                            <option value="Bachelor" :selected="edu.degree=='Bachelor'">Bachelor</option>
+                                            <option value="Master" :selected="edu.degree=='Master'">Master</option>
+                                            <option value="Doctoral" :selected="edu.degree=='Doctoral'">Doctoral</option>
+                                        </select></div>
+                                        <div class="field"></div>
+                                    </div>
+                                    <div class="three fields">
+                                        <div class="field  "><label for="start_date">Start</label> <input
+                                                id="start_date" name="start_date" placeholder="Start"
+                                                required="required" type="date" :value="in_date(edu.start_date)"></div>
+                                        <div class="field  "><label for="end_date">End</label> <input id="end_date"
+                                                                                                      name="end_date"
+                                                                                                      placeholder="End"
+                                                                                                      type="date"
+                                                                                                      :value="in_date(edu.end_date)">
+                                        </div>
+                                        <div class="centered field" style="text-align: center;">
+                                            <label style="opacity: 0;">|</label>
+                                            <button type="submit" class="ui left floated primary button"
+                                                    style="width: 40%;"><i class="ui edit icon"></i></button>
+                                            <button v-on:click="endEdit()" class="ui left floated green button"
+                                                    style="width: 40%;"><i class="ui undo icon"></i></button>
+                                        </div>
+                                    </div>
+                                </form>
+                                <div v-else>
+                                    <div class="ui feed">
+                                        <div class="event">
+                                            <div class="label">
+                                                <i class="ui calendar icon"></i>
+                                            </div>
+                                            <div class="content">
+                                                <div class="date">
+                                                    [[edu.start_date]] <i
+                                                        class="ui long arrow alternate right icon"></i>
+                                                    <span v-if="edu.end_date">[[edu.end_date]]</span>
+                                                    <span v-else>Present</span>
+                                                </div>
+                                                <div class="summary">
+                                                    <a>[[edu.degree]] degree</a> -- <strong>[[edu.school]]</strong>
+                                                    <a href="javascript:;"
+                                                       class="ui right floated red small icon button"
+                                                       v-on:click="postTo('/api/profile/{{ profile.id }}/edu/delete/'+edu.id)"><i
+                                                            class="ui minus icon"></i></a>
+                                                    <a href="javascript:;"
+                                                       class="ui right floated primary small icon button"
+                                                       v-on:click="startEdit('edu', edu.id)"><i
+                                                            class="ui edit icon"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr v-if="profile.education.length > 0">
+                            {{ f.begin_form(edu_form, flashes, extra_classes='left-bordered', action=url_for('api.addprofileedu', profile_id=profile.id)) }}
+                            <h5>Add an Education degree</h5>
+                            <div class="three fields">
+                                {{ f.render_form_field(edu_form.school) }}
+                                {{ f.render_form_field(edu_form.degree) }}
+                                <div class="field"></div>
+                            </div>
+                            <div class="three fields">
+                                {{ f.render_form_field(edu_form.start_date) }}
+                                {{ f.render_form_field(edu_form.end_date) }}
+                                <div class="centered field" style="text-align: center">
+                                    <label style="opacity: 0">|</label>
+                                    <button type="submit" class="ui centered green button" style="width: 100%"><i
+                                            class="ui plus icon"></i>Submit</button>
+                                </div>
+                            </div>
+                            {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
+                            {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
+                            {{ f.form_message(flashes['info'], header='Information', class='info') }}
+                            {{ f.form_message(flashes['success'], header='Success!', class='success') }}
+
+
+                            {{ f.end_form(form) }}
+                        </div>
+
+                        <div v-if="profile" class="ui segment">
+                            <h2>Work History</h2>
+                            <hr>
+                            <div v-for="job in profile.jobs"
+                                 style="background: #EEEEEE;margin-bottom: 1px;padding: 10px">
+                                <form v-if="editing == 'job' && editing_id == job.id"
+                                      :action="'/api/profile/{{ profile.id }}/job/edit/'+job.id" method="POST"
+                                      type="edit" class="ui form left-bordered">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                    <h5>Edit a Position</h5>
+                                    <div class="three fields">
+                                        <div class="field  "><label for="title">Job Title</label> <input id="title"
+                                                                                                         name="title"
+                                                                                                         placeholder="Job Title"
+                                                                                                         required="required"
+                                                                                                         type="text"
+                                                                                                         :value="job.title">
+                                        </div>
+                                        <div class="field  "><label for="company">Company</label> <input id="company"
+                                                                                                         name="company"
+                                                                                                         placeholder="Company"
+                                                                                                         required="required"
+                                                                                                         type="text"
+                                                                                                         :value="job.company">
+                                        </div>
+                                        <div class="field  "><label for="commitment">Commitment</label>
+                                            <select id="commitment"
+                                                    name="commitment"
+                                                    placeholder="Commitment">
+                                                <option value="Full Time" :selected="job.commitment=='Full Time'">Full
+                                                    Time
+                                                </option>
+                                                <option value="Part Time" :selected="job.commitment=='Part Time'">Part
+                                                    Time
+                                                </option>
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                    <div class="three fields">
+                                        <div class="field  "><label for="start_date">Start</label> <input
+                                                id="start_date" name="start_date" placeholder="Start"
+                                                required="required" type="date" :value="in_date(job.start_date)"></div>
+                                        <div class="field  "><label for="end_date">End</label> <input id="end_date"
+                                                                                                      name="end_date"
+                                                                                                      placeholder="End"
+                                                                                                      type="date"
+                                                                                                      :value="in_date(job.end_date)">
+                                        </div>
+                                        <div class="centered field" style="text-align: center;">
+                                            <label style="opacity: 0;">|</label>
+                                            <button type="submit" class="ui left floated primary button"
+                                                    style="width: 40%;"><i class="ui edit icon"></i></button>
+                                            <button v-on:click="endEdit()" class="ui left floated green button"
+                                                    style="width: 40%;"><i class="ui undo icon"></i></button>
+                                        </div>
+                                    </div>
+                                </form>
+                                <div v-else>
+                                    <div class="ui feed">
+                                        <div class="event">
+                                            <div class="label">
+                                                <i class="ui calendar icon"></i>
+                                            </div>
+                                            <div class="content">
+                                                <div class="date">
+                                                    [[job.start_date]] <i
+                                                        class="ui long arrow alternate right icon"></i>
+                                                    <span v-if="job.end_date">[[job.end_date]]</span>
+                                                    <span v-else>Present</span>
+                                                </div>
+                                                <div class="summary">
+                                                    <a>[[job.title]]</a> -- <strong>[[job.company]]</strong> --
+                                                    [[job.commitment]]
+                                                    <a href="javascript:;"
+                                                       class="ui right floated red small icon button"
+                                                       v-on:click="postTo('/api/profile/{{ profile.id }}/job/delete/'+job.id)"><i
+                                                            class="ui minus icon"></i></a>
+                                                    <a href="javascript:;"
+                                                       class="ui right floated primary small icon button"
+                                                       v-on:click="startEdit('job', job.id)"><i
+                                                            class="ui edit icon"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr v-if="profile.jobs.length > 0">
+                            {{ f.begin_form(job_form, flashes, extra_classes='left-bordered',action=url_for('api.addprofilejob', profile_id=profile.id)) }}
+                            <h5>Add a Position</h5>
+                            <div class="three fields">
+                                {{ f.render_form_field(job_form.title) }}
+                                {{ f.render_form_field(job_form.company) }}
+                                {{ f.render_form_field(job_form.commitment) }}
+                            </div>
+                            <div class="three fields">
+                                {{ f.render_form_field(job_form.start_date) }}
+                                {{ f.render_form_field(job_form.end_date) }}
+                                <div class="centered field" style="text-align: center">
+                                    <label style="opacity: 0">|</label>
+                                    <button type="submit" class="ui centered green button" style="width: 100%"><i
+                                            class="ui plus icon"></i>Submit</button>
+                                </div>
+                            </div>
+                            {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
+                            {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
+                            {{ f.form_message(flashes['info'], header='Information', class='info') }}
+                            {{ f.form_message(flashes['success'], header='Success!', class='success') }}
+
+
+                            {{ f.end_form(form) }}
+                        </div>
+
+                        <div v-if="profile" class="ui segment">
+                            <h2>Projects</h2>
+                            <hr>
+                            <div v-for="project in profile.projects"
+                                 style="background: #EEEEEE;margin-bottom: 1px;padding: 10px">
+                                <form v-if="editing == 'project' && editing_id == project.id"
+                                      :action="'/api/profile/{{ profile.id }}/project/edit/'+project.id" method="POST"
+                                      type="edit" class="ui form left-bordered">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                    <h5>Edit a Project</h5>
+                                    <div class="three fields">
+                                        <div class="field  ">
+                                            <label for="name">Project Name</label> <input id="name"
+                                                                                          name="name"
+                                                                                          placeholder="Project Name"
+                                                                                          required="required"
+                                                                                          type="text"
+                                                                                          :value="project.name">
+                                        </div>
+                                        <div class="field  "><label for="description">Description</label> <input
+                                                id="description" name="description" placeholder="Description"
+                                                required="required" type="text" :value="project.description"></div>
+                                        <div class="field"><label for="description">Links</label>
+                                            <input v-for="link in JSON.parse(project.links)" name="links"
+                                                   placeholder="add a Link"
+                                                   required="required"
+                                                   type="text"
+                                                   :value="link">
+                                            <a v-on:click="addLink($event, 1)" class="ui primary button"
+                                               style="width: 47%"><i
+                                                    class="ui plus icon"></i></a>
+                                            <a v-on:click="addLink($event, -1)" class="ui red left button"
+                                               style="width: 47%"><i
+                                                    class="ui minus icon"></i></a></div>
+                                    </div>
+                                    <div class="three fields">
+                                        <div class="field  "><label for="start_date">Start</label> <input
+                                                id="start_date" name="start_date" placeholder="Start"
+                                                required="required" type="date" :value="in_date(project.start_date)">
+                                        </div>
+                                        <div class="field  "><label for="end_date">End</label> <input id="end_date"
+                                                                                                      name="end_date"
+                                                                                                      placeholder="End"
+                                                                                                      type="date"
+                                                                                                      :value="in_date(project.end_date)">
+                                        </div>
+                                        <div class="centered field" style="text-align: center;">
+                                            <label style="opacity: 0;">|</label>
+                                            <button type="submit" class="ui left floated primary button"
+                                                    style="width: 40%;"><i class="ui edit icon"></i></button>
+                                            <button v-on:click="endEdit()" class="ui left floated green button"
+                                                    style="width: 40%;"><i class="ui undo icon"></i></button>
+                                        </div>
+                                    </div>
+
+                                </form>
+
+                                <div v-else>
+                                    <div class="ui feed">
+                                        <div class="event">
+                                            <div class="label">
+                                                <i class="ui calendar icon"></i>
+                                            </div>
+                                            <div class="content">
+                                                <div class="date">
+                                                    [[project.start_date]] <i
+                                                        class="ui long arrow alternate right icon"></i>
+                                                    <span v-if="project.end_date">[[project.end_date]]</span>
+                                                    <span v-else>Present</span>
+                                                </div>
+                                                <div class="summary">
+                                                    <a>[[project.name]]</a>
+                                                    <p>[[project.description]]</p>
+                                                    <a v-for="link in JSON.parse(project.links)" :href="link"
+                                                       target="_blank">[[link]]<br></a>
+                                                    <a href="javascript:;"
+                                                       class="ui right floated red small icon button"
+                                                       v-on:click="postTo('/api/profile/{{ profile.id }}/project/delete/'+project.id)"><i
+                                                            class="ui minus icon"></i></a>
+                                                    <a href="javascript:;"
+                                                       class="ui right floated primary small icon button"
+                                                       v-on:click="startEdit('project', project.id)"><i
+                                                            class="ui edit icon"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr v-if="profile.projects.length > 0">
+                            {{ f.begin_form(project_form, flashes, action=url_for('api.addprofileproject', profile_id=profile.id), extra_classes='left-bordered') }}
+                            <h5>Add a Project</h5>
+                            <div class="three fields">
+                                {{ f.render_form_field(project_form.name) }}
+                                {{ f.render_form_field(project_form.description) }}
+                                <div class="field">
+                                    <label for="description">Links</label>
+                                    <input name="links" placeholder="add a Link" required="required" type="text"
+                                           value="">
+                                    <a v-on:click="addLink($event, 1)" class="ui primary button" style="width: 47%"><i
+                                            class="ui plus icon"></i></a>
+                                    <a v-on:click="addLink($event, -1)" class="ui red left button" style="width: 47%"><i
+                                            class="ui minus icon"></i></a>
+                                </div>
+                            </div>
+                            <div class="three fields">
+                                {{ f.render_form_field(project_form.start_date) }}
+                                {{ f.render_form_field(project_form.end_date) }}
+                                <div class="centered field" style="text-align: center">
+                                    <label style="opacity: 0">|</label>
+                                    <button type="submit" class="ui centered green button" style="width: 100%"><i
+                                            class="ui plus icon"></i>Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                        {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
+                        {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
+                        {{ f.form_message(flashes['info'], header='Information', class='info') }}
+                        {{ f.form_message(flashes['success'], header='Success!', class='success') }}
+                        {{ f.end_form(form) }}
+                        <div v-if="profile" class="ui segment">
+                            <h2>Languages</h2>
+                            <hr>
+                            <div v-for="lang in profile.languages"
+                                 style="background: #EEEEEE;margin-bottom: 1px;padding: 10px">
+                                <form v-if="editing == 'lang' && editing_id == lang.id"
+                                      :action="'/api/profile/{{ profile.id }}/lang/edit/'+lang.id" method="POST"
+                                      type="edit" class="ui form left-bordered">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                    <h5>Edit a Language</h5>
+                                    <div class="three fields">
+                                        <div class="field  ">
+                                            <label for="lang">Level</label>
+                                            <select id="lang"
+                                                    name="lang"
+                                                    placeholder="Language">
+                                                {% for lang in langs %}
+                                                    <option value="{{ lang[0] }}" :selected="lang.lang=='{{ lang[0] }}'">{{ lang[1] }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="field  ">
+                                            <label for="level">Level</label>
+                                            <select id="level"
+                                                    name="level"
+                                                    placeholder="Level">
+                                                <option value="Beginner" :selected="lang.level=='Beginner'">Beginner</option>
+                                                <option value="Elementary" :selected="lang.level=='Elementary'">Elementary</option>
+                                                <option value="Intermediate" :selected="lang.level=='Intermediate'">Intermediate</option>
+                                                <option value="Upper Intermediate" :selected="lang.level=='Upper Intermediate'">Upper Intermediate</option>
+                                                <option value="Advanced" :selected="lang.level=='Advanced'">Advanced</option>
+                                                <option value="Proficient" :selected="lang.level=='Proficient'">Proficient</option>
+                                            </select>
+                                        </div>
+                                        <div class="centered field" style="text-align: center;">
+                                            <label style="opacity: 0;">|</label>
+                                            <button type="submit" class="ui left floated primary button"
+                                                    style="width: 40%;"><i class="ui edit icon"></i></button>
+                                            <button v-on:click="endEdit()" class="ui left floated green button"
+                                                    style="width: 40%;"><i class="ui undo icon"></i></button>
+                                        </div>
+                                    </div>
+
+                                </form>
+
+                                <div v-else>
+                                    <h4>
+                                        <i class="ui hand point right outline icon"></i>
+                                        <strong><u>[[lang.level]]</u></strong>
+                                        <small>at</small>
+                                        <strong><u>[[lang.name]]</u></strong>
+                                        <a href="javascript:;" class="ui right floated red small icon button"
+                                           v-on:click="postTo('/api/profile/{{ profile.id }}/lang/delete/'+lang.id)"><i
+                                                class="ui minus icon"></i></a>
+                                        <a href="javascript:;" class="ui right floated primary small icon button"
+                                           v-on:click="startEdit('lang', lang.id)"><i class="ui edit icon"></i></a>
+                                    </h4>
+                                </div>
+                            </div>
+                            <hr v-if="profile.languages.length > 0">
+                            {{ f.begin_form(lang_form, flashes, action=url_for('api.addprofilelang', profile_id=profile.id),  extra_classes='left-bordered') }}
+                            <h5>Add a Language</h5>
+                            <div class="three fields">
+                                {{ f.render_form_field(lang_form.lang) }}
+                                {{ f.render_form_field(lang_form.level) }}
+                                <div class="centered field" style="text-align: center">
+                                    <label style="opacity: 0">|</label>
+                                    <button type="submit" class="ui centered green button" style="width: 100%"><i
+                                            class="ui plus icon"></i>Submit</button>
+                                </div>
+                            </div>
+                            {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
+                            {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
+                            {{ f.form_message(flashes['info'], header='Information', class='info') }}
+                            {{ f.form_message(flashes['success'], header='Success!', class='success') }}
+                            {{ f.end_form(form) }}
+                        </div>
+                        <div class="ui edit modal">
+                            <i class="close icon"></i>
+                            <div class="header">
+                                Edit Profile
+                            </div>
+                            <div class="content">
+                                {% set flashes = {
+        'error':   get_flashed_messages(category_filter=['form-error']),
+        'warning': get_flashed_messages(category_filter=['form-check-email']),
+        'info':    get_flashed_messages(category_filter=['form-info']),
+        'success': get_flashed_messages(category_filter=['form-success'])
+        } %}
+
+                                {{ f.begin_form(profile_form, flashes, action=url_for('api.editprofile', profile_id=profile.id)) }}
+                                <div class="field">
+                                    {{ f.render_form_field(profile_form.title) }}
+                                </div>
+                                <div class="two fields">
+                                    <div class="field">
+                                        {{ f.render_form_field(profile_form.first_name) }}
+                                    </div>
+                                    <div class="field">
+                                        {{ f.render_form_field(profile_form.last_name) }}
+                                    </div>
+                                </div>
+                                <div class="two fields">
+                                    <div class="field">
+                                        {{ f.render_form_field(profile_form.image) }}
+                                    </div>
+                                    <div class="field">
+                                        {{ f.render_form_field(profile_form.cover) }}
+                                    </div>
+                                </div>
+
+                                <div class="field">
+                                    {{ f.render_form_field(profile_form.header) }}
+                                </div>
+                                <div class="two fields">
+                                    <div class="field">
+                                        {{ f.render_form_field(profile_form.commitment) }}
+                                    </div>
+                                    <div class="field">
+                                        {{ f.render_form_field(profile_form.type_of_work) }}
+                                    </div>
+                                </div>
+                                {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
+                                {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
+                                {{ f.form_message(flashes['info'], header='Information', class='info') }}
+                                {{ f.form_message(flashes['success'], header='Success!', class='success') }}
+
+                                {% for field in form | selectattr('type', 'equalto', 'SubmitField') %}
+                                    {{ f.render_form_field(field) }}
+                                {% endfor %}
+                                {{ f.end_form(form) }}
+
+                            </div>
+                            <div class="actions">
+                                <div class="ui black deny button">
+                                    Cancel
+                                </div>
+                                <div class="ui right labeled icon green button" v-on:click="submitProfile()">
+                                    Submit
+                                    <i class="checkmark icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ui wait basic modal">
+                            <div class="ui icon header">
+                                <div class="ui active  dimmer" style="background: transparent">
+                                    <div class="ui big text loader">Working On it</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    {#    <a class="ui right floated icon button"><i class="plus  icon"></i> </a>#}
+
+{% endblock %}
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/vue.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+
+    <script>
+        var app = new Vue({
+            el: '#app-root',
+            data: {
+                profile: null,
+                editing: null,
+                editing_id: null,
+            },
+            mounted() {
+                let app = this;
+                axios.get('/api/profile/{{ profile.id }}')
+                    .then(function (response) {
+                        if (response.data.status === 1) {
+                            app.profile = response.data.profile;
+                            //app.now = new Date(response.data.now);
+                            //app.page += 1;
+                            //if (app.messages.items.length > 1){
+                            //    app.first_page_last = app.messages.items[app.messages.items.length - 1].id
+                            //}
+                        }
+                    })
+                    .catch(function (error) {
+                        // handle error
+                        {#console.log(error);#}
+                    })
+                    .finally(function () {
+                        $('.ui.progress').each(function () {
+                            $(this).progress({
+                                duration: 200,
+                                total: 100,
+                                value: app.profile.completeness,
+
+                            })
+                        });
+                    });
+                $(document).on('submit', 'form', function () {
+                    let form_type = $(this).attr('type');
+                    form = this;
+                    let data = new FormData(this);
+                    axios.post($(this).attr('action'), data)
+                        .then(function (response) {
+                            if (response.data.status === 1) {
+                                app.profile = response.data.profile;
+                                if (form_type == 'edit') {
+                                    app.editing = null;
+                                    app.editing_id = null;
+                                } else {
+                                    form.reset();
+                                    if ($(form).find('input[name=links]').length) {
+                                        let num = $(form).find('input[name=links]').length;
+                                        while (num > 1) {
+                                            $(form).find('input[name=links]:last').remove();
+                                            num = $(form).find('input[name=links]').length;
+                                        }
+                                    }
+
+                                }
+                            }
+                        })
+                        .catch(function (error) {
+
+                        })
+                        .finally(function () {
+                        });
+                    return false;
+                });
+            },
+            watch: {
+                profile: function (val, oldVal){
+                    if (oldVal){
+                        if (val.completeness !== oldVal.completeness){
+                            $('.ui.progress').each(function () {
+                                $(this).progress({
+                                    duration: 200,
+                                    total: 100,
+                                    value: val.completeness,
+
+                                })
+                            });
+                        }
+                    }
+                }
+            },
+            methods: {
+                in_date(d) {
+                    let dd = new Date(d);
+                    let currentDate = dd.toISOString().slice(0, 10);
+                    return d ? currentDate : null;
+                },
+                startEdit(editing, editing_id) {
+                    app.editing = editing;
+                    app.editing_id = editing_id;
+                },
+                postTo(url, danger = true) {
+                    let data = new FormData();
+                    data.set('csrf_token', "{{ csrf_token()  }}");
+                    if (danger) {
+                        swal({
+                            title: "Are you sure?",
+                            text: "Once deleted, you will not be able to recover this item",
+                            icon: "warning",
+                            buttons: true,
+                            dangerMode: true,
+                        })
+                            .then((willDelete) => {
+                                if (willDelete) {
+                                    axios.post(url, data)
+                                        .then(function (response) {
+                                            if (response.data.status === 1) {
+                                                app.profile = response.data.profile;
+                                                form.reset();
+                                            }
+                                        })
+                                        .catch(function (error) {
+
+                                        })
+                                        .finally(function () {
+                                        });
+                                } else {
+                                    return false;
+                                }
+                            });
+                    } else {
+                        axios.post(url, data)
+                            .then(function (response) {
+                                if (response.data.status === 1) {
+                                    app.profile = response.data.profile;
+                                    form.reset();
+                                    if ($(form).find('input[name=links]').length) {
+                                        let num = $(form).find('input[name=links]').length;
+                                        while (num > 1) {
+                                            $(form).find('input[name=links]:last').remove();
+                                            num = $(form).find('input[name=links]').length;
+                                        }
+                                    }
+                                }
+                            })
+                            .catch(function (error) {
+
+                            })
+                            .finally(function () {
+                            });
+                    }
+                    return false;
+                },
+                endEdit() {
+                    app.editing = null;
+                    app.editing_id = null;
+                },
+                addLink(e, i) {
+                    if (i === 1) {
+                        $('<input name="links" placeholder="add a Link" type="text" value="">').insertBefore(e.currentTarget);
+                    } else {
+                        let num = $(e.currentTarget).parent().find('input[name=links]').length;
+                        if (num > 1) {
+                            $(e.currentTarget).parent().find('input[name=links]:last').remove();
+                        }
+                    }
+                    return false;
+                },
+                editModal(){
+                    $('.ui.edit.modal')
+                        .modal('show')
+                    ;
+                },
+                deleteProfile(){
+                    let url = "{{ url_for('api.deleteprofile', profile_id=profile.id) }}";
+                    let redirect_url = "{{ url_for('account.professional', _external=True) }}";
+                    let data = new FormData();
+                    data.set('csrf_token', "{{ csrf_token()  }}");
+                    swal({
+                        title: "Are you sure?",
+                        text: "This will delete the Whole Profile.\nOnce deleted, you will not be able to recover this item",
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true,
+                    })
+                        .then((willDelete) => {
+                            if (willDelete) {
+                                $('.ui.wait.basic.modal')
+                                    .modal({'closable': false})
+                                    .modal('show')
+                                ;
+                                axios.post(url, data)
+                                    .then(function (response) {
+                                        if (response.data.status === 1) {
+                                            location.href = redirect_url;
+                                        }
+                                    })
+                                    .catch(function (error) {
+
+                                    })
+                                    .finally(function () {
+                                    });
+                            } else {
+                                return false;
+                            }
+                        });
+                },
+                submitProfile(){
+                    $('.ui.edit.modal')
+                        .modal('hide')
+                    ;
+                    $('.ui.wait.basic.modal')
+                        .modal({'closable': false})
+                        .modal('show')
+                    ;
+                    let form = $('.ui.edit.modal form')[0];
+                    let form_type = 'something_else';
+                    let data = new FormData(form);
+                    axios.post($(form).attr('action'), data)
+                        .then(function (response) {
+                            if (response.data.status === 1) {
+                                app.profile = response.data.profile;
+                                $('.ui.wait.basic.modal')
+                                    .modal('hide')
+                                ;
+                            }
+                        })
+                        .catch(function (error) {
+
+                        })
+                        .finally(function () {
+                        });
+                    return false;
+                }
+            },
+            delimiters: ['[[', ']]']
+        })
+    </script>
+{% endblock %}

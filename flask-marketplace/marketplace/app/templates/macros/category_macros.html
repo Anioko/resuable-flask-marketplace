@@ -1,0 +1,5 @@
+	{% macro category_wid(category) %}
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('marketplace.category', category_id=category.id, category_name=category.name) }}">{{ category.name }}</a>
+        </li>	
+		{% endmacro %}

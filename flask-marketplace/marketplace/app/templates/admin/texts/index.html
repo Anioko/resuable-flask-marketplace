@@ -1,0 +1,64 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/page_macros.html' as page %}
+
+{% block content %}
+    <div class="ui stackable grid container">
+        <div class="four wide column">
+            {% include 'admin/partials/nav.html' %}
+        </div>
+        <div class="twelve wide tablet twelve wide computer centered column">
+            <a class="ui basic compact button" href="{{ url_for('admin.index') }}">
+                <i class="caret left icon"></i>
+                Back to dashboard
+            </a>
+            <h2 class="ui header">
+                Miscellaneous Texts
+                <div class="sub header">
+                    View and manage Miscellaneous Texts
+                </div>
+            </h2>
+            <form method="POST" action="{{ url_for('admin.texts') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <div class="field">
+                    <label for="editor_name">Text Type : </label>
+                    <select id="editor_name" name="editor_name" class="select2">
+                        <option value="contact">Contact Us</option>
+                        <option value="about">About</option>
+                        <option value="privacy">Privacy</option>
+                        <option value="terms">Terms</option>
+                        <option value="faq">FAQ</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="editor">Content : </label>
+                    <textarea id="editor" contenteditable="true" style="min-height: 300px" name="edit_data">
+
+                </textarea>
+                </div>
+                <br>
+                <button class="ui right floated button" type="submit">
+                    Save
+                </button>
+            </form>
+
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script>
+        $('select[name=editor_name]').change(function () {
+            $.get("{{ url_for('admin.text', text_type='change_type') }}".replace('change_type', $(this).val()), {}, function (res) {
+                if (res.status === 1){
+                    CKEDITOR.instances.editor.setData(res.editable_html_obj.value);
+                }
+            });
+        });
+    </script>
+    <script src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            CKEDITOR.replace('editor');
+            $('select[name=editor_name]').change();
+        })
+    </script>
+{% endblock %}

@@ -1,0 +1,181 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/product_macros.html' as products_macros %}
+{% import 'macros/form_macros.html' as f %}
+
+{% block custom_head_tags %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='slick/slick.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='slick/slick-theme.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lightbox/css/lightbox.min.css') }}">
+    <style>
+        .slick-prev:before, .slick-next:before {
+            color: black;
+        }
+        .slick-prev {
+            left: 0px;
+            z-index: 100;
+        }
+        .slick-next {
+            right: 0px;
+            z-index: 100;
+        }
+    </style>
+
+{% endblock %}
+{% block content %}
+    <div class="ui stackable centered grid marketplace container">
+        <div class="sixteen wide column">
+            <h1 class="ui header">
+                Market Place
+            </h1>
+            <div class="ui four steps">
+                <div class="completed step">
+                    <i class="tasks icon"></i>
+                    <div class="content">
+                        <div class="title">Items</div>
+                        <div class="description">Confirm Order Items</div>
+                    </div>
+                </div>
+                <div class="completed step">
+                    <i class="truck icon"></i>
+                    <div class="content">
+                        <div class="title">Shipping</div>
+                        <div class="description">Choose your shipping options</div>
+                    </div>
+                </div>
+                <div class="active step">
+                    <i class="payment icon"></i>
+                    <div class="content">
+                        <div class="title">Billing</div>
+                        <div class="description">Enter billing information</div>
+                    </div>
+                </div>
+                <div class="disabled step">
+                    <i class="info icon"></i>
+                    <div class="content">
+                        <div class="title">Order Details</div>
+                    </div>
+                </div>
+            </div>
+            {% set products = cart.products() %}
+            <br>
+            <br>
+            <div class="ui stackable grid">
+                <div class="ten wide column">
+                    <h2 class="ui header">
+                        Payment
+                    </h2>
+                    <h3>
+                        You'll be Charged : {{ cart.price_paid() }}{{ cart.currency.symbol }} net.
+                    </h3>
+
+                    <hr>
+                    <form action="{{ url_for('marketplace.order', step=4) }}" method="post" id="payment-form" class="ui form">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <div class="form-row field">
+                            <label for="card-element">
+                                Credit or debit card
+                            </label>
+                            <div id="card-element">
+                                <!-- A Stripe Element will be inserted here. -->
+                            </div>
+
+                            <!-- Used to display Element errors. -->
+                            <div id="card-errors" role="alert"></div>
+                        </div>
+                    </form>
+                    <hr>
+                    <div class="ui centered grid">
+                        <a class="ui orange button" href="javascript:$('#go-to-step2').submit();"><i class="tasks icon"></i>Go Back</a>
+                        <a class="ui green button" href="javascript:payNow()"><i class="credit card icon"></i>Submit Payment</a>
+                    </div>
+                </div>
+                <div class="six wide column">
+                    <div class="ui raised segment">
+                        <h2 class="ui header">
+                            Order Summary
+                            <i class="ui right floated indigo shopping cart icon"></i>
+                        </h2>
+
+                        <hr>
+                        <div id="summary-table">
+                            {{ products_macros.order_summary(cart, step) }}
+                        </div>
+                        <br>
+                        <br>
+                        <br>
+                        <div class="ui centered very padded grid">
+                            <a class="ui orange button" href="javascript:$('#go-to-step2').submit();"><i class="tasks icon"></i>Go Back</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form id="go-to-step2" method="POST" action="{{ url_for('marketplace.order', step=2) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    </form>
+    <form id="go-to-step4" method="POST" action="{{ url_for('marketplace.order', step=4) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    </form>
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript" src="{{ url_for('static', filename='slick/slick.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='lightbox/js/lightbox.min.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            $('.slick').slick({
+                infinite: false,
+            });
+        });
+
+    </script>
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        var stripe = Stripe('{{ stripe_public }}');
+        var elements = stripe.elements();
+        var style = {
+            base: {
+                // Add your base input styles here. For example:
+                fontSize: '16px',
+                color: '#32325d',
+            },
+        };
+        // Create an instance of the card Element.
+        var card = elements.create('card', {style: style});
+
+        // Add an instance of the card Element into the `card-element` <div>.
+        card.mount('#card-element');
+
+        var form = document.getElementById('payment-form');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            payNow()
+        });
+        function payNow(){
+            stripe.createToken(card).then(function(result) {
+                if (result.error) {
+                    // Inform the customer that there was an error.
+                    var errorElement = document.getElementById('card-errors');
+                    errorElement.textContent = result.error.message;
+                } else {
+                    // Send the token to your server.
+                    stripeTokenHandler(result.token);
+                }
+            });
+        }
+        function stripeTokenHandler(token) {
+            // Insert the token ID into the form so it gets submitted to the server
+            var form = document.getElementById('payment-form');
+            var hiddenInput = document.createElement('input');
+            hiddenInput.setAttribute('type', 'hidden');
+            hiddenInput.setAttribute('name', 'stripeToken');
+            hiddenInput.setAttribute('value', token.id);
+            form.appendChild(hiddenInput);
+
+            // Submit the form
+            form.submit();
+        }
+    </script>
+{% endblock %}

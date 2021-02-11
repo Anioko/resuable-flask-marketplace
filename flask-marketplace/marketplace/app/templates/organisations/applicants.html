@@ -1,0 +1,73 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+    <div class="ui two column centered grid">
+        <div class="column">
+            <h1>Position Applicants</h1>
+        </div>
+    </div>
+    <div class="ui grid">
+        <div class="five wide column"></div>
+        <div class="six wide column">
+            <div class="ui cards">
+                {% for user in applicants %}
+                    <div class="ui very padded segment">
+                        <div class="ui relaxed divided items">
+                            <div class="item">
+                                <div class="ui small image">
+                                    {% for photo in user.photos %}
+                                        <img src="{{ photo.image_url }}">
+                                    {% endfor %}
+                                </div>
+                                <div class="content">
+                                    <a class="header">{{ user.first_name }} {{ user.last_name }}</a>
+                                    <!---full name goes here --->
+                                    <div class="meta"><a>{{ user.profession }}</a></div>
+                                    <div class="meta"><a>Year Joined {{ user.created_at }}</a></div>
+                                    <!----year joined goes here---->
+                                    <div class="meta"><a> {{ user.city }}</a></div>
+                                    <div class="meta"><a> {{ user.state }}</a></div>
+                                    <div class="meta"><a> {{ user.country }}</a></div>
+                                    <div class="description"> <!---Profile description or summary goes here--->
+                                        {{ user.summary_text }}
+                                    </div>
+                                    {% if user == current_user %}
+                                    {% elif not current_user.is_following(user) %}
+                                        <div class="extra">
+                                        <div class="ui button"><a
+                                                href="{{ url_for('main.follow', id=user.id, full_name=user.full_name) }}">Follow</a>
+                                        </div>
+                                    {% else %}
+                                        <div class="ui button">
+                                            <a href="{{ url_for('main.unfollow', id=user.id, full_name=user.full_name) }}">Unfollow</a>
+
+                                        </div>
+                                    {% endif %}
+                                    </div>
+                                </div>
+                                <div class="content"
+                                     style="margin-left: 35px;border-LEFT: 1px solid rgba(0, 0, 0, 0.5);padding-left: 10px">
+                                    <a class="header">Skills</a> <!---full name goes here --->
+                                    <div class="meta">- <a>{{ profiles[user.id].required_skill_one }}</a></div>
+                                    <div class="meta">- <a>{{ profiles[user.id].required_skill_two }}</a></div>
+                                    <div class="meta">- <a>{{ profiles[user.id].required_skill_three }}</a></div>
+                                    <div class="meta">- <a>{{ profiles[user.id].required_skill_four }}</a></div>
+                                    <div class="meta">- <a>{{ profiles[user.id].required_skill_five }}</a></div>
+                                    <div class="meta">- <a>{{ profiles[user.id].required_skill_six }}</a></div>
+                                    <div class="meta">- <a>{{ profiles[user.id].required_skill_seven }}</a></div>
+                                    <div class="meta">- <a>{{ profiles[user.id].required_skill_eight }}</a></div>
+                                    <div class="meta">- <a>{{ profiles[user.id].required_skill_nine }}</a></div>
+                                    <div class="meta">- <a>{{ profiles[user.id].required_skill_ten }}</a></div>
+                                    <div class="extra">
+                                        <div class="ui button"><a target="_blank"
+                                                                  href="{{ profiles[user.id].image_url }}">CV</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

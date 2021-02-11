@@ -1,0 +1,194 @@
+.floating.action {
+    position: fixed;
+    bottom: 5%;
+    right: 5%;
+}
+.sidebar .card {
+    width: auto !important;
+}
+.sidebar .card:first-child {
+    margin-top: 80px;
+}
+#example3, .full-min {
+    min-height: 100vh;
+}
+.right.aligned {
+    text-align: right;
+}
+.left.aligned {
+    text-align: left;
+}
+.right.floated.ui {
+    float: right !important;
+}
+.messages-container {
+    max-height: 70vh;
+    min-height: 60vh;
+    overflow-y: scroll;
+    overflow-x: visible;
+    padding: 10px 1px;
+}
+.message-sub-container {
+    width: 100% !important;
+    overflow: auto !important;
+    height:auto !important;
+}
+.message-text-container {
+    border-radius: 1.3em !important;
+    max-width: 90% !important;
+    width: fit-content !important;
+    margin:2px 5px !important;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+}
+.message-text-container.right {
+    border-top-right-radius: 0 !important;
+}
+.message-text-container.left {
+    border-top-left-radius: 0 !important;
+}
+.extra.content.message {
+    border-radius: 1.3em !important;
+}
+.extra.content.left.message {
+    background-color:#f1f0f0 !important;
+    color:black !important;
+    border-top-left-radius: 0 !important;
+}
+.extra.content.right.message {
+    background:#62AAAF !important;
+    color:white !important;
+    border-top-right-radius: 0 !important;
+    text-align: right !important;
+}
+.extra.content .ui.header {
+    width: calc( 100% - 50px );
+}
+.extra.content .ui.header .post-head {
+    width: 100%;
+}
+.message-text-container.right .message-date {
+    text-align: right !important;
+}
+.message-date {
+    margin-bottom: 5px;font-size: smaller;color: #999;
+}
+.container-fluid {
+    margin-left: 1em!important;
+    margin-right: 1em!important;
+    display: block;
+    max-width: 100%!important
+}
+.messages-sentinel {
+    position: relative;
+    text-align: center;
+}
+.navigation .floating.ui.blue.label{
+    background: transparent;
+    border-color: transparent !important;
+    padding: 0 !important;
+}
+.navigation .floating.ui.blue.label.active {
+    background-color: #2185d0!important;
+    border-color: #2185d0!important;
+    padding: .3em .78571429em !important;
+}
+.conversation-holder .ui.floating.label{
+    top: 0 !important;
+}
+
+.conversation-holder {
+    position: relative;
+    cursor: pointer;
+}
+.footer .ui.link.list .item, .ui.link.list .item a:not(.ui), .ui.link.list a.item{
+    color:white !important;;
+}
+.footer {
+    min-height: 200px;
+    background: #62AAAF;
+}
+.footer-img {
+    width: 200px;
+    height: 115px;
+    /*margin-bottom: -20px;*/
+}
+.min-container {
+    min-height: calc( 100vh - 330px );
+}
+/*.custom-profession, .recruiter {*/
+/*display: none;*/
+/*}*/
+
+.message-date.error {
+    color: red;
+}
+.message-date.warning {
+    color: darkorange;
+}
+
+.ui.mini.image, .ui.mini.images .image, .ui.mini.images img, .ui.mini.images svg {
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+}
+.very-small {
+    font-size: 12px;
+    display: block;
+    margin-top: -5px;
+}
+.rounded {
+    border-radius: 50% !important;
+    border: 1px solid #ddd;
+    width: 35px !important;
+    height: 35px !important;
+}
+.very-small a {
+        color:#616770 !important;
+}
+.very-small a:hover {
+    text-decoration: underline;
+}
+h2.ui.header {
+    font-size: 1.4rem;
+}
+.ui.card>.extra a:not(.ui), .ui.cards>.card>.extra a:not(.ui) {
+    color: #4183c4;
+}
+.ui.comments .comment {
+    padding-left: 5px;
+}
+.content .description {
+    white-space: pre-line;
+}
+
+@media only screen and (max-width: 767px) {
+    .ui.image img, .ui.image svg {
+        max-height: 250px;
+    }
+}
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #e1e4e5;
+    margin: 24px 0;
+    padding: 0;
+    width: 100%;
+}
+.ui.comments {
+    max-width: none !important;
+}
+.marketplace.container-fluid {
+    margin-top:4.85714286em
+}
+.ui.inverted.indigo.menu, .ui.inverted.menu .indigo.active.item {
+    background: indigo;
+}
+.no-border-top td {
+    border-top: none !important;
+}
+.mobile.only .vertical.menu {
+    z-index: 1010;
+}

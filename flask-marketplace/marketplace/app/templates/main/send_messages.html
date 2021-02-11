@@ -1,0 +1,364 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+{% import 'macros/job_macros.html' as job_wid %}
+{% import 'macros/follow_macros.html' as follow %}
+
+{% block custom_head_tags %}
+    <link rel="stylesheet" href="{{url_for('static', filename='css/emojionearea.min.css')}}"/>
+{% endblock %}
+{% block content %}
+    <div class="ui grid container-fluid" id="example3">
+        <div class="eight wide computer sixteen wide mobile centered column">
+            {% set flashes = {
+		'error':   get_flashed_messages(category_filter=['form-error']),
+		'warning': get_flashed_messages(category_filter=['form-check-email']),
+		'info':    get_flashed_messages(category_filter=['form-info']),
+		'success': get_flashed_messages(category_filter=['form-success'])
+		} %}
+
+            <div class="ui grid">
+                <div class="computer only row">
+                    <div class="left ui rail">
+                        <p></p>
+                        <div class="ui sticky">
+                            <h3 class="ui header">Colleagues to follow</h3>
+                            <div class="ui divided items">
+                                {% for user in follow_lists %}
+                                    {{follow.follow_wid(user, current_user)}}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="right ui right rail">
+                        <div class="ui sticky">
+                            <div class="ui cards">
+                                {% for job in jobs %}
+                                    {{ job_wid.job_wid(job) }}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ui grid">
+                <div class="mobile only tablet only row">
+                    <br>
+                </div>
+            </div>
+            {#            <div class="col-md-2" id="chatApp">#}
+            {#                <div class="panel panel-default ffside">#}
+            {#                    <div class="panel-heading">Users</div>#}
+            {#                    <div class="panel-body" style="padding:0px;">#}
+            {#                        <ul class="list-group">#}
+            {#                            <li class="list-group-item" v-for="chatList in chatLists" style="cursor: pointer;" @click="chat(chatList)">[[ chatList.name ]]  <i class="fa fa-circle pull-right" v-bind:class="{'online': (chatList.online=='Y')}"></i>  <span class="badge" v-if="chatList.msgCount !=0">[[ chatList.msgCount ]]</span></li>#}
+            {#                            <li class="list-group-item" v-if="socketConnected.status == false">[[ socketConnected.msg ]]</li>#}
+            {#                        </ul>#}
+            {#                    </div>#}
+            {#                </div>#}
+            {#            </div>#}
+
+            <div class="ui segment" style="margin: 1em" id="app">
+                <h3 style="border-bottom: 1px solid gainsboro;">Conversation With <a
+                        href="{{ url_for('main.user', id=recipient.id, full_name=recipient.full_name) }}">{{ recipient.full_name }}</a>
+                    <span class="right floated ui">
+                        <i v-if="recipient_online" class="circle green icon"></i>
+                        <i v-else="recipient_online" class="circle icon"></i>
+                    </span>
+                </h3>
+                <div class="messages-container" id="conversation-holder">
+                    <div v-if="paginate" class="messages-sentinel">
+                        <div class="center aligned centered ui">
+                            <button v-on:click="loadItems" class="ui primary button" v-if="! all_loaded">Previous Messages</button>
+                        </div>
+                    </div>
+                    <div v-for="message in messages.items" class="message-sub-container">
+                        <div :class="renderMessageTextClass(message)">
+                            <div :class="renderExtraTextClass(message)">
+                                <p :class="renderPClass(message)" v-html="renderMessage(message.body)">
+                                </p>
+                            </div>
+                            <p :class="renderMessageTime(message)">[[ formatted(message.timestamp) ]]</p>
+                        </div>
+                    </div>
+                    <div v-if="messages.items.length == 0" style="margin-top: 30vh">
+                        <div class="ui one column stackable center aligned middle aligned page grid">
+                            <div class="column twelve wide">
+                                <i class="icon huge hand paper"></i>
+                            </div>
+                            <div class="column twelve wide">
+                                Say Hello To {{ recipient.full_name }} to start the conversation
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <form  @submit="submitForm" class="ui form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <div class="inline fields">
+                        <div class="field" style="width: calc( 100% - 60px );">
+                            {#                            <input id="message" name="message" placeholder="Message" required="required" type="text" v-model="body" style="width: 100%">#}
+                            <input id="message" name="message" placeholder="Message"  type="text" v-model="body">
+                        </div>
+                        <div class="field  ">
+                            <button id="submit" name="submit" type="submit" class="ui icon blue button">
+                                <i class="icon send"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script>
+        $('.ui.sticky')
+            .sticky({
+                offset: 50,
+                bottomOffset: 50,
+                context: '#example3'
+            })
+        ;
+    </script>
+    <script>
+        $(document).ready(function () {
+
+        });
+    </script>
+    {#    <script src="{{ url_for('static', filename='messaging/chat.js') }}" charset="utf-8"></script>#}
+
+    {#    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js"></script>#}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-moment@4.0.0/dist/vue-moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/emojione@3.1.2/lib/js/emojione.min.js"></script>
+    <script src="{{ url_for('static', filename='js/emojionearea.min.js')}}"></script>
+
+    <script>
+        var app = new Vue({
+            el: '#app',
+            delimiters: ['[[',']]'],
+            data: {
+                user_id: USER_ID,
+                sender_id: '{{current_user.id}}',
+                socketConnected : {
+                    status: false,
+                    msg: 'Connecting Please Wait...'
+                },
+                bArr: {},
+                messages: {items: []},
+                body: '',
+                paginate: false,
+                all_loaded: false,
+                page: 1,
+                first_page_last: null,
+                toSocketId: '{{ recipient.socket_id }}',
+                toId: '{{ recipient.id }}',
+                recipient_online: false,
+                now: new Date(),
+                emoji_area: null
+            },
+            mounted: function(){
+                if('{{ recipient.online }}' === 'Y'){
+                    this.recipient_online = true;
+                }
+                let app = this;
+                axios.get('/api/messages/'+app.toId+'/'+app.page)
+                    .then(function (response) {
+                        if (response.data.status === 1) {
+                            app.messages = response.data.messages;
+                            app.now = new Date(response.data.now);
+                            app.page += 1;
+                            if (app.messages.items.length > 1){
+                                app.first_page_last = app.messages.items[app.messages.items.length - 1].id
+                            }
+                        }
+                    })
+                    .catch(function (error) {
+                        // handle error
+                        {#console.log(error);#}
+                    })
+                    .finally(function () {
+                        app.scrollBottom();
+                        let last_page = parseInt(Math.ceil(app.messages.total/app.messages.per_page));
+                        if (last_page === app.messages.page || app.messages.items.length == 0){
+                            app.all_loaded = true
+                        }
+                    });
+                socket.on('message_received', function(data) {
+                    if (parseInt(data.message.user_id) === parseInt(app.toId)){
+                        app.messages.items.push(data.message);
+                        app.scrollBottom();
+                    }
+                });
+                socket.on('new_message_sent', function (data) {
+                    if (parseInt(data.message.user_id) === parseInt(app.sender_id) && data.message.recipient_id === app.toId){
+                        app.messages.items.push(data.message);
+                        app.scrollBottom();
+                    }
+                });
+                socket.on('user_disconnected', function(data) {
+                    if (parseInt(data.user_id) === parseInt(app.toId)){
+                        app.recipient_online = false;
+                        app.toSocketId = data.socket_id;
+                    }
+                });
+                socket.on('user_connected', function(data) {
+                    if (parseInt(data.user_id) === parseInt(app.toId)){
+                        app.recipient_online = true;
+                        app.toSocketId = data.socket_id;
+                        {#socket.disconnect()#}
+                        socket.connect()
+                    }
+                });
+
+                $(document).ready(function() {
+                    app.emoji_area = $('#message').emojioneArea({
+                        events: {
+                            keyup: function (editor, event) {
+                                if (event.keyCode == 13){
+                                    $('#message').val(this.getText());
+                                    setTimeout(function () {
+                                        $('#submit').click();
+                                    }, 500);
+
+                                }
+                            },
+                        }
+                    });
+                });
+
+            },
+            methods: {
+                loadItems(e){
+                    if(! this.all_loaded ) {
+                        axios.get('/api/messages/{{ recipient.id }}/'+parseInt(app.messages.page+1), {params: {'first_page_last': app.first_page_last}})
+                            .then(function (response) {
+                                if (response.data.status === 1) {
+                                    let messages = response.data.messages;
+                                    app.messages.items = messages.items.concat(app.messages.items);
+                                    app.messages.page += 1;
+                                }
+                            })
+                            .catch(function (error) {
+                                // handle error
+                                console.log(error);
+                            })
+                            .finally(function () {
+                                let last_page = parseInt(Math.ceil(app.messages.total/app.messages.per_page));
+                                if (last_page == app.messages.page){
+                                    app.all_loaded = true
+                                }
+                            });
+                    }
+                    e.preventDefault()
+                },
+                renderMessageTime(message){
+                    if(message.timestamp === 'sending..'){
+                        return "message-date warning";
+                    }
+                    if(message.timestamp === 'failed to send!') {
+                        return "message-date error";
+                    }
+                    return "message-date";
+                },
+                renderMessageTextClass(message) {
+                    if(message.user_id == {{ current_user.id }})
+                        return 'message-text-container right floated ui card';
+                    else
+                        return'message-text-container left floated ui card' ;
+                },
+                renderExtraTextClass(message) {
+                    if(message.user_id == {{ current_user.id }})
+                        return 'extra content right message';
+                    else
+                        return 'extra content left message' ;
+                },
+                renderPClass(message){
+                    if(message.user_id == {{ current_user.id }})
+                        return 'ui right aligned';
+                    else
+                        return 'ui left aligned' ;
+
+                },
+                scrollBottom(){
+                    let app =this;
+                    $(document).ready(function(){
+                        $("#conversation-holder").animate({scrollTop: $('#conversation-holder').prop("scrollHeight")}, 1000);
+                    });
+                    app.paginate = true;
+                },
+                utc(d){
+                    d.setTime( d.getTime() - d.getTimezoneOffset()*60*1000 );
+                    return d;
+                },
+                formatted(val){
+                    let res = val;
+                    let diff = Math.abs(moment(app.utc(new Date())).diff(moment(app.utc(new Date(val))), 'days'));
+                    if (diff <= 1){
+                        res = moment(app.utc(new Date(val))).fromNow();
+                    }
+                    else {
+                        res = moment(app.utc(new Date(val))).format("LLLL");
+                    }
+                    if (res === "Invalid date"){
+                        res = val;
+                    }
+                    return res;
+                },
+                renderMessage(message){
+                    return emojione.toImage(message);
+                },
+                submitForm: function (e) {
+                    let app = this;
+                    let body = $('#message').val();
+                    let vid = 0;
+                    if (app.messages.items.length > 0)
+                        vid = app.messages.items[app.messages.items.length-1].id + 1;
+                    else
+                        vid = 1;
+                    app.messages.items.push({
+                        id: vid,
+                        user_id: {{ current_user.id }},
+                        body: body,
+                        timestamp: 'sending ...'
+                    });
+                    app.body = '';
+                    $('#message').val('');
+                    $('#message').next('div.emojionearea').find('.emojionearea-editor').html('');
+                    app.scrollBottom();
+                    setTimeout(function () {
+                        let data = new FormData();
+                        data.set('csrf_token', "{{ csrf_token()  }}");
+                        data.set('message', body);
+                        axios.post('/api/messages/{{ recipient.id }}', data )
+                            .then(function (response) {
+                                if (response.data.status === 1) {
+                                    app.messages.items = app.messages.items.filter(m => m.id !== vid);
+                                    app.messages.items.push(response.data.message);
+                                    socket.emit('message_sent', {toSocketId: app.toSocketId, message: response.data.message});
+                                }
+                            })
+                            .catch(function (error) {
+                                // handle error
+                                app.messages.items.filter(m => m.id === vid)[0].timestamp = "failed to send!";
+                                app.body = '';
+                                $('#message').val('');
+                                $('#message').next('div.emojionearea').find('.emojionearea-editor').html('');
+                            })
+                            .finally(function () {
+                                app.scrollBottom();
+                            });
+                    }, 100);
+                    e.preventDefault()
+                },
+                prettyDate(){
+
+                }
+            }
+        });
+    </script>
+    <script>
+
+
+    </script>
+{% endblock %}

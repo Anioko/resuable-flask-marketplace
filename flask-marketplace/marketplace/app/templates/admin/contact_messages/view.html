@@ -1,0 +1,66 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+    <div class="ui stackable grid container">
+        <div class="sixteen wide tablet sixteen wide computer centered column">
+            <a class="ui basic compact button" href="{{ url_for('admin.contact_messages') }}">
+                <i class="caret left icon"></i>
+                Back to Contact Messages
+            </a>
+            <h2 class="ui header">
+                View Contact Message
+                <div class="sub header">
+                    View Contact Message Details
+                </div>
+            </h2>
+            <div style="overflow-x: scroll;">
+                <table class="ui searchable sortable unstackable selectable celled table">
+                    {% if contact_message.user %}
+                        <tr>
+                            <th>User: </th>
+                            <td>{{ contact_message.user.full_name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Name: </th>
+                            <td>{{ contact_message.user.full_name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Email: </th>
+                            <td>{{ contact_message.user.email }}</td>
+                        </tr>
+                        <tr>
+                            <th>Text </th>
+                            <td>{{ contact_message.text }}</td>
+                        </tr>
+                        <tr>
+                            <th>Created At</th>
+                            <td>{{ contact_message.created_at }}</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <th>User: </th>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <th>Name: </th>
+                            <td>{{ contact_message.name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Email: </th>
+                            <td>{{ contact_message.email }}</td>
+                        </tr>
+                        <tr>
+                            <th>Text </th>
+                            <td>{{ contact_message.text }}</td>
+                        </tr>
+                        <tr>
+                            <th>Created At</th>
+                            <td>{{ contact_message.created_at }}</td>
+                        </tr>
+                    {% endif %}
+
+                </table>
+            </div>
+
+        </div>
+{% endblock %}

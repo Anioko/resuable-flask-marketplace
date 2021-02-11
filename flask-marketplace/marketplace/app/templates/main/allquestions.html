@@ -1,0 +1,20 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/allquestion_macros.html' as question_wid %}
+
+{% block content %}
+    <div class="ui two column centered grid">
+        <div class="column">
+            <h1>Available questions</h1>
+        </div>
+    </div>
+    <div class="ui grid">
+        <div class="four wide column"></div>
+        <div class="eight wide column">
+            <div class="ui cards">
+                {% for question in appts %}
+                    {{ question_wid.question_wid(question) }}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

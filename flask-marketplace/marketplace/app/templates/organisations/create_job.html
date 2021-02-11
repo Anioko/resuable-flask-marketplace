@@ -1,0 +1,89 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+{% import 'macros/check_password.html' as check %}
+
+
+{% block scripts %}
+{% endblock %}
+
+{% block content %}
+    <div class="ui stackable centered grid container">
+        <div class="twelve wide column">
+                <a class="ui basic compact button" href="{{ url_for('organisations.list_positions', org_id=org.id) }}">
+                <i class="caret left icon"></i>
+                Back to "{{ org.org_name }}" Jobs' List
+            </a>
+            <h2 class="ui header">
+                Create a new vacancy
+                <div class="sub header">Set up your account</div>
+            </h2>
+
+            {% set flashes = {
+                'error':   get_flashed_messages(category_filter=['form-error']),
+                'warning': get_flashed_messages(category_filter=['form-check-email']),
+                'info':    get_flashed_messages(category_filter=['form-info']),
+                'success': get_flashed_messages(category_filter=['form-success'])
+            } %}
+
+            {{ f.begin_form(form, flashes) }}
+
+            <div class="field">
+                {{ f.render_form_field(form.position_title) }}
+            </div>
+            <div class="three fields">
+                {{ f.render_form_field(form.position_city) }}
+                {{ f.render_form_field(form.position_state) }}
+                {{ f.render_form_field(form.position_country) }}
+            </div>
+            <div class="field">
+                {{ f.render_form_field(form.description) }}
+            </div>
+            <div class="two fields">
+                {{ f.render_form_field(form.end_date) }}
+                {{ f.render_form_field(form.logo) }}
+            </div>
+            <div class="field">
+                {{ f.render_form_field(form.required_skill_one) }}
+            </div>
+            <div class="field">
+                {{ f.render_form_field(form.required_skill_two) }}
+            </div>
+            <div class="field">
+                {{ f.render_form_field(form.required_skill_three) }}
+            </div>
+            <div class="field">
+                {{ f.render_form_field(form.required_skill_four) }}
+            </div>
+            <div class="field">
+                {{ f.render_form_field(form.required_skill_five) }}
+            </div>
+            <div class="field">
+                {{ f.render_form_field(form.required_skill_six) }}
+            </div>
+            <div class="field">
+                {{ f.render_form_field(form.required_skill_seven) }}
+            </div>
+            <div class="field">
+                {{ f.render_form_field(form.required_skill_eight) }}
+            </div>
+            <div class="field">
+                {{ f.render_form_field(form.required_skill_nine) }}
+            </div>
+            <div class="field">
+                {{ f.render_form_field(form.required_skill_ten) }}
+            </div>
+
+            {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
+            {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
+            {{ f.form_message(flashes['info'], header='Information', class='info') }}
+            {{ f.form_message(flashes['success'], header='Success!', class='success') }}
+
+            {% for field in form | selectattr('type', 'equalto', 'SubmitField') %}
+                {{ f.render_form_field(field) }}
+            {% endfor %}
+
+            {{ f.end_form() }}
+
+        </div>
+    </div>
+{% endblock %}

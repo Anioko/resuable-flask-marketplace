@@ -1,0 +1,212 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="max-age=604800" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description"
+          content="{% for setting in settings %}{{setting.site_name}}{% endfor %} : {{ product_instance.name }}, {{ product_instance.description }}">
+<meta name="author" content="{% for setting in settings %}{{setting.site_name}}{% endfor %}{ setting.site_name }}">
+<meta name="og:title" content="{% for setting in settings %}{{setting.site_name}}{% endfor %} - {{ product_instance.name }}"/>
+<meta name="og:type" content="website"/>
+<meta name="og:url" content="{{ url_for('marketplace.product', product_id=product_instance.id, product_name=product_instance.name,_external=True) }}"/>
+    {% if json_load(product_instance.images) | length %}
+        <meta property="og:image"              content="{{ url_for('_uploads.uploaded_file', setname='images',
+                           filename=json_load(product_instance.images)[0] , _external=True) }}" />
+    {% endif %}
+<meta name="og:site_name" content="{% for setting in settings %}{{setting.site_name}}{% endfor %} : {{ product_instance.name }}, {{ product_instance.description }}"/>
+<meta name="og:description"
+          content="{% for setting in settings %}{{setting.site_name}}{% endfor %} : {{ product_instance.name }}, {{ product_instance.description }}"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:site" content="@{% for setting in settings %}{{setting.site_name}}{% endfor %}"/>
+<meta name="twitter:creator" content="@anioko1"/>
+<meta property="og:url" content="{{ url_for('marketplace.product', product_id=product_instance.id, product_name=product_instance.name,_external=True) }}"/>
+<meta property="og:title" content="{% for setting in settings %}{{setting.site_name}}{% endfor %} - {{ product_instance.name }}"/>
+<meta property="og:description"
+          content="{% for setting in settings %}{{setting.site_name}}{% endfor %} : {{ product_instance.name }}, {{ product_instance.description }}"/>
+    {% if json_load(product_instance.images) | length %}
+        <meta property="og:image"              content="{{ url_for('_uploads.uploaded_file', setname='images',
+                           filename=json_load(product_instance.images)[0] , _external=True) }}" />
+    {% endif %}
+
+<link href="{{ url_for('static', filename='frontend/images/favicon.ico') }}" rel="shortcut icon" type="image/x-icon">
+
+<!-- jQuery -->
+<script src="{{ url_for('static', filename='frontend/js/jquery-2.0.0.min.js') }}" type="text/javascript"></script>
+
+<!-- Bootstrap4 files-->
+<script src="{{ url_for('static', filename='frontend/js/bootstrap.bundle.min.js') }}" type="text/javascript"></script>
+<link href="{{ url_for('static', filename='frontend/css/bootstrap.css') }}" rel="stylesheet" type="text/css"/>
+
+<!-- Font awesome 5 -->
+<link href="{{ url_for('static', filename='frontend/fonts/fontawesome/css/all.min.css') }}" type="text/css" rel="stylesheet">
+
+<!-- custom style -->
+<link href="{{ url_for('static', filename='frontend/css/ui.css') }}" rel="stylesheet" type="text/css"/>
+<link href="{{ url_for('static', filename='frontend/css/responsive.css') }}" rel="stylesheet" media="only screen and (max-width: 1200px)" />
+
+<!-- custom javascript -->
+<script src="{{ url_for('static', filename='frontend/js/script.js') }}" type="text/javascript"></script>
+
+
+
+<script type="text/javascript">
+/// some script
+
+// jquery ready start
+$(document).ready(function() {
+	// jQuery code
+
+}); 
+// jquery end
+</script>
+{% for setting in settings %}
+{{setting.other_tracking_analytics_one|safe}}
+{{setting.other_tracking_analytics_two|safe}}
+{{setting.other_tracking_analytics_three|safe}}
+{{setting.other_tracking_analytics_four|safe}}
+{% endfor %}
+</head>
+
+<body>
+
+<header class="section-header">
+<section class="header-main">
+<div class="container">
+	<a href="http://bootstrap-ecommerce.com" class="brand-wrap"><img class="logo" src="../images/logo.png"></a>
+</div> <!-- container.// -->
+</section>
+</header> <!-- section-header.// -->
+
+
+<section class="section-content padding-y bg">
+<div class="container">
+<div class="card">
+	<div class="row no-gutters">
+		<aside class="col-md-6">
+<article class="gallery-wrap">
+<div class="img-big-wrap">
+{% for image in json_load(product_instance.images) %}
+  <div> <a href="#"><img src="{{ url_for('_uploads.uploaded_file', setname='images',
+                           filename=json_load(product_instance.images)[0] , _external=True) }}"></a></div> 
+						   {% endfor %}
+</div> <!-- slider-product_instance.// -->
+<!----comment out this to use in adding mutiple images for the product ---->
+<!---<div class="thumbs-wrap"> 
+  <a href="#" class="item-thumb"> <img src="bootstrap-ecommerce-html/images/items/12.jpg"></a>
+  <a href="#" class="item-thumb"> <img src="bootstrap-ecommerce-html/images/items/12-1.jpg"></a>
+  <a href="#" class="item-thumb"> <img src="bootstrap-ecommerce-html/images/items/12-2.jpg"></a>
+</div> <!-- slider-nav.// -->
+</article> <!-- gallery-wrap .end// -->
+		</aside>
+		<main class="col-md-6 border-left">
+<article class="content-body">
+
+<h2 class="title">{{ product_instance.name }}</h2>
+
+<!----comment out this to use to add ratings ---->
+<!----<div class="rating-wrap my-3">
+	<ul class="rating-stars">
+		<li style="width:80%" class="stars-active">
+			<i class="fa fa-star"></i> <i class="fa fa-star"></i>
+			<i class="fa fa-star"></i> <i class="fa fa-star"></i>
+			<i class="fa fa-star"></i>
+		</li>
+		<li>
+			<i class="fa fa-star"></i> <i class="fa fa-star"></i>
+			<i class="fa fa-star"></i> <i class="fa fa-star"></i>
+			<i class="fa fa-star"></i>
+		</li>
+	</ul>
+	<small class="label-rating text-muted">132 reviews</small>
+	<small class="label-rating text-success"> <i class="fa fa-clipboard-check"></i> 154 orders </small>
+</div> <!-- rating-wrap.// -->
+
+<div class="mb-3">
+	<var class="price h4">{{ product_instance.price_currency.symbol }}{{ product_instance.price }}</var>
+	<span class="text-muted">/per kg</span>
+</div> <!-- price-detail-wrap .// -->
+
+<p>{{ product_instance.description }}</p>
+
+
+<dl class="row">
+  <dt class="col-sm-3">Minimum Order Quantity</dt>
+  <dd class="col-sm-9">{{ product_instance.min_order_quantity }}</dd>
+
+  <dt class="col-sm-3">Weight</dt>
+  <dd class="col-sm-9">{{ product_instance.weight }}</dd>
+  
+  <dt class="col-sm-3">Delivery Lead Time in Days</dt>
+  <dd class="col-sm-9">{{ product_instance.lead_time }}</dd>
+ 
+  <dt class="col-sm-3">Delivery Time in Days</dt>
+  <dd class="col-sm-9">{{ product_instance.deliver_time }}</dd>
+  
+  <dt class="col-sm-3">Length | Height</dt>
+  <dd class="col-sm-9"> {% if product_instance.length %} 
+   {{ product_instance.length ~ "|" }} {{ product_instance.height }}  
+   {% else %} 
+   None sepecified ! 
+      {% endif %} 
+  </dd>
+
+
+  <dt class="col-sm-3">Seller</dt>
+  <dd class="col-sm-9">{{ product_instance.seller.full_name }}</dd> <!--add link to seller public profile -->
+  
+</dl>
+
+<hr>
+<!----comment out this to use to add quantity ---->
+	<div class="form-row">
+		<!---<div class="form-group col-md flex-grow-0">
+			<label>Quantity</label>
+			<div class="input-group mb-3 input-spinner">
+			  <div class="input-group-prepend">
+			    <button class="btn btn-light" type="button" id="button-plus"> + </button>
+			  </div>
+			  <input type="text" class="form-control" value="1">
+			  <div class="input-group-append">
+			    <button class="btn btn-light" type="button" id="button-minus"> − </button>
+			  </div>
+			</div>
+		</div> <!-- col.// -->
+		<!----comment out this to use to add size selection ---->
+		<!---<div class="form-group col-md">
+				<label>Select size</label>
+				<div class="mt-1">
+					<label class="custom-control custom-radio custom-control-inline">
+					  <input type="radio" name="select_size" checked="" class="custom-control-input">
+					  <div class="custom-control-label">Small</div>
+					</label>
+
+					<label class="custom-control custom-radio custom-control-inline">
+					  <input type="radio" name="select_size" class="custom-control-input">
+					  <div class="custom-control-label">Medium</div>
+					</label>
+
+					<label class="custom-control custom-radio custom-control-inline">
+					  <input type="radio" name="select_size" class="custom-control-input">
+					  <div class="custom-control-label">Large</div>
+					</label>
+
+				</div>
+		</div> <!-- col.// -->
+	</div> <!-- row.// -->
+{% if product_instance.availability %} 	
+	{% include 'partials/_chart_and_buy_buttons.html' %}
+
+                    {% else %}
+   <dt class="col-sm-3">Out of Stock</dt>
+                    {% endif %}
+</article> <!-- product-info-aside .// -->
+		</main> <!-- col.// -->
+	</div> <!-- row.// -->
+</div> <!-- card.// -->
+{% if request.blueprint == 'marketplace' %}
+    {% include 'marketplace/partials/scripts.html' %}
+{% endif %}
+</body>
+</html>

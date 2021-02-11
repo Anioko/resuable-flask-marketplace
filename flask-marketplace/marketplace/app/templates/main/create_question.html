@@ -1,0 +1,180 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+{% import 'macros/answer_macros.html' as traverse %}
+{% import 'macros/job_macros.html' as job_wid %}
+{% import 'macros/follow_macros.html' as follow %}
+
+{% block custom_head_tags %}
+    <style>
+        .display-none {
+            display: none;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="ui grid container" id="example3">
+        <div class="eight wide computer sixteen wide mobile centered column">
+
+            {% set flashes = {
+		'error':   get_flashed_messages(category_filter=['form-error']),
+		'warning': get_flashed_messages(category_filter=['form-check-email']),
+		'info':    get_flashed_messages(category_filter=['form-info']),
+		'success': get_flashed_messages(category_filter=['form-success'])
+		} %}
+
+            {{ f.begin_form(form, flashes) }}
+            <div class="ui grid">
+                <div class="computer only row">
+                    <div class="left ui rail">
+                        <p></p>
+                        <div class="ui sticky">
+                            <h3 class="ui header">Colleagues to follow</h3>
+                            <div class="ui divided items">
+                                {% for user in follow_lists %}
+                                    {{follow.follow_wid(user, current_user)}}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="right ui right rail">
+                        <div class="ui sticky">
+                            <div class="ui cards">
+                                {% for job in jobs %}
+                                    {{ job_wid.job_wid(job) }}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ui grid">
+                <div class="mobile only tablet only row">
+                    <br>
+                </div>
+            </div>
+            <div class="ui segment">
+                <div class="ui form">
+                    <form>
+                        <div class="field">
+                            {{ f.render_form_field(form.title) }}
+                        </div>
+                        <div class="field">
+                            {{ f.render_form_field(form.description) }}
+                        </div>
+
+                        {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
+                        {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
+                        {{ f.form_message(flashes['info'], header='Information', class='info') }}
+                        {{ f.form_message(flashes['success'], header='Success!', class='success') }}
+
+                        {% for field in form | selectattr('type', 'equalto', 'SubmitField') %}
+                            {{ f.render_form_field(field) }}
+                        {% endfor %}
+                    </form>
+                </div>
+            </div>
+
+            {% for post in results %}
+                <div class="ui fluid card">
+                    <div class="extra content">
+                        <h2 class="left floated ui header">
+                            <a href="{{ url_for('main.user', id=post.user.id, full_name=post.user.full_name) }}">
+                                <img class="left floated mini ui image" src="{{ post.user.get_photo() }}">
+                            </a>
+                            <span class="post-head">
+                                <a href="{{ url_for('main.user', id=post.user.id, full_name=post.user.full_name) }}">
+                                    {{ post.user.full_name }}</a>
+                                <small class="very-small">
+                                    <a href="{{ url_for('main.question_details', question_id=post.id, title=post.title ) }}">{{ post.created_at.strftime("%b %d, %Y at %H:%I:%S") }}</a>
+                                </small>
+                            </span>
+                        </h2>
+
+                        {% if post.user.id == current_user.id %}
+                            <p class="options btn" style="cursor: pointer">
+                                <i class="large ellipsis vertical icon right floated" style="margin-right: -0.5rem;">
+                                </i>
+                            </p>
+                            <div class="ui special popup" style="margin-right: -1rem;margin-top: 2rem;padding-left: 1px;padding-right: 1px; padding-bottom: 1px">
+                                <ul style="list-style-type: none;padding:0;margin-bottom: 1px;margin-top: 0">
+                                    <li class="item" style="padding: 5px 35px 3px 15px"
+                                        onclick='editQuestion("{{ post.id }}", {{ post.title | tojson  }}, {{ post.description | tojson }})'>
+                                        <a href="#">Edit Question</a>
+                                    </li>
+                                    <li class="item" style="padding: 5px 35px 3px 15px" onclick='deleteQuestion("{{ post.id }}")'>
+                                        <a href="#">Delete Question</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        {% endif %}
+
+                    </div>
+                    <div class="content">
+                        <div class="header">
+                            <a href="{{ url_for('main.question_details', question_id=post.id, title=post.title ) }}">{{ post.title }}</a>
+                        </div>
+                        <div class="meta">
+                            <span class="right floated time">{{ moment(post.timestamp).fromNow() }}</span>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="ui grid">
+            <div class="mobile only tablet only row">
+                <button class="circular ui huge blue icon floating action button">
+                    <i class="large white icon tasks"></i>
+                </button>
+
+                <div class="ui right sidebar inverted  menu">
+                    <div class="ui padded grid">
+                        <div class="ui cards">
+                            {% for job in jobs %}
+                                {{ job_wid.job_wid(job) }}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="pusher">
+                    <!-- Site content !-->
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    {% include 'partials/_question_modals.html' %}
+
+{% endblock %}
+{% block scripts %}
+    <script>
+        $('.ui.sticky')
+            .sticky({
+                offset: 50,
+                bottomOffset: 50,
+                context: '#example3'
+            })
+        ;
+    </script>
+
+    <script>
+        $(function () {
+            $('.ui.button').on('submit', function (event) {
+                $.ajax({
+                    data: {body: $('reply').val()},
+                    type: 'POST',
+                    url: '/answer'
+                });
+                event.preventDefault();
+            });
+        });
+
+        function toggleAnswer(answer_id) {
+            $('#answer-' + answer_id).toggleClass('display-none');
+        }
+    </script>
+{% endblock %}
+

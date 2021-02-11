@@ -1,0 +1,23 @@
+
+{% macro category_product_list(product) -%}
+
+    <div class="col-md-4">
+        <figure class="card card-product-grid">
+            <div class="img-wrap"> 
+                <img src="{{ url_for('_uploads.uploaded_file', setname='images',
+                filename=json_load(product.images)[0] , _external=True) }}">
+                <a class="btn-overlay" href="{{ url_for('marketplace.product', product_id=product.id, product_name=product.name) }}"><i class="fa fa-search-plus"></i> Quick view</a>
+            </div> <!-- img-wrap.// -->
+            <figcaption class="info-wrap">
+                <div class="fix-height">
+                    <p>{{product.name}}</p>
+                    <div class="price-wrap mt-2">
+                        <span class="price">{{ product.price_currency.symbol }}{{product.price}}</span>
+                    </div> <!-- price-wrap.// -->
+                </div>
+                <a href="#" class="btn btn-block btn-primary">Add to cart</a>	
+            </figcaption>
+        </figure>
+    </div>
+
+{% endmacro %}

@@ -1,0 +1,157 @@
+<meta name="charset" content="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="{{ config.APP_NAME }}">
+<meta name="description" content="{{ post.description }}">
+<meta name="og:title" content="{{ post.title }}"/>
+<meta name="og:type" content="article"/>
+<meta name="og:url" content="http://www.imdb.com/title/tt0117500/"/>
+<meta name="og:image" content="http://ia.media-imdb.com/rock.jpg"/>
+<meta name="og:site_name" content="{{ config.APP_NAME }}"/>
+<meta name="og:description" content="{{ post.description }}"/>
+<title>{% block page_title %}{{ post.title }}{% endblock %}</title>
+
+
+
+
+{% assets 'vendor_css' %}
+    <link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}">{% endassets %}
+{% assets 'app_css' %}
+    <link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}">{% endassets %}
+
+{% assets 'vendor_js' %}
+    <script type="text/javascript" src="{{ ASSET_URL }}"></script>{% endassets %}
+{% assets 'app_js' %}
+    <script type="text/javascript" src="{{ ASSET_URL }}"></script>{% endassets %}
+
+<style>
+    .ui.inverted.menu {
+        border: 0 solid transparent;
+        background: #62AAAF;
+        background-image: initial;
+        background-position-x: initial;
+        background-position-y: initial;
+        background-size: initial;
+        background-repeat-x: initial;
+        background-repeat-y: initial;
+        background-attachment: initial;
+        background-origin: initial;
+        background-clip: initial;
+        background-color: rgb(98, 170, 175);
+        -webkit-box-shadow: none;
+        box-shadow: none;
+    }
+
+    .button {
+        background: #000;
+        color: #fff;
+        text-align: center;
+        font-weight: bold;
+        padding: 10px 30px;
+        border-radius: 3px;
+    }
+
+    #overlay {
+        position: fixed;
+        height: 100%;
+        width: 100%;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: rgba(0, 0, 0, 0.8);
+        display: none;
+    }
+
+    #popup {
+        max-width: 600px;
+        width: 80%;
+        max-height: 300px;
+        height: 80%;
+        padding: 20px;
+        position: relative;
+        background: #fff;
+        margin: 20px auto;
+    }
+
+    #close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+        color: #000;
+    }
+
+</style>
+<script>
+    $('.ui.modal')
+        .modal('show')
+    ;
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#trigger1').click(function () {
+            $('#overlay').fadeIn(300);
+        });
+        $('#close').click(function () {
+            $('.fullscreen.modal').fadeOut(300);
+        });
+    });
+</script>
+{% if config.GOOGLE_ANALYTICS_ID %}
+    <!-- Google Analytics -->
+    <script type="text/javascript">
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+            a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+        ga('create', '{{ config.GOOGLE_ANALYTICS_ID }}', 'auto');
+        ga('send', 'pageview');
+    </script>
+{% endif %}
+
+{% if config.SEGMENT_API_KEY %}
+    <!-- Segment Analytics -->
+    <script>
+        !function () {
+            var analytics = window.analytics = window.analytics || [];
+            if (!analytics.initialize) if (analytics.invoked) window.console && console.error && console.error("Segment snippet included twice."); else {
+                analytics.invoked = !0;
+                analytics.methods = ["trackSubmit", "trackClick", "trackLink", "trackForm", "pageview", "identify", "reset", "group", "track", "ready", "alias", "debug", "page", "once", "off", "on"];
+                analytics.factory = function (t) {
+                    return function () {
+                        var e = Array.prototype.slice.call(arguments);
+                        e.unshift(t);
+                        analytics.push(e);
+                        return analytics
+                    }
+                };
+                for (var t = 0; t < analytics.methods.length; t++) {
+                    var e = analytics.methods[t];
+                    analytics[e] = analytics.factory(e)
+                }
+                analytics.load = function (t) {
+                    var e = document.createElement("script");
+                    e.type = "text/javascript";
+                    e.async = !0;
+                    e.src = ("https:" === document.location.protocol ? "https://" : "http://") + "cdn.segment.com/analytics.js/v1/" + t + "/analytics.min.js";
+                    var n = document.getElementsByTagName("script")[0];
+                    n.parentNode.insertBefore(e, n)
+                };
+                analytics.SNIPPET_VERSION = "4.0.0";
+                analytics.load('{{ config.SEGMENT_API_KEY }}');
+                analytics.page();
+            }
+        }();
+    </script>
+    <!---<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/vast-engineering/jquery-popup-overlay@2/jquery.popupoverlay.min.js"></script>
+    <script src="https://github.com/Semantic-Org/Semantic-UI-CSS/blob/master/components/modal.js"></script>---->
+
+{% endif %}

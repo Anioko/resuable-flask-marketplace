@@ -1,0 +1,76 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+{% import 'macros/check_password.html' as check %}
+{% import 'macros/post_macros.html' as post_wid %}
+{% block page_title %}{{ user.full_name }} - Professional Profiles{% endblock %}
+{% block custom_head_tags %}
+<style>
+.profile-card{
+    cursor: pointer;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+    <div class="ui stackable centered grid container">
+        <div class="stretched divided very relaxed row">
+            {% include 'account/includes/proff_nav.html' %}
+
+            <div class="twelve wide column">
+                <h2 class="ui header" style="flex-grow: 0">
+                    Professional Profiles
+                    <span class="sub header">Add your professional profiles to be found by employers.</span>
+                </h2>
+                <hr style="flex-grow: 0">
+                <div class="content">
+                    <div class="ui centered cards">
+                        {% for profile in user.profiles %}
+                            <div class="ui card profile-card" onclick="location.href='{{ url_for("account.edit_profile", profile_id=profile.id) }}'">
+                                <div class="image" style="position: relative">
+                                    <div style="position: absolute;bottom: -40px;left: 1%;width: 100%; height: 100px;float: left;text-align: left;padding:05px;">
+                                        <img style="height: 100%;width: 35%;border:2px solid rgb(98, 170, 175)" src="{{ url_for('_uploads.uploaded_file', setname='images',
+                           filename=profile.image, _external=True) }}"> {{ profile.full_name }} ({{ profile.title }})
+                                    </div>
+                                    <img src="{{ url_for('_uploads.uploaded_file', setname='images',
+                           filename=profile.cover, _external=True) }}" height="160">
+                                </div>
+                                <div style="height: 60px"></div>
+                                <div class="extra content">
+
+                                    <div class="ui indicating progress" data-value="{{ profile.completeness }}">
+                                        <div class="bar">
+                                        </div>
+                                        <div class="label" style="top:0">{{ profile.completeness }}% complete</div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <div class="ui card">
+                            <div class="content" style="display: contents">
+                                <a href="{{ url_for('account.new_profile') }}" style="margin: auto;padding: 50px 0">
+                                    <i class="plus huge icon" ></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script>
+        $('.ui.progress').each(function () {
+            let val = $(this).attr('data-value')
+            $(this).progress({
+                duration : 200,
+                total    : 100,
+                value    : val,
+
+            })
+        })
+        ;
+    </script>
+{% endblock %}

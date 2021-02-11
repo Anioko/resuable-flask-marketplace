@@ -1,0 +1,61 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+{% import 'macros/check_password.html' as check %}
+
+
+{% block scripts %}
+{% endblock %}
+
+{% block content %}
+    <div class="ui stackable centered grid container">
+        <div class="twelve wide column">
+            <a class="ui basic compact button" href="{{ url_for('organisations.org_home') }}">
+                <i class="caret left icon"></i>
+                Back to Organisations List
+            </a>
+            <h2 class="ui header">
+                Register your Organization
+                <div class="sub header">Set up an account</div>
+            </h2>
+
+            {% set flashes = {
+                'error':   get_flashed_messages(category_filter=['form-error']),
+                'warning': get_flashed_messages(category_filter=['form-check-email']),
+                'info':    get_flashed_messages(category_filter=['form-info']),
+                'success': get_flashed_messages(category_filter=['form-success'])
+            } %}
+
+            {{ f.begin_form(form, flashes) }}
+
+            <div class="two fields">
+                {{ f.render_form_field(form.org_name) }}
+                {{ f.render_form_field(form.org_industry) }}
+            </div>
+            <div class="field">
+                {{ f.render_form_field(form.logo) }}
+            </div>
+            <div class="four fields">
+                {{ f.render_form_field(form.org_website) }}
+                {{ f.render_form_field(form.org_city) }}
+                {{ f.render_form_field(form.org_state) }}
+                {{ f.render_form_field(form.org_country) }}
+            </div>
+            <div class="field">
+                {{ f.render_form_field(form.org_description) }}
+            </div>
+
+
+            {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
+            {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
+            {{ f.form_message(flashes['info'], header='Information', class='info') }}
+            {{ f.form_message(flashes['success'], header='Success!', class='success') }}
+
+            {% for field in form | selectattr('type', 'equalto', 'SubmitField') %}
+                {{ f.render_form_field(field) }}
+            {% endfor %}
+
+            {{ f.end_form() }}
+
+        </div>
+    </div>
+{% endblock %}

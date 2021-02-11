@@ -1,0 +1,71 @@
+<div class="ui modal edit-post-modal">
+    <div class="header">Edit Post</div>
+    <div class="content">
+        {{ f.begin_form(edit_form, flashes) }}
+        <div class="ui form">
+            <form method="POST">
+                <div class="field">
+                    {{ f.render_form_field(edit_form.text) }}
+                </div>
+                <div class="field">
+                    {{ f.render_form_field(edit_form.photo) }}
+                </div>
+                <div class="field">
+                    {{ f.render_form_field(edit_form.post_privacy) }}
+                </div>
+                {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
+                {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
+                {{ f.form_message(flashes['info'], header='Information', class='info') }}
+                {{ f.form_message(flashes['success'], header='Success!', class='success') }}
+
+                {% for field in edit_form | selectattr('type', 'equalto', 'SubmitField') %}
+                    {{ f.render_form_field(field) }}
+                {% endfor %}
+
+            </form>
+        </div>
+    </div>
+</div>
+<div class="ui modal delete-post-modal">
+    <div class="header">Delete Post</div>
+    <div class="content">
+        <p>Are You Sure You want to Delete ?</p>
+        <form method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            {#            <input name="post_id" type="hidden" value="0">#}
+        </form>
+    </div>
+    <div class="actions">
+        <div class="ui approve button" onclick='confirmDelete(".delete-post-modal")'>Approve</div>
+        <div class="ui cancel button">Cancel</div>
+    </div>
+</div>
+<div class="ui modal delete-comment-modal">
+    <div class="header">Delete Comment</div>
+    <div class="content">
+        <p>Are You Sure You want to Delete ?</p>
+        <form method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            {#            <input name="post_id" type="hidden" value="0">#}
+        </form>
+    </div>
+    <div class="actions">
+        <div class="ui approve button" onclick='confirmDelete(".delete-comment-modal")'>Approve</div>
+        <div class="ui cancel button">Cancel</div>
+    </div>
+</div>
+<div class="ui modal edit-comment-modal">
+    <div class="header">Edit Comment</div>
+    <div class="content">
+        {{ f.begin_form(edit_form, flashes) }}
+        <div class="ui form">
+            <form id="comment-form" class="ui reply form display-none" method="POST"
+                  action="{{ url_for('post.submit_comment') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <div class="field" style="padding-bottom: 10px; padding-right: 10px; padding-left: 10px">
+                    <input id="comment_re" name="comment_text" type="text" style="background: #eee;border-radius: 15px">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

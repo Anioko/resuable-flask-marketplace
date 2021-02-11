@@ -1,0 +1,14 @@
+{% if sent_to %}
+    Hi {{sent_to.full_name}},
+{% else %}
+
+Hi There,
+
+We have made some updates to {{config.app_name}} and we we would like to notify you so that you could take advantage of it.
+Here is the link to the full article describing it. {{ url_for('blog.blog_article',  article_id=blog_post.id, _external=True)}}
+
+Please let us know if you have any suggestions or recommendations or even questions. We would love to hear from you.
+
+Sincerely,
+The Mediville Team
+Note: replies to this email address are not monitored.

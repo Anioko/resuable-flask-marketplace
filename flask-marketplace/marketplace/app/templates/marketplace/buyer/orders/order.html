@@ -1,0 +1,127 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+{% block custom_head_tags %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/timeline.min.css') }}">
+    <style>
+        .ui.dimmer {
+            z-index: 1002 !important;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="ui stackable grid container">
+        <div class="four wide column">
+            {% include 'marketplace/buyer/nav.html' %}
+        </div>
+        <div class="twelve wide tablet twelve wide computer centered column">
+            <a class="ui basic compact button" href="{{ url_for('marketplace.buyer_orders') }}">
+                <i class="caret left icon"></i>
+                Back to Orders
+            </a>
+            <h2 class="ui header">
+                View Order
+                <div class="sub header">
+                    Order: {{ order.order_number }}
+                </div>
+            </h2>
+            <hr>
+            {% set currency = order.price_currency %}
+
+            <p>Order number : {{ order.order_number }}</p>
+            <p>Product Total Price : {{ order.products_total }}{{ currency.symbol }}</p>
+            <p>Shipping Price : {{ order.shipping_cost }}{{ currency.symbol }}</p>
+            <p>Total Paid : {{ order.order_pay_amount }}{{ currency.symbol }}</p>
+            <h5>Items</h5>
+            <table class="ui very basic small celled table">
+                <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Piece Price</th>
+                    <th>Count</th>
+                    <th>Total</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for order_by_seller in order.order_seller_orders %}
+                    <tr class="no-border-top">
+                        <td colspan="4>" class="no-border-top">
+                            <b><u><a href="#" data-value="{{ order_by_seller.id }}" class="track-order">Order from {{ order_by_seller.seller.full_name }}</a></u></b>
+                            <div class="ui modal track-{{ order_by_seller.id }}">
+                                <div class="header">Order Tracking</div>
+                                <div class="content">
+                                    <section class="steps-section">
+
+                                        <h2 class="steps-header">
+                                            Order from {{ order_by_seller.seller.full_name }}
+                                        </h2>
+
+                                        <div class="steps-timeline">
+                                            <div class="sep"></div>
+                                            <div class="custom-steps">
+                                                <div class="step">
+                                                    <div class="steps-img"><i class="check icon"></i></div>
+                                                    <p class="steps-time"><small>{{ order_by_seller.created_at.ctime() }}</small></p>
+                                                    <h3 class="steps-name">
+                                                        Order Created
+                                                    </h3>
+                                                    <p class="steps-description">
+                                                        You Created The Order Successfully.
+                                                    </p>
+                                                </div>
+                                                {% for status_change in order_by_seller.order_status_changes %}
+                                                    <div class="step">
+                                                        <div class="steps-img"><i class="{{ status_change.order_status_explained[2] }} icon"></i></div>
+                                                        <p class="steps-time"><small>{{ status_change.created_at.ctime() }}</small></p>
+                                                        <h3 class="steps-name">
+                                                            {{ status_change.order_status_explained[0] }}
+                                                        </h3>
+                                                        <p class="steps-description">
+                                                            {{ status_change.order_status_explained[1] }}
+                                                        </p>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div><!-- /.steps-timeline -->
+                                        <br>
+                                    </section>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% for item in order_by_seller.order_items %}
+                        <tr>
+                            <td>{{ item.product.name }}</td>
+                            <td>{{ item.product.price }} {{ currency.symbol }}</td>
+                            <td>{{ item.count }}</td>
+                            <td>{{ item.count * item.product.price }} {{ currency.symbol }}</td>
+                        </tr>
+                    {% endfor %}
+                    {% if order_by_seller.shipping_method  %}
+                        <tr>
+                            <td colspan="3"><b><i>Shipping</i></b></td>
+                            <td>{{ order.shipping_cost }} {{ currency.symbol }}</td>
+                        </tr>
+                    {% endif %}
+                    <tr style="height: 20px"></tr>
+                    <tr style="height: 10px"></tr>
+                    <tr class="no-border-top">
+                        <td colspan="3"><b><u><i><em>Total</em></i></u></b></td>
+                        <td><b>{{ order_by_seller.total_price }} {{ currency.symbol }}</b></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            <hr>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script>
+        $('.track-order').click(function () {
+            $('.ui.modal.track-'+$(this).attr('data-value'))
+                .modal('show')
+            ;
+        })
+    </script>
+{% endblock %}

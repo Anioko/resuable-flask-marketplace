@@ -1,0 +1,16 @@
+{% extends 'layouts/base.html' %}
+{% block custom_head_tags %}
+{% endblock %}
+{% block content %}
+    <div style="text-align: center; margin-top: 100px">
+
+        <h1>
+            Page Not Found
+        </h1>
+        <h5>We Couldn't find the content you're looking for here.<br>
+            May be the content was removed, you took a wrong turn<br>
+            Or You don't have permission to view this content</h5>
+        <a class="ui inverted green  button" href="{{ url_for('main.index') }}">Go To Home Page</a>
+
+    </div>
+{% endblock %}

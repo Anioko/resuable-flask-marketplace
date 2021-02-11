@@ -1,0 +1,19 @@
+<div style="width: 100%">
+    <div style="width: 100%; background: #62AAAF">
+        <a href="{{ url_for('main.index', _external=True) }}">
+            <img class="footer-img" src="{{ url_for('static', filename='images/footer_logo.png', _external=True) }}" height="100" alt="Mediville">
+        </a>
+    </div>
+    <hr>
+    <p>Dear Mediville Client,</p>
+    <p>This is your authentication link to mediville buyer dashboard</p>
+    <hr>
+    <p>Please Go to <a href="{{ link }}">Buyer Dashboard</a> To access your orders.</p>
+    <p>Alternatively, you can paste the following link in your browser's address bar:</p>
+    <p>{{ link }}</p>
+    <p>Sincerely,</p>
+    <p>The {{ config.APP_NAME }} Team</p>
+    <p>
+        <small>Note: replies to this email address are not monitored.</small>
+    </p>
+</div>

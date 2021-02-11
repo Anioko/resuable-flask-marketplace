@@ -1,0 +1,138 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+
+{% block content %}
+    <div class="ui stackable grid container">
+        <div class="four wide column">
+            {% include 'admin/partials/nav.html' %}
+        </div>
+        <div class="twelve wide tablet twelve wide computer centered column">
+            <a class="ui basic compact button" href="{{ url_for('admin.marketplace_index') }}">
+                <i class="caret left icon"></i>
+                Back to MarketPlace dashboard
+            </a>
+            <h2 class="ui header">
+                Manage Categories ({{ categories_count }})
+                <div class="sub header">
+                    View and manage categories.
+                </div>
+                <div class="right aligned sub header" >
+                    <a class="ui green  button" href="{{ url_for('admin.marketplace_category_create') }}">Add New</a>
+                </div>
+            </h2>
+
+            <div class="ui menu">
+                <div class="ui right search item">
+                    <div class="ui transparent icon input">
+                        <input id="search-categories" type="text" placeholder="Search categories…">
+                        <i class="search icon"></i>
+                    </div>
+                </div>
+            </div>
+
+            {# Use overflow-x: scroll so that mobile views don't freak out
+             # when the table is too wide #}
+            <div style="overflow-x: scroll;">
+                <table class="ui searchable sortable unstackable selectable celled table">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th class="sorted ascending">Order</th>
+                        <th>Product Count</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for u in categories.items | sort(attribute='order') %}
+                        <tr>
+
+                            <td>{{ loop.index }}</td>
+                            <td>{{ u.name }}</td>
+                            <td>{{ u.order }}</td>
+                            <td>{{ u.products | length }}</td>
+                            <td>
+                                <a class="ui blue button" href="{{ url_for('admin.marketplace_category_edit', category_id=u.id) }}">Edit</a>
+                                <a href="#" onclick="return confirmDeleteCategory('{{ u.id | tojson }}');">Delete</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+
+            </div>
+
+        </div>
+
+    </div>
+    <div class="ui centered grid ">
+        {% if categories.pages > 0 %}
+            <div class="ui pagination menu">
+                {% for page in categories.iter_pages() %}
+                    {% if page %}
+                        {% if page != categories.page %}
+                            <a class="item"
+                               href="{{ url_for(request.endpoint,  page=page) }}">
+                                {{ page }}
+                            </a>
+                        {% else %}
+                            <a class="item active">
+                                {{ page }}
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        <div class="disabled item">
+                            ...
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+        <form method="POST" action="{{ url_for('admin.marketplace_category_delete', category_id=0) }}" id="delete-category-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        </form>
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#search-categories').keyup(function () {
+                var searchText = $(this).val();
+                if (searchText.length > 0) {
+                    $('tbody td:icontains(' + searchText + ')').addClass('positive');
+                    $('td.positive').not(':icontains(' + searchText + ')').removeClass('positive');
+                    $('tbody td').not(':icontains(' + searchText + ')').closest('tr').addClass('hidden').hide();
+                    $('tr.hidden:icontains(' + searchText + ')').removeClass('hidden').show();
+                } else {
+                    $('td.positive').removeClass('positive');
+                    $('tr.hidden').removeClass('hidden').show();
+                }
+            });
+
+        });
+    </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+    <script>
+        function confirmDeleteCategory(category_id){
+            swal({
+                title: "Are you sure?",
+                text: "Once deleted, you will not be able to recover this category",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        let form = $("#delete-category-form");
+                        form.attr('action', "{{ url_for('admin.marketplace_category_delete', category_id=0) }}".replace('0',category_id));
+                        form.submit();
+                    } else {
+                        return false;
+                    }
+                });
+            return false;
+        }
+    </script>
+{% endblock %}

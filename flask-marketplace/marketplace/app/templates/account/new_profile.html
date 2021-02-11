@@ -1,0 +1,70 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+{% block page_title %}{{ user.full_name }} -  New Professional Profile {% endblock %}
+
+
+{% block content %}
+    <div class="ui stackable centered grid container">
+        <div class="stretched divided very relaxed row">
+            {% include 'account/includes/proff_nav.html' %}
+            <div class="twelve wide column">
+                <h2 class="ui header" style="flex-grow: 0">
+                    Professional Profiles
+                    <span class="sub header">Add a new professional profile.</span>
+                </h2>
+                <hr style="flex-grow: 0">
+                <div class="content">
+                    {% set flashes = {
+        'error':   get_flashed_messages(category_filter=['form-error']),
+        'warning': get_flashed_messages(category_filter=['form-check-email']),
+        'info':    get_flashed_messages(category_filter=['form-info']),
+        'success': get_flashed_messages(category_filter=['form-success'])
+        } %}
+
+                    {{ f.begin_form(form, flashes) }}
+                    <div class="field">
+                        {{ f.render_form_field(form.title) }}
+                    </div>
+                    <div class="two fields">
+                        <div class="field">
+                            {{ f.render_form_field(form.first_name) }}
+                        </div>
+                        <div class="field">
+                            {{ f.render_form_field(form.last_name) }}
+                        </div>
+                    </div>
+                    <div class="two fields">
+                        <div class="field">
+                            {{ f.render_form_field(form.image) }}
+                        </div>
+                        <div class="field">
+                            {{ f.render_form_field(form.cover) }}
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        {{ f.render_form_field(form.header) }}
+                    </div>
+                    <div class="two fields">
+                        <div class="field">
+                            {{ f.render_form_field(form.commitment) }}
+                        </div>
+                        <div class="field">
+                            {{ f.render_form_field(form.type_of_work) }}
+                        </div>
+                    </div>
+                    {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
+                    {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
+                    {{ f.form_message(flashes['info'], header='Information', class='info') }}
+                    {{ f.form_message(flashes['success'], header='Success!', class='success') }}
+
+                    {% for field in form | selectattr('type', 'equalto', 'SubmitField') %}
+                        {{ f.render_form_field(field) }}
+                    {% endfor %}
+                    {{ f.end_form(form) }}
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

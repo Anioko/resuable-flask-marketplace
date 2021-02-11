@@ -1,0 +1,16 @@
+Dear {{ user.full_name }},
+
+You are invited by {{ invite_by.full_name }} to join  {{ config.APP_NAME }}!
+
+Please Go to:
+
+{{ invite_link }}
+
+To access your account using the password: {{ password }}.:
+
+Sincerely,
+
+The {{ config.APP_NAME }} Team
+
+Note: replies to this email address are not monitored.
+

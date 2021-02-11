@@ -1,0 +1,47 @@
+{% macro footer_macro(current_user, website_settings) -%}
+    <br>
+    <br>
+    {% if current_user.is_authenticated %}
+        <div class="primary ui footer" style="background-color: #2352c6;">
+            <br>
+            <div class="ui primary vertical footer segment">
+                <div class="ui container">
+                    <div class="ui stackable inverted divided equal height stackable grid">
+                        <div class="four wide column">
+                            <h4 class="ui  header">Fast Links</h4>
+                            <div class="ui link list">
+                                <a href="{{ url_for('main.index') }}" class="item">Home</a>
+                                <a href="{{ url_for('public.contact') }}" class="item">Contact Us</a>
+                                <a href="{{ url_for('public.about') }}" class="item">About</a>
+                                <a href="{{ url_for('public.faq') }}" class="item">FAQ</a>
+                                <a href="{{ url_for('public.terms') }}" class="item">Terms</a>
+                                <a href="{{ url_for('public.privacy') }}" class="item">Privacy</a>
+                            </div>
+                        </div>
+                        <div class="four wide column">
+                            <h4 class="ui  header">User</h4>
+                            <div class="ui  link list">
+                                <a href="{{ url_for('organisations.org_home') }}" class="item">Organization</a>
+                                <a href="{{ url_for('main.conversations') }}" class="item">Messages</a>
+                                <a href="{{ url_for('main.notifications') }}" class="item">Notifications</a>
+                                <a href="{{ url_for('account.manage') }}" class="item">Profile</a>
+                                <a href="{{ url_for('account.logout') }}" class="item">Logout</a>
+                            </div>
+                        </div>
+                        {% if website_settings %}
+                        <div class="seven wide column" style="text-align: center">
+                            <img class="footer-img" src="{{ url_for('_uploads.uploaded_file', setname='images',
+                            filename=website_settings.brand_image , _external=True) }}" alt="Mediville">
+                            <br>
+                            <br>
+                            <p style="color: white"><b>{{ website_settings.brand_description }}</b></p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <br>
+                <br>
+            </div>
+        </div>
+    {% endif %}
+{% endmacro %}

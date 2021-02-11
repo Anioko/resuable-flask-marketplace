@@ -1,0 +1,18 @@
+{% if sent_to %}
+    <h5>Hi {{sent_to.full_name}},</h5>
+{% else %}
+    <h5>Hi There,</h5>
+{% endif %}
+<p>We have made some updates to Mediville and we we would like to notify you so that you could take advantage of it.
+    Here is the link to the full article describing it. <br>
+    <a href="{{ url_for('blog.blog_article',  article_id=blog_post.id, _external=True)}}">{{ blog_post.title }}</a>
+<p>Alternatively, you can paste the following link in your browser's address bar:</p>
+<small>{{ url_for('blog.blog_article',  article_id=blog_post.id, _external=True)}}</small>
+<p>Please let us know if you have any suggestions or recommendations or even questions. We would love to hear from you.</p>
+
+<hr>
+<p>Sincerely,</p>
+<p>The Mediville Team</p>
+<p>
+    <small>Note: replies to this email address are not monitored.</small>
+</p>

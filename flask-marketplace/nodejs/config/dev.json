@@ -1,0 +1,16 @@
+{
+  "dbConfig": {
+    "host": "localhost",
+    "port": 3306,
+    "user": "root",
+    "password": "51215",
+    "database": "messaging"
+  },
+  "pool": {
+    "user": "hema",
+    "host": "localhost",
+    "database": "healthcare_practitioners",
+    "password": "51215",
+    "port": 5432
+  }
+}

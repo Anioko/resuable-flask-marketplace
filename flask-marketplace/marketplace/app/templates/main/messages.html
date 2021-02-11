@@ -1,0 +1,124 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+{% import 'macros/job_macros.html' as job_wid %}
+{% import 'macros/follow_macros.html' as follow %}
+
+{% block custom_head_tags %}
+    <style>
+        .conversation-holder:hover{
+            background: rgba(200, 200, 220, 0.5);
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="ui grid container" id="example3">
+        <div class="eight wide computer sixteen wide mobile centered column">
+
+            <div class="ui grid">
+                <div class="computer only row">
+                    <div class="left ui rail">
+                        <p></p>
+                        <div class="ui sticky">
+                            <h3 class="ui header">Colleagues to follow</h3>
+                            <div class="ui divided items">
+                                {% for user in follow_lists %}
+                                    {{follow.follow_wid(user, current_user)}}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="right ui right rail">
+                        <div class="ui sticky">
+                            <div class="ui cards">
+                                {% for job in jobs %}
+                                    {{ job_wid.job_wid(job) }}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ui grid">
+                <div class="mobile only tablet only row">
+                    <br>
+                </div>
+            </div>
+            <div class="ui grid">
+                <div class="sixteen wide column">
+                    <h2 class="ui header">Conversations</h2>
+                    <div class="ui celled list">
+                        {% for user in users.items %}
+                            <div class="item conversation-holder" onclick="location.href='{{ url_for('main.send_message', recipient=user.id, full_name=user.full_name) }}';">
+                                <img class="ui avatar image" src="{{ user.get_photo() }}">
+                                <div class="content">
+                                    {% set count = current_user.new_messages(user.id)  %}
+                                    <div class="header">{{ user.full_name }}</div>
+                                    {{ current_user.last_message(user.id).user.full_name }}
+                                    : {{ current_user.last_message(user.id).body[:50] }}...
+                                </div>
+                                {% if count > 0 %}
+                                    <i class="floating circular blue ui label">{{ count }}</i>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <br>
+                    <div class="ui centered grid ">
+                        <div class="ui pagination menu">
+                            {% for page in users.iter_pages() %}
+                                {% if page %}
+                                    {% if page != users.page %}
+                                        <a class="item" href="{{ url_for('main.conversations', page=page) }}">
+                                            {{ page }}
+                                        </a>
+                                    {% else %}
+                                        <a class="item active">
+                                            {{ page }}
+                                        </a>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="disabled item">
+                                        ...
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ui grid">
+        <div class="mobile only tablet only row">
+            <button class="circular ui huge blue icon floating action button">
+                <i class="large white icon tasks"></i>
+            </button>
+
+            <div class="ui right sidebar inverted  menu">
+                <div class="ui padded grid">
+                    <div class="ui cards">
+                        {% for job in jobs %}
+                            {{ job_wid.job_wid(job) }}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="pusher">
+                <!-- Site content !-->
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script>
+        $(document).ready(function () {
+            $('.ui.sticky')
+                .sticky({
+                    offset: 50,
+                    bottomOffset: 50,
+                    context: '#example3'
+                });
+        })
+    </script>
+{% endblock %}

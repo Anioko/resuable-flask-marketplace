@@ -1,0 +1,202 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/product_macros.html' as products_macros %}
+{% import 'macros/product_detail_macros.html' as p %}
+{% block page_title %}
+    Marketplace - {{ product_instance.name }}
+{% endblock %}
+{% block custom_head_tags %}
+    <!-- jQuery -->
+    <script src="{{ url_for('static', filename='js/jquery-2.0.0.min.js') }}"></script>
+    
+    <!-- Bootstrap4 files-->
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    <link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet"/>
+
+    <!-- Font awesome 5 -->
+    <link href="{{ url_for('static', filename='fonts/all.min.css') }}" rel="stylesheet">
+
+    <!-- plugin: fancybox  -->
+    <script src="{{ url_for('static', filename='plugins/fancybox/fancybox.min.js') }}" ></script>
+    <link href="{{ url_for('static', filename='plugins/fancybox/fancybox.min.css') }}"  rel="stylesheet">
+
+    <!-- custom style -->
+    <link href="{{ url_for('static', filename='css/ui.css') }}" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='css/custom_responsive.css') }}" rel="stylesheet" media="only screen and (max-width: 1200px)" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        /* Rating Star Widgets Style */
+        .rating-stars ul {
+        list-style-type:none;
+        padding:0;
+        
+        -moz-user-select:none;
+        -webkit-user-select:none;
+        }
+        .rating-stars ul > li.star {
+        display:inline-block;
+        
+        }
+
+        /* Idle State of the stars */
+        .rating-stars ul > li.star > i.fa {
+        font-size:1.5em; /* Change the size of the stars */
+        color:#ccc; /* Color on idle state */
+        }
+
+        /* Hover state of the stars */
+        .rating-stars ul > li.star.hover > i.fa {
+        color:#FFCC36;
+        }
+
+        /* Selected state of the stars */
+        .rating-stars ul > li.star.selected > i.fa {
+        color:#FF912C;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    
+<!-- ============================ COMPONENT 1 ================================= -->
+<div class="container">
+    {{ p.product_detail(product_instance) }}
+
+<!-- ============================ COMPONENT 1 END .// ================================= -->
+    <!-- <hr> -->
+<!-- ============================ REVIEW START .// ================================= -->
+    <div class="mt-3">
+        <h3><strong>Reviews: </strong></h3>
+        {% for review in product_instance.reviews %}
+            {{ products_macros.review_wid(review) }}
+        {% endfor %} 
+        {% if product_instance.reviews | length == 0 %}
+        <p class="ml-3">No Review yet</p>
+        {% endif %}
+        {% if can_review %}
+            {{ products_macros.review_form(review_form, product_instance) }}
+        {% endif %}
+    </div>
+<!-- ============================ REVIEW END .// ================================= -->
+    <!-- <hr> -->
+<!-- ============================ CATEGORY START .// ================================= -->
+    <div class="mt-3">
+        <h3><strong>Categories: </strong></h3>
+        {% for category in product_instance.categories %}
+            {{ products_macros.category_wid(category) }}
+        {% endfor %}
+    </div>
+<!-- ============================ CATEGORY END .// ================================= -->
+</div>
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript" src="{{ url_for('static', filename='slick/slick.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='lightbox/js/lightbox.min.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            $('.slick').slick({
+                infinite: false,
+            });
+        });
+
+    </script>
+    <script>
+         $('#add-to-cart').click(function () {
+            let variant_id = $('input[type="radio"]:checked').val();
+            let product_id = $('input[type="radio"]:checked').data('product-id');
+            let quantityInput = $('#quantity');
+            let quantityVal = parseInt(quantityInput.val());
+            // alert(`variant id is ${variant_value}, product id is ${product_value}, quantity is ${quantityVal}`);
+            addToCart(product_id, variant_id, quantityVal);
+        });
+        $('#buy-now').click(function () {
+            let variant_id = $('input[type="radio"]:checked').val();
+            let product_id = $('input[type="radio"]:checked').data('product-id');
+            let quantityInput = $('#quantity');
+            let quantityVal = parseInt(quantityInput.val());
+            // alert(`variant id is ${variant_value}, product id is ${product_value}, quantity is ${quantityVal}`);
+            BuyNow(product_id, variant_id, quantityVal);
+        });
+        $('#increase-quantity').click(function () {
+            let quantityInput = $('#quantity');
+            let quantityVal = parseInt(quantityInput.val());
+            quantityInput.val(quantityVal + 1);
+        });
+        $('#decrease-quantity').click(function () {
+            let quantityInput = $('#quantity');
+            let quantityVal = parseInt(quantityInput.val());
+            if(quantityVal > 1) {
+                quantityInput.val(quantityVal - 1);
+            }
+        });
+
+        /* 1. Visualizing things on Hover - See next part for action on click */
+        $('#stars li').on('mouseover', function(){
+            var onStar = parseInt($(this).data('value'), 10); // The star currently mouse on
+        
+            // Now highlight all the stars that's not after the current hovered star
+            $(this).parent().children('li.star').each(function(e){
+            if (e < onStar) {
+                $(this).addClass('hover');
+            }
+            else {
+                $(this).removeClass('hover');
+            }
+            });
+            
+        }).on('mouseout', function(){
+            $(this).parent().children('li.star').each(function(e){
+            $(this).removeClass('hover');
+            });
+        });
+        
+        
+        /* 2. Action to perform on click */
+        $('#stars li').on('click', function(){
+            var onStar = parseInt($(this).data('value'), 10); // The star currently selected
+            var stars = $(this).parent().children('li.star');
+            
+            for (i = 0; i < stars.length; i++) {
+            $(stars[i]).removeClass('selected');
+            }
+            
+            for (i = 0; i < onStar; i++) {
+            $(stars[i]).addClass('selected');
+            }
+            
+            // JUST RESPONSE (Not needed)
+            var ratingValue = parseInt($('#stars li.selected').last().data('value'), 10);
+            var msg = "";
+            if (ratingValue > 1) {
+                msg = "Thanks! You rated this " + ratingValue + " stars.";
+            }
+            else {
+                msg = "We will improve ourselves. You rated this " + ratingValue + " stars.";
+            }
+            console.log(msg);
+            
+        });
+    </script>
+    <script>
+        $('#review-form').submit(function(e){
+            e.preventDefault();
+            let review_rating = parseInt($('#stars li.selected').last().data('value'), 10) * 20;
+            let review_text = $('#review-text').val();
+            let product_id = $('#review-text').data('product-id');
+            let product_name = $('#review-text').data('product-name');
+            console.log("product_id", product_id)
+            console.log("product_name", product_name)
+            let data = new FormData();
+            data.set('csrf_token', "{{ csrf_token()  }}");
+            data.set('product_id', product_id);
+            data.set('product_name', product_name);
+            data.set('review_text', review_text);
+            data.set('review_rating', review_rating);
+            axios.post('{{ url_for("marketplace.review") }}', data )
+                .then(function (response) {
+                    if(response.data.status === 1) {
+                        location.reload();
+                    }
+                    console.log(response)
+                });
+            });
+    </script>
+{% endblock %}

@@ -1,0 +1,103 @@
+{% macro rating_percent(rating) -%}
+    <div class="d-flex rating-wrap my-3">
+        <ul class="rating-stars">
+        <li style="width: {% if rating == None %} 0 {% else %} {{rating}} {% endif %}" class="stars-active"> 
+                <i class="fa fa-star"></i> <i class="fa fa-star"></i> 
+                <i class="fa fa-star"></i> <i class="fa fa-star"></i> 
+                <i class="fa fa-star"></i> 
+            </li>
+            <li>
+                <i class="fa fa-star"></i> <i class="fa fa-star"></i> 
+                <i class="fa fa-star"></i> <i class="fa fa-star"></i> 
+                <i class="fa fa-star"></i> 
+            </li>
+        </ul>
+    </div>
+{% endmacro %}
+
+{% macro product_detail(product_instance) -%}
+    <div class="card">
+        <div class="row no-gutters">
+            <aside class="col-md-6">
+                <article class="gallery-wrap"> 
+                    <div class="img-big-wrap">
+                        <a href="#"><img src="{{ url_for('_uploads.uploaded_file', setname='images',
+                            filename=json_load(product_instance.images)[0] , _external=True) }}"></a>
+                    </div> <!-- img-big-wrap.// -->
+                    <!-- <div class="thumbs-wrap">
+                        <a href="#" class="item-thumb"> <img src="../images/items/12-1.jpg"></a>
+                        <a href="#" class="item-thumb"> <img src="../images/items/12-2.jpg"></a>
+                        <a href="#" class="item-thumb"> <img src="../images/items/12.jpg"></a>
+                        <a href="#" class="item-thumb"> <img src="../images/items/4.jpg"></a>
+                    </div>  -->
+                </article> <!-- gallery-wrap .end// -->
+            </aside>
+            <main class="col-md-6 border-left">
+                <article class="content-body">
+                    <h2 class="title">{{ product_instance.name }}</h2>
+                        
+                        <div class="mb-3"> 
+                            <var class="p">by <span class="h6">{{ product_instance.brand.name }}</span>
+                                <span style="display: inline-block; font-size: 2rem">.</span>
+                                <span style="display: inline-block;">
+                                    {{ rating_percent(product_instance.rating) }}
+                                </span>
+                                <span style="display: inline-block;">
+                                    ({{ product_instance.reviews | length }}) reviews
+                                </span>
+                            </var> 
+                        </div>
+                        <div class="mb-3"> 
+                            <var class="price h4">{{ product_instance.price_currency.symbol }}{{ product_instance.price}}</var> 
+                        </div> 
+                        <p>{{ product_instance.description }}
+                        </p>
+                        <dl class="row">
+                            <dt class="col-sm-3">Length</dt>
+                            <dd class="col-sm-9">{{ product_instance.length }}</dd>
+                            <dt class="col-sm-3">Weight</dt>
+                            <dd class="col-sm-9">{{ product_instance.weight }}</dd>
+                            <dt class="col-sm-3">Height</dt>
+                            <dd class="col-sm-9">{{ product_instance.height }}</dd>
+                        </dl>
+                        <hr>
+                        <div class="form-row">
+                            <div class="form-group col-md flex-grow-0">
+                                <label>Quantity</label>
+                                <div class="input-group mb-3 input-spinner">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-light" type="button" id="increase-quantity"> + </button>
+                                    </div>
+                                    <input type="text" class="form-control" id="quantity" value="1">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-light" type="button" id="decrease-quantity"> &minus; </button>
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class="form-group col-md">
+                                <label>Select variant</label>
+                                <div class="mt-1">
+                                    {% for variant in product_instance.variants %}
+                                        {% if variant == product_instance.variants[0] %}
+                                            <label class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" name="select_size" class="custom-control-input" checked="true" data-product-id="{{ product_instance.id}}" value="{{ variant.id }}">
+                                                <div class="custom-control-label">{{ variant.symbol }}</div>
+                                            </label>
+                                        {% else %}
+                                            <label class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" name="select_size" class="custom-control-input" data-product-id="{{ product_instance.id}}" value="{{ variant.id }}">
+                                                <div class="custom-control-label">{{ variant.symbol }}</div>
+                                            </label>
+                                        {% endif %}
+                                    {% endfor %}          
+                                </div>
+                            </div> <!-- col.// -->
+                        </div> <!-- row.// -->
+                        <a id="buy-now" class="btn btn-primary text-white"> Buy now </a>
+                        <a id="add-to-cart" class="btn btn-outline-primary"> <span class="text">Add to cart</span><i class="cart plus icon"></i></a>
+                    </article> <!-- product-info-aside .// -->
+            </main> <!-- col.// -->
+        </div> <!-- row.// -->
+    </div> <!-- card.// -->
+
+{% endmacro %}

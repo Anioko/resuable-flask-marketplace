@@ -1,0 +1,145 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+
+{% block content %}
+    <div class="ui stackable grid container">
+        <div class="four wide column">
+            {% include 'admin/partials/nav.html' %}
+        </div>
+        <div class="twelve wide tablet twelve wide computer centered column">
+            <a class="ui basic compact button" href="{{ url_for('admin.marketplace_index') }}">
+                <i class="caret left icon"></i>
+                Back to MarketPlace dashboard
+            </a>
+            <h2 class="ui header">
+                Manage Orders ({{ orders_count }})
+                <div class="sub header">
+                    View Orders.
+                </div>
+            </h2>
+
+            <div class="ui menu">
+                <div class="ui right search item">
+                    <div class="ui transparent icon input">
+                        <input id="search-orders" type="text" placeholder="Search orders…">
+                        <i class="search icon"></i>
+                    </div>
+                </div>
+            </div>
+
+            {# Use overflow-x: scroll so that mobile views don't freak out
+             # when the table is too wide #}
+            <div style="overflow-x: scroll;">
+                <table class="ui searchable sortable unstackable selectable celled table">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Order Number</th>
+                        <th class="sorted ascending">Buyer Name</th>
+                        <th>User or Anon</th>
+                        <th>Sellers</th>
+                        <th>Order Status</th>
+                        <th>Amount Paid</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for u in orders.items | sort(attribute='created_at') %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                        <td>{{ u.order_number }}</td>
+                            <td>
+                                {{ u.full_name }}
+                            </td>
+                            <td>{% if u.buyer %}User{% else %}Anon{% endif %}</td>
+                        <td>
+                            {% for seller_order in u.order_seller_orders %}
+                            {{ seller_order.seller.full_name }},
+                        {% endfor %}
+                        </td>
+                            <td>{{ u.order_status_explained }}</td>
+                            <td>{{ u.order_pay_amount }}{{ u.price_currency.symbol }}</td>
+                            <td>
+                                <a class="ui orange button" href="{{ url_for('admin.marketplace_order_view', order_id=u.id) }}">View</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+
+            </div>
+
+        </div>
+
+    </div>
+    <div class="ui centered grid ">
+        {% if orders.pages > 0 %}
+            <div class="ui pagination menu">
+                {% for page in orders.iter_pages() %}
+                    {% if page %}
+                        {% if page != orders.page %}
+                            <a class="item"
+                               href="{{ url_for(request.endpoint,  page=page) }}">
+                                {{ page }}
+                            </a>
+                        {% else %}
+                            <a class="item active">
+                                {{ page }}
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        <div class="disabled item">
+                            ...
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{#        <form method="POST" action="{{ url_for('admin.marketplace_order_delete', order_id=0) }}" id="delete-order-form">#}
+{#            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>#}
+{#        </form>#}
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#search-orders').keyup(function () {
+                var searchText = $(this).val();
+                if (searchText.length > 0) {
+                    $('tbody td:icontains(' + searchText + ')').addClass('positive');
+                    $('td.positive').not(':icontains(' + searchText + ')').removeClass('positive');
+                    $('tbody td').not(':icontains(' + searchText + ')').closest('tr').addClass('hidden').hide();
+                    $('tr.hidden:icontains(' + searchText + ')').removeClass('hidden').show();
+                } else {
+                    $('td.positive').removeClass('positive');
+                    $('tr.hidden').removeClass('hidden').show();
+                }
+            });
+
+        });
+    </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+    <script>
+        {#function confirmDeleteOrder(order_id){#}
+        {#    swal({#}
+        {#        title: "Are you sure?",#}
+        {#        text: "Once deleted, you will not be able to recover this order",#}
+        {#        icon: "warning",#}
+        {#        buttons: true,#}
+        {#        dangerMode: true,#}
+        {#    })#}
+        {#        .then((willDelete) => {#}
+        {#            if (willDelete) {#}
+        {#                let form = $("#delete-order-form");#}
+        {#                form.attr('action', "{{ url_for('admin.marketplace_order_delete', order_id=0) }}".replace('0',order_id));#}
+        {#                form.submit();#}
+        {#            } else {#}
+        {#                return false;#}
+        {#            }#}
+        {#        });#}
+        {#    return false;#}
+        {#}#}
+    </script>
+{% endblock %}

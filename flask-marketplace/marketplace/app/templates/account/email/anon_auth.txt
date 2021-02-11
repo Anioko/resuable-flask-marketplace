@@ -1,0 +1,6 @@
+Dear Mediville Client.
+This is your authentication link to mediville buyer dashboard.
+Please Go to {{ link }} To access your orders.
+Sincerely,
+The {{ config.APP_NAME }} Team.
+Note: replies to this email address are not monitored.

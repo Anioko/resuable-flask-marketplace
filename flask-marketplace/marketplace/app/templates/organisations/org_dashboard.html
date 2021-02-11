@@ -1,0 +1,68 @@
+{% extends 'layouts/base.html' %}
+
+{% macro dashboard_option(title, endpoint, description=None, icon=None) %}
+    <a class="column" href="{{ url_for(endpoint) }}">
+        <div class="ui padded segment">
+            <h3 class="ui header">
+                {% if icon is not none %}
+                    <i class="{{ icon }}"></i>
+                {% endif %}
+                <div class="content">
+                    {{ title }}
+                    {% if description is not none %}
+                        <div class="sub header">
+                            {{ description }}
+                        </div>
+                    {% endif %}
+                </div>
+            </h3>
+        </div>
+    </a>
+{% endmacro %}
+
+{% block content %}
+    <div class="ui stackable grid container">
+        <div class="sixteen wide tablet twelve wide computer centered column">
+            <h2 class="ui header">
+                Your Organizations
+                <div class="sub header">
+                    View and manage currently involved in organizations.
+                </div>
+            </h2>
+            <div class="ui header" style="width: 100%; height: 50px">
+                <a class="ui green right floated button" href="{{ url_for('organisations.create_org') }}">Create New</a>
+            </div>
+            {# Use overflow-x: scroll so that mobile views don't freak out
+             # when the table is too wide #}
+            <div style="overflow-x: scroll;">
+                <table class="ui searchable sortable unstackable selectable celled table">
+                    <thead>
+                    <tr>
+                        <th class="sorted ascending" >Name</th>
+                        <th>Creator</th>
+                        <th>City</th>
+                        <th>State</th>
+                        <th>Country</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for u in orgs | sort(attribute='org_name') %}
+                        <tr onclick="window.location.href = '{{ url_for('admin.user_info', user_id=u.id) }}';">
+
+                            <td>{{ u.org_name }}</td>
+                            <td>{{ u.user.full_name }}</td>
+                            <td>{{ u.org_city }}</td>
+                            <td>{{ u.org_state }}</td>
+                            <td>{{ u.org_country }}</td>
+                            <td>
+                                <a class="ui primary button" href="{{ url_for('organisations.select_org', org_id=u.id) }}">Select</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

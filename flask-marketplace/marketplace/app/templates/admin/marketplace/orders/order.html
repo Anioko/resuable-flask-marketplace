@@ -1,0 +1,76 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+
+{% block content %}
+    <div class="ui stackable grid container">
+        <div class="four wide column">
+            {% include 'admin/partials/nav.html' %}
+        </div>
+        <div class="twelve wide tablet twelve wide computer centered column">
+            <a class="ui basic compact button" href="{{ url_for('admin.marketplace_orders') }}">
+                <i class="caret left icon"></i>
+                Back to Orders
+            </a>
+            <h2 class="ui header">
+                View Order
+                <div class="sub header">
+                    Order: {{ order.order_number }}
+                </div>
+            </h2>
+            <hr>
+            {% set currency = order.price_currency %}
+
+            <p>Order number : {{ order.order_number }}</p>
+            <p>Product Total Price : {{ order.products_total }}{{ currency.symbol }}</p>
+            <p>Shipping Price : {{ order.shipping_cost }}{{ currency.symbol }}</p>
+            <p>Total Paid : {{ order.order_pay_amount }}{{ currency.symbol }}</p>
+            <h5>Items</h5>
+            {% set currency = order.price_currency %}
+            <table class="ui very basic small celled table">
+                <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Piece Price</th>
+                    <th>Count</th>
+                    <th>Total</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% set ns = namespace(sum=0) %}
+                {% for order_by_seller in order.order_items_grouped() %}
+                    <tr class="no-border-top">
+                        <td colspan="4>" class="no-border-top">
+                            <b><u>Order from {{ order_by_seller['seller'].full_name }}</u></b>
+                        </td>
+                    </tr>
+                    {% for item in order_by_seller['items'] %}
+                        <tr>
+                            <td>{{ item.product.name }}</td>
+                            <td>{{ item.product.price }} {{ currency.symbol }}</td>
+                            <td>{{ item.count }}</td>
+                            <td>{{ item.count * item.product.price }} {{ currency.symbol }}</td>
+                            {% set ns.sum = ns.sum + (item.count * item.product.price) %}
+                        </tr>
+                    {% endfor %}
+                    {% if order_by_seller['shipping']  %}
+                        <tr>
+                            <td colspan="3"><b><i>Shipping</i></b></td>
+                            {% set shipping_price =  order_by_seller['shipping'].get_price(currency, order_by_seller['seller']) %}
+                            <td>{{ shipping_price }} {{ currency.symbol }}</td>
+                            {% set ns.sum = ns.sum + shipping_price %}
+                        </tr>
+                    {% endif %}
+                    <tr style="height: 20px"></tr>
+                {% endfor %}
+                <tr style="height: 10px"></tr>
+                <tr class="no-border-top">
+                    <td colspan="3"><b><u><i><em>Total</em></i></u></b></td>
+                    <td><b>{{ ns.sum }} {{ currency.symbol }}</b></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <hr>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'layouts/base.html' %}
+{% block page_title %}{{ config.APP_NAME }} - Terms Of Use{% endblock %}
+{% block custom_head_tags %}
+    <meta name="description"
+          content="Terms Of Use, {{ config.APP_NAME }} is a social network and community for health and allied care professionals">
+    <meta name="author" content="{{ config.APP_NAME }}">
+    <meta name="og:title" content="Terms Of Use, {{ config.APP_NAME }} healthcare community network"/>
+    <meta name="og:type" content="website"/>
+    <meta name="og:url" content="https://www.{{ config.APP_NAME }}.com"/>
+    <meta name="og:image" content="{{ url_for('static', filename='images/home/slider/hill.png') }}"/>
+    <meta name="og:site_name" content="{{ config.APP_NAME }}"/>
+    <meta name="og:description"
+          content="Terms Of Use, {{ config.APP_NAME }} is a social network and community for health and allied care professionals"/>
+    <meta name="twitter:card" content="summary"/>
+    <meta name="twitter:site" content="@corralhealth"/>
+    <meta name="twitter:creator" content="@anioko1"/>
+{% endblock %}
+{% block content %}
+    <div class="ui text container">
+        <h1>Terms & Condition</h1>
+                        {{ editable_html_obj.value|safe }}
+
+    </div>
+
+{% endblock %}

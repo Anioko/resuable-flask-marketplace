@@ -1,0 +1,11 @@
+{% macro dashboard_option(title, endpoint, description=None, icon=None) %}
+    <a class="{% if request.endpoint == endpoint %} active {% endif %}item" href="{{ url_for(endpoint) }}" >
+        <i class="{{ icon }}"></i>{{ title }}
+    </a>
+{% endmacro %}
+<div class="ui vertical fluid tabular menu">
+    {{ dashboard_option('Home', 'marketplace.seller_panel',
+                                    description='View and manage Marketplace Items', icon='home icon') }}
+    {% include 'marketplace/partials/seller_nav_items.html' %}
+</div>
+

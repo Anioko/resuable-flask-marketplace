@@ -1,0 +1,10 @@
+{% macro brand_wid(brand) -%}
+    <div class="col-md-2 col-6">
+        <figure class="box item-logo">
+            <img src="{{ url_for('_uploads.uploaded_file', setname='images',
+            filename=json_load(brand.image)[0], _external=True) }}">
+            <div style="height: 10px"></div>
+            <figcaption class="border-top pt-2">{{brand.products | length}} Products</figcaption>
+        </figure> <!-- item-logo.// -->
+    </div> <!-- col.// -->
+{% endmacro %}

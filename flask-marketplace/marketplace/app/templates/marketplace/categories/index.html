@@ -1,0 +1,21 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/product_macros.html' as products_macros %}
+
+{% block content %}
+    <div class="ui stackable centered grid marketplace container">
+        <div class="sixteen wide column">
+            <h1 class="ui header">
+                Market Place
+            </h1>
+            <h2 class="ui header">
+                Categories List
+            </h2>
+            <hr>
+            <div class="ui link cards">
+                {% for category in categories %}
+                    {{ products_macros.category_wid(category) }}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
