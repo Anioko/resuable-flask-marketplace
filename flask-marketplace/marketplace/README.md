@@ -25,6 +25,11 @@ A Flask application template with the boilerplate code already done for you.
 
 ## Demos
 
+
+Marketplace:
+
+![landing page](readme_media/marketplace_1.png "landing page")
+
 Home Page:
 
 ![home](readme_media/home.gif "home")
