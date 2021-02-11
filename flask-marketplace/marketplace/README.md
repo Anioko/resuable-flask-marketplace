@@ -28,26 +28,13 @@ Marketplace:
 ![landing page](readme_media/marketplace_1.png "landing page")
 
 
-Registering User:
-
-![registering](readme_media/register.gif "register")
-
-Admin Editing Page:
-
-![edit page](readme_media/editpage.gif "editpage")
-
-Admin Editing Users:
-
-![edit user](readme_media/edituser.gif "edituser")
-
-
 ## Setting up
 
 ##### Clone the repo
 
 ```
-$ git clone https://github.com/hack4impact/flask-base.git
-$ cd flask-base
+$ git clone https://github.com/Anioko/re-usable-flask-marketplace.git
+$ cd re-usable-flask-marketplace
 ```
 
 ##### Initialize a virtualenv
