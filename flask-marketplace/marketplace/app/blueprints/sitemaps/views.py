@@ -4,34 +4,35 @@ from datetime import datetime, timedelta
 
 from flask import Blueprint, render_template, url_for, make_response, current_app, request, send_from_directory
 from app.models import MSettings
-from app.models import User, Organisation
+from app.models import User, Organisation, MProduct
 
 sitemaps = Blueprint('sitemaps', __name__)
 
 
 
 #@sitemaps.route('/robots.txt')
-##@sitemaps.route('/sitemap_main.xml')
-##def static_from_root():
-    ##return send_from_directory(app.static_folder, request.path[1:])
+#@sitemaps.route('/sitemap_main.xml')
+#def static_from_root():
+    #return send_from_directory(app.static_folder, request.path[1:])
 
 ####uncomment to work on linux server
-###@sitemaps.route('/robots.txt')
-##@sitemaps.route('/<path:filename>')
-##def static_from_root(filename):
-    ##file = request.url.split("/")[-1]
-    ##urlset = generate_sitemap(file)
-    ##return return_xml('public/sitemap.html', urlset=urlset)
+@sitemaps.route('/robots.txt')
+@sitemaps.route('/<path:filename>')
+def static_from_root(filename):
+    file = request.url.split("/")[-1]
+    urlset = generate_sitemap(file)
+    return return_xml('public/sitemap.html', urlset=urlset)
 
 ####uncomment to work on linux server
-#def return_xml(view, **kwargs):
-    #data = render_template(view, **kwargs)
-    #response = make_response(data)
-    #response.headers["Content-Type"] = "application/xml"
-    #return response
+def return_xml(view, **kwargs):
+    data = render_template(view, **kwargs)
+    response = make_response(data)
+    response.headers["Content-Type"] = "application/xml"
+    return response
 
 
-##def generate_sitemap(link):
+def generate_sitemap(link):
+    return urlset
     ##file = link.split("/")[-1].split("\\")[-1].split(".")[0]
     ##filename = url_for('static', filename=file+'.txt')
     ## commented out while running on windows. Should change folder names
@@ -69,15 +70,7 @@ def index():
     sitemaps_list = [
         {'loc': url_for('sitemaps.main_xml', _external=True)},
         {'loc': url_for('sitemaps.companies_xml', _external=True)},
-        {'loc': url_for('sitemaps.profiles_xml', _external=True)},
-        {'loc':"https://mediville.com/sitemap_one_london.xml"},
-        {'loc':"https://mediville.com/sitemap_one_dallas.xml"},
-        {'loc':"https://mediville.com/sitemap_one_philadelphia.xml"},
-        {'loc':"https://mediville.com/sitemap_one_houston.xml"},
-        {'loc':"https://mediville.com/sitemap_one_chicago.xml"},
-        {'loc':"https://mediville.com/sitemap_one_losangeles.xml"},
-        {'loc':"https://mediville.com/sitemap_one_newyork.xml"},
-        {'loc':"https://mediville.com/sitemap_practitioners_one_usa_cities.xml"}
+        {'loc': url_for('sitemaps.profiles_xml', _external=True)}
     ]
     return return_xml('public/sitemapindex.html', sitemaps=sitemaps_list)
 
@@ -103,6 +96,15 @@ def companies_xml():
                        'changefreq': 'daily'})
     return return_xml('public/sitemap.html', urlset=urlset)
 
+@sitemaps.route('/products.xml')
+def products_xml():
+    urlset = []
+    products = MProduct.query.all()
+    for product in products:
+        urlset.append({'loc': url_for('marketplace.product', product_id=product.id, product_name=product.name, _external=True),
+                       'lastmod': '{}'.format(sitemap_date(product.created_at) if product.created_at is not None else ''),
+                       'changefreq': 'daily'})
+    return return_xml('public/sitemap.html', urlset=urlset)
 
 @sitemaps.route('/public_profiles.xml')
 def profiles_xml():
