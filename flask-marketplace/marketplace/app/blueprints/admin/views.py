@@ -22,7 +22,7 @@ from app.blueprints.admin.forms import (
 )
 from app.decorators import admin_required
 from app.email import send_email
-from app.models import MSettings, EditableHTML, Role, User, Organisation
+from app.models import MSettings, EditableHTML, Role, User, Organisation, Message
 
 admin = Blueprint('admin', __name__)
 
