@@ -30,11 +30,11 @@
                         </div>
                         {% if website_settings %}
                         <div class="seven wide column" style="text-align: center">
-                            <img class="footer-img" src="{{ url_for('_uploads.uploaded_file', setname='images',
-                            filename=website_settings.brand_image , _external=True) }}" alt="Mediville">
+                            <!---<img class="footer-img" src="{# url_for('_uploads.uploaded_file', setname='images',
+                            filename=website_settings.brand_image) #}" alt="{{ config.APP_NAME }}">--->
                             <br>
                             <br>
-                            <p style="color: white"><b>{{ website_settings.brand_description }}</b></p>
+                            <p style="color: white"><b>{# website_settings.brand_description #}</b></p>
                         </div>
                         {% endif %}
                     </div>

@@ -1,0 +1,85 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+
+{% block scripts %}
+{% endblock %}
+
+{% block content %}
+    <div class="ui stackable centered grid container">
+        <div class="twelve wide column">
+            <a class="ui basic compact button" href="{{ url_for('admin.index') }}">
+                <i class="caret left icon"></i>
+                Back to dashboard
+            </a>
+            <h2 class="ui header">
+                Add Main Headline text and One line descriptions to the landing page
+                <div class="sub header">Add a headline text and descriptions for the landing page</div>
+            </h2>
+
+            {% set flashes = {
+                'error':   get_flashed_messages(category_filter=['form-error']),
+                'warning': get_flashed_messages(category_filter=['form-check-email']),
+                'info':    get_flashed_messages(category_filter=['form-info']),
+                'success': get_flashed_messages(category_filter=['form-success'])
+            } %}
+
+            {{ f.begin_form(form, flashes) }}
+
+
+                <div class="field">
+                    {{ f.render_form_field(form.title) }}
+                </div>
+                <div class="field">
+                    {{ f.render_form_field(form.description) }}
+                </div>
+                <div class="field">
+                    {{ f.render_form_field(form.twitter) }}
+                </div>
+                <div class="field">
+                    {{ f.render_form_field(form.facebook) }}
+                </div>
+                <div class="field">
+                    {{ f.render_form_field(form.instagram) }}
+                </div>
+                <div class="field">
+                    {{ f.render_form_field(form.linkedin) }}
+                </div>
+                <div class="field">
+                    {{ f.render_form_field(form.tiktok) }}
+                </div>
+                <div class="field">
+                    {{ f.render_form_field(form.snap_chat) }}
+                </div>
+                <div class="field">
+                    {{ f.render_form_field(form.youtube) }}
+                </div>
+                <div class="field">
+                    {{ f.render_form_field(form.google_analytics_id) }}
+                </div>
+                <div class="field">
+                    {{ f.render_form_field(form.other_tracking_analytics_one) }}
+                </div>
+                <div class="field">
+                    {{ f.render_form_field(form.other_tracking_analytics_two) }}
+                </div>
+                <div class="field">
+                    {{ f.render_form_field(form.other_tracking_analytics_three) }}
+                </div>
+                <div class="field">
+                    {{ f.render_form_field(form.other_tracking_analytics_four) }}
+                </div>
+
+
+                {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
+                {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
+                {{ f.form_message(flashes['info'], header='Information', class='info') }}
+                {{ f.form_message(flashes['success'], header='Success!', class='success') }}
+
+                {% for field in form | selectattr('type', 'equalto', 'SubmitField') %}
+                    {{ f.render_form_field(field) }}
+                {% endfor %}
+
+            {{ f.end_form() }}
+        </div>
+    </div>
+{% endblock %}

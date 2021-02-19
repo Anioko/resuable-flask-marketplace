@@ -19,10 +19,13 @@ from app.blueprints.admin.forms import (
     ChangeUserNameForm,
     InviteUserForm,
     NewUserForm,
+    BackgroundImageForm,
+    SiteLogoForm,
+    LandingSettingForm
 )
 from app.decorators import admin_required
 from app.email import send_email
-from app.models import MSettings, EditableHTML, Role, User, Organisation, Message
+from app.models import MSettings, EditableHTML, Role, User, Organisation, Message, BackgroundImage, SiteLogo, LandingSetting
 
 admin = Blueprint('admin', __name__)
 
@@ -299,72 +302,6 @@ def texts():
     return render_template('admin/texts/index.html', website_settings=website_settings, editable_html_obj=editable_html_obj)
 
 
-@admin.route('/posts', defaults={'page': 1}, methods=['GET'])
-@admin.route('/posts/<int:page>', methods=['GET'])
-@login_required
-@admin_required
-def posts(page):
-    website_settings = MSettings.query.first()
-    posts_result = Post.query.paginate(page, per_page=100)
-    return render_template('admin/posts/browse.html', website_settings=website_settings, posts=posts_result)
-
-
-@admin.route('/post/<int:post_id>/_delete', methods=['POST'])
-@login_required
-@admin_required
-def delete_post(post_id):
-    website_settings = MSettings.query.first()
-    post = Post.query.filter_by(id=post_id).first()
-    db.session.delete(post)
-    db.session.commit()
-    flash('Successfully deleted post.', 'success')
-    return redirect(url_for('admin.posts'))
-
-
-@admin.route('/promos', defaults={'page': 1}, methods=['GET'])
-@admin.route('/promos/<int:page>', methods=['GET'])
-@login_required
-@admin_required
-def promos(page):
-    website_settings = MSettings.query.first()
-    promos_result = Promo.query.paginate(page, per_page=100)
-    return render_template('admin/promos/browse.html', website_settings=website_settings, promos=promos_result)
-
-
-@admin.route('/promo/<int:promo_id>/_delete', methods=['POST'])
-@login_required
-@admin_required
-def delete_promo(promo_id):
-    website_settings = MSettings.query.first()
-    promo = Promo.query.filter_by(id=promo_id).first()
-    db.session.delete(promo)
-    db.session.commit()
-    flash('Successfully deleted a promo.', 'success')
-    return redirect(url_for('admin.promos'))
-
-
-@admin.route('/questions', defaults={'page': 1}, methods=['GET'])
-@admin.route('/questions/<int:page>', methods=['GET'])
-@login_required
-@admin_required
-def questions(page):
-    website_settings = MSettings.query.first()
-    questions_result = Question.query.paginate(page, per_page=100)
-    return render_template('admin/questions/browse.html', website_settings=website_settings, questions=questions_result)
-
-
-@admin.route('/question/<int:question_id>/_delete', methods=['POST'])
-@login_required
-@admin_required
-def delete_question(question_id):
-    website_settings = MSettings.query.first()
-    question = Question.query.filter_by(id=question_id).first()
-    db.session.delete(question)
-    db.session.commit()
-    flash('Successfully deleted question.', 'success')
-    return redirect(url_for('admin.questions'))
-
-
 @admin.route('/orgs', defaults={'page': 1}, methods=['GET'])
 @admin.route('/orgs/<int:page>', methods=['GET'])
 @login_required
@@ -387,26 +324,6 @@ def delete_org(org_id):
     return redirect(url_for('admin.orgs'))
 
 
-@admin.route('/jobs', defaults={'page': 1}, methods=['GET'])
-@admin.route('/jobs/<int:page>', methods=['GET'])
-@login_required
-@admin_required
-def jobs(page):
-    website_settings = MSettings.query.first()
-    jobs_result = Job.query.paginate(page, per_page=100)
-    return render_template('admin/jobs/browse.html', website_settings=website_settings, jobs=jobs_result)
-
-
-@admin.route('/job/<int:job_id>/_delete', methods=['POST'])
-@login_required
-@admin_required
-def delete_job(job_id):
-    website_settings = MSettings.query.first()
-    job = Job.query.filter_by(id=job_id).first()
-    db.session.delete(job)
-    db.session.commit()
-    flash('Successfully deleted Job.', 'success')
-    return redirect(url_for('admin.jobs'))
 
 
 @admin.route('/messages', defaults={'page': 1}, methods=['GET'])
@@ -524,4 +441,143 @@ def batch_delete():
     return redirect(url_for('admin.contact_messages'))
 
 
+@admin.route('/background/image')
+@login_required
+@admin_required
+def added_background_image():
+    """View available background image"""
+    data = BackgroundImage.query.first()
+    if data is None:
+        return redirect(url_for('admin.add_background_image'))
+    return render_template(
+        'admin/background/added_image.html', data=data)
 
+# Background Image add method
+@admin.route('/background_image/add', methods=['POST', 'GET'])
+@admin_required
+def add_background_image():
+    form = BackgroundImageForm(request.form)
+    if request.method == 'POST':
+        image = images.save(request.files['background_image'])
+        background_image = BackgroundImage(background_image=image)
+        db.session.add(background_image)
+        db.session.commit()
+        flash("Background Image Added Successfully .", "success")
+        return redirect(url_for('admin.added_background_image'))
+    return render_template('admin/background/add_image.html', form=form)
+
+# Background Image Delete Method 
+@admin.route('/background_image/delete/<int:background_image_id>', methods=['POST', 'GET'])
+@admin_required
+def delete_background_image(background_image_id):
+    background_image_data = BackgroundImage.query.get(background_image_id)
+    db.session.delete(background_image_data)
+    db.session.commit()
+    flash("Image Deleted Successfully.", "success")
+    return redirect(url_for('admin.added_background_image'))
+
+@admin.route('/logo')
+@login_required
+@admin_required
+def added_logo():
+    """View available logo image"""
+    data = SiteLogo.query.first()
+    if data is None:
+        return redirect(url_for('admin.add_logo'))
+    return render_template(
+        'admin/logo/added_logo.html', data=data)
+
+# Logo add method
+@admin.route('/logo/add', methods=['POST', 'GET'])
+@admin_required
+def add_logo():
+    form = SiteLogoForm(request.form)
+    if request.method == 'POST':
+        image = images.save(request.files['logo_image'])
+        logo = SiteLogo(logo_image=image)
+        db.session.add(logo)
+        db.session.commit()
+        flash("Logo Added Successfully .", "success")
+        return redirect(url_for('admin.added_logo'))
+    return render_template('admin/logo/add_logo.html', form=form)
+
+# Logo Delete Method 
+@admin.route('/logo/delete/<int:logo_id>', methods=['POST', 'GET'])
+@admin_required
+def delete_logo(logo_id):
+    logo_data = SiteLogo.query.get(logo_id)
+    db.session.delete(logo_data)
+    db.session.commit()
+    flash("Logo Deleted Successfully.", "success")
+    return redirect(url_for('admin.add_logo'))
+
+
+# Add Settings 
+@admin.route('/settings/add', methods=['POST', 'GET'])
+@admin_required
+def add_settings():
+    form = LandingSettingForm()
+    if form.validate_on_submit():
+        data = LandingSetting(
+            title=form.title.data,
+            description=form.description.data,
+            twitter=form.twitter.data,
+            facebook=form.facebook.data,
+            instagram=form.instagram.data,
+            linkedin=form.linkedin.data,
+            tiktok=form.tiktok.data,
+            snap_chat=form.snap_chat.data,
+            youtube = form.youtube.data,
+            google_analytics_id = form.google_analytics_id.data,
+            other_tracking_analytics_one = form.other_tracking_analytics_one.data,
+            other_tracking_analytics_two = form.other_tracking_analytics_two.data,
+            other_tracking_analytics_three = form.other_tracking_analytics_three.data,
+            other_tracking_analytics_four = form.other_tracking_analytics_four.data              
+            )
+        db.session.add(data)
+        db.session.commit()
+        flash("SEO Added Successfully.", "success")
+        return redirect(url_for('admin.added_settings'))
+    return render_template('admin/settings/add_settings.html', form=form)
+
+@admin.route('/settings')
+@login_required
+@admin_required
+def added_settings():
+    """View all added settings."""
+    data = LandingSetting.query.first()
+    if data is None:
+        return redirect(url_for('admin.add_settings'))
+    return render_template(
+        'admin/settings/added_settings.html', data=data)
+
+
+# Edit Settings 
+@admin.route('/settings/<int:id>/edit', methods=['POST', 'GET'])
+@login_required
+@admin_required
+def edit_settings(id):
+    data = LandingSetting.query.filter_by(id=id).first()
+    form = LandingSettingForm(obj=data)
+    if form.validate_on_submit():
+        data.title=form.title.data
+        data.description=form.description.data
+        data.twitter=form.twitter.data
+        data.facebook=form.facebook.data
+        data.instagram=form.instagram.data
+        data.linkedin=form.linkedin.data
+        data.tiktok=form.tiktok.data
+        data.snap_chat=form.snap_chat.data
+        data.youtube = form.youtube.data
+        data.google_analytics_id = form.google_analytics_id.data
+        data.other_tracking_analytics_one = form.other_tracking_analytics_one.data
+        data.other_tracking_analytics_two = form.other_tracking_analytics_two.data
+        data.other_tracking_analytics_three = form.other_tracking_analytics_three.data
+        data.other_tracking_analytics_four = form.other_tracking_analytics_four.data 
+        db.session.add(data)
+        db.session.commit()
+        flash("Settings Added Successfully.", "success")
+        return redirect(url_for('admin.added_settings'))
+    else:
+        flash('ERROR! Settings was not edited.', 'error')
+    return render_template('admin/settings/add_settings.html', form=form)

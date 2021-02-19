@@ -15,12 +15,13 @@ from wtforms import Flags
 
 from app import db
 from app.blueprints.marketplace.forms import ReviewForm, SearchForm, SVariantForm, SProductForm, SShippingForm, SShippingMethodForm
+from app.blueprints.admin.forms import MBrandForm
 from app.blueprints.marketplace.apis import *
 from app.blueprints.api import main_api
 from app.decorators import seller_required, buyer_required, anonymous_required
 from app.email import send_email
 from app.models import MProduct, MProductCategory, MCategory, MBanner, MReview, MVariant, current_user, User, MShippingMethod, MCartDetails, MSettings, MCurrency, \
-    MShippingMethodPrice, MOrderItem, MOrder, MSellerOrder, LandingSetting, MBrand, NewsLink
+    MShippingMethodPrice, MOrderItem, MOrder, MSellerOrder, LandingSetting, MBrand, NewsLink, BackgroundImage, SiteLogo
 
 marketplace = Blueprint('marketplace', __name__)
 images = UploadSet('images', IMAGES)
@@ -31,6 +32,8 @@ images = UploadSet('images', IMAGES)
 def index():
     form = SearchForm()
     banner = MBanner.query.first()
+    background = BackgroundImage.query.first()
+    logo = SiteLogo.query.first()
     settings = LandingSetting.query.all()
     website_settings = MSettings.query.first()
     brands = MBrand.query.order_by(MBrand.created_at.asc()).limit(5).all()
@@ -39,7 +42,8 @@ def index():
     new_arrived_products = MProduct.query.filter_by(availability=True).order_by(MProduct.created_at.desc()).limit(4).all()
     categories_instances = MCategory.query.filter_by(is_featured=True).all()
     return render_template('marketplace/landing-page.html', form=form, categories=categories_instances, featured_products=featured_products,
-                           new_arrived_products=new_arrived_products, settings=settings, website_settings=website_settings, brands=brands, newslinks=newslinks, banner=banner)
+                           new_arrived_products=new_arrived_products, settings=settings, website_settings=website_settings, brands=brands, newslinks=newslinks, banner=banner,
+                            background=background, logo=logo)
 
 @marketplace.route('/review', methods=['POST'])
 def review():
@@ -211,7 +215,7 @@ def order(step):
             order_discount = 0
             order_pay_amount = order_total - order_discount
             price_to_pay = cart_instance.price_paid()
-            description = "Payment for buying from Mediville Markeplace for order: " + order_number
+            description = "Payment for buying from {{ config.APP_NAME }} Markeplace for order: " + order_number
             if not order_pay_amount == price_to_pay:
                 flash("Calculation Mismatch, Please Try Again", "error")
                 return redirect(url_for('marketplace.order', step=3))
@@ -748,6 +752,34 @@ def buyer_order_view(order_id):
     order_instance = MOrder.query.get_or_404(order_id)
     return render_template('marketplace/buyer/orders/order.html', website_settings=website_settings, order=order_instance)
 
+@marketplace.route('/marketplace/brands/add', methods=['GET', 'POST'])
+@login_required
+@seller_required
+def marketplace_brand_create():
+    website_settings = MSettings.query.first()
+    form = MBrandForm()
+    form.image.validators = [FileAllowed(images, 'Images only!')]
+    form.image.flags = Flags()
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            try:
+                image_filenames = request.form.getlist('old_images[]')
+            except:
+                image_filenames = []
+            if request.files['image']:
+                image_files = request.files.getlist('image')
+                for image in image_files:
+                    image_filename = images.save(image)
+                    image_filenames.append(image_filename)
+            image_filenames = json.dumps(image_filenames)
+            brand = MBrand(
+                name=form.name.data,
+                image=image_filenames)
+            db.session.add(brand)
+            db.session.commit()
+            flash('Brand {} successfully created'.format(brand.name), 'success')
+            return redirect(url_for('marketplace.seller_product_create'))
+    return render_template('marketplace/seller/brands/add-edit.html', website_settings=website_settings, form=form)
 
 # APIS
 main_api.add_resource(AddToCart, '/add_to_cart')

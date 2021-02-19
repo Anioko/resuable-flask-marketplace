@@ -1,0 +1,68 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+    <div class="ui stackable grid container">
+        <div class="sixteen wide tablet twelve wide computer centered column">
+            <a class="ui basic compact button" href="{{ url_for('admin.index') }}">
+                <i class="caret left icon"></i>
+                Back to dashboard
+            </a>
+            <h2 class="ui header">
+                Added Settings
+                <div class="sub header">
+                    View and manage settings.
+                </div>
+            </h2>
+
+            {# Use overflow-x: scroll so that mobile views don't freak out
+             # when the table is too wide #}
+            <div style="overflow-x: scroll;">
+                <table class="ui searchable sortable unstackable selectable celled table">
+                    <thead>
+                        <tr>
+                            <th>Tagline</th>
+                            <th>Description</th>
+                            <th>Twitter</th>
+                            <th>Facebook</th>
+                            <th>Instagram</th>
+                            <th>Linkedin</th>
+                            <th>Tiktok</th>
+                            <th>Snap Chat</th>
+                            <th>YouTube</th>
+                            <th>Google Analytics</th>
+                            <th>Other_tracking_analytics_one</th>
+                            <th>Other_tracking_analytics_two</th>
+                            <th>Other_tracking_analytics_three</th>
+                            <th>Other_tracking_analytics_four</th>
+                            <th>edit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% if data  %}
+                        <tr>
+
+                            <td>{{ data.title }}</td>
+                            <td>{{ data.description }}</td>
+                            <td>{{ data.twitter }}</td>
+                            <td>{{ data.facebook }}</td>
+                            <td>{{ data.instagram }}</td>
+                            <td>{{ data.linkedin }}</td>
+                            <td>{{ data.tiktok }}</td>
+                            <td>{{ data.snapchat }}</td>
+                            <td>{{ data.youtube }}</td>
+                            <td>{{ data.google_analytics_id }}</td>
+                            <td>{{ data.other_tracking_analytics_one }}</td>
+                            <td>{{ data.other_tracking_analytics_two }}</td>
+                            <td>{{ data.other_tracking_analytics_three }}</td>
+                            <td>{{ data.other_tracking_analytics_four }}</td>
+
+                            <td> <a class="ui red left floated button" style="margin-top: 1px"
+                                   href="{{ url_for('admin.edit_settings', id=data.id) }}">Edit</a></td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

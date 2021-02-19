@@ -7,7 +7,7 @@ from sqlalchemy import desc, func
 from app.email import send_email
 from .forms import *
 from ...utils import Struct
-from app.models import MSettings
+#from app.models import MSettings, MBanner, BackgroundImage, LandingSetting, SiteLogo, MProduct, MCategory
 
 main = Blueprint('main', __name__)
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -18,12 +18,21 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@main.route('/home')
-@login_required
+@main.route('/')
 def index():
-    check_org_exist = db.session.query(Organisation).filter_by(user_id=current_user.id).first()
+    form = SearchForm()
+    banner = MBanner.query.first()
+    background = BackgroundImage.query.first()
+    logo = SiteLogo.query.first()
+    settings = LandingSetting.query.all()
     website_settings = MSettings.query.first()
-    return render_template('main/user_dashboard.html', website_settings=website_settings, check_org_exist=check_org_exist)
+    brands = MBrand.query.order_by(MBrand.created_at.asc()).limit(5).all()
+    featured_products = MProduct.query.filter_by(availability=True).filter_by(is_featured=True).order_by(MProduct.created_at.asc()).limit(4).all()#.limit(5).all()
+    new_arrived_products = MProduct.query.filter_by(availability=True).order_by(MProduct.created_at.desc()).limit(4).all()
+    categories_instances = MCategory.query.filter_by(is_featured=True).all()
+    return render_template('marketplace/landing-page.html', form=form, categories=categories_instances, featured_products=featured_products,
+                           new_arrived_products=new_arrived_products, settings=settings, website_settings=website_settings, brands=brands, newslinks=newslinks, banner=banner,
+                            background=background, logo=logo)
 
 @main.route('/search')
 def search():

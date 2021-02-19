@@ -8,3 +8,4 @@ from .miscellaneous import *  # noqa
 from .marketplace import *  # noqa
 from .blog import *
 from .landingsetting import *  # noqa
+from .admin import *  # noqa

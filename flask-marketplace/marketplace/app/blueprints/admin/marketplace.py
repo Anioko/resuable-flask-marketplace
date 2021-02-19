@@ -402,29 +402,20 @@ def marketplace_product_delete(product_id):
 @login_required
 @admin_required
 def marketplace_settings():
-    website_settings = MSettings.query.first()
-    settings = MSettings.query.first()
-    form = MSettingsForm() if not settings else MSettingsForm(obj=settings)
-    form.brand_image.validators = [FileAllowed(images, 'Images only!')]
-    form.brand_image.flags = Flags()
     if request.method == 'POST':
-        if form.validate_on_submit():
-            if request.files['brand_image']:
-                brand_image_filename = images.save(request.files['brand_image'])
-            if not settings:
-                settings = MSettings(brand_image=brand_image_filename, brand_description=form.brand_description.data, \
-                    stripe_public_key=form.stripe_public_key.data, stripe_secret_key=form.stripe_secret_key.data)
-            settings.brand_image = brand_image_filename
-            settings.brand_description = form.brand_description.data
-            settings.stripe_public_key = form.stripe_public_key.data
-            settings.stripe_secret_key = form.stripe_secret_key.data
-            db.session.add(settings)
-            db.session.commit()
-            flash('Settings successfully changed', 'success')
-            return redirect(url_for('admin.marketplace_index'))
-    return render_template('admin/marketplace/settings.html', website_settings=website_settings, form=form, settings=settings)
-
-
+        for i in request.form.lists():
+            s = MSettings.query.filter_by(name=i[0]).first()
+            if s:
+                s.value = request.form.get(i[0])
+                db.session.add(s)
+                db.session.commit()
+        flash("Changes saved successfully", "success")
+        return redirect(url_for('admin.marketplace_settings'))
+    c = MSettings.query.count()
+    if c == 0:
+        MSettings.insert_stripe()
+    settings = MSettings.query.order_by(MSettings.id.asc()).all()
+    return render_template('admin/marketplace/settings.html', settings=settings)
 @admin.route('/marketplace/orders', defaults={'page': 1}, methods=['GET'])
 @admin.route('/marketplace/orders/<int:page>', methods=['GET'])
 @login_required
@@ -476,39 +467,24 @@ def marketplace_banner():
     # if not banner:
     form.main_image.validators = [FileAllowed(images, 'Images only!')]
     form.main_image.flags = Flags()
-    form.feature_icon_one.validators = [FileAllowed(images, 'Images only!')]
-    form.feature_icon_one.flags = Flags()
-    form.feature_icon_two.validators = [FileAllowed(images, 'Images only!')]
-    form.feature_icon_two.flags = Flags()
-    form.feature_icon_three.validators = [FileAllowed(images, 'Images only!')]
-    form.feature_icon_three.flags = Flags()
     if request.method == 'POST':
         if form.validate_on_submit():
             if request.files['main_image']:
                 main_image_filename = images.save(request.files['main_image'])
-            if request.files['feature_icon_one']:
-                feature_icon_one_filename = images.save(request.files['feature_icon_one'])
-            if request.files['feature_icon_two']:
-                feature_icon_two_filename = images.save(request.files['feature_icon_two'])
-            if request.files['feature_icon_three']:
-                feature_icon_three_filename = images.save(request.files['feature_icon_three'])
-
             if not banner:
                 banner = MBanner(main_image=main_image_filename, feature_header_one=form.feature_header_one.data, \
-                    feature_icon_one=feature_icon_one_filename, feature_description_one=form.feature_description_one.data,\
+                    feature_description_one=form.feature_description_one.data,\
                     feature_header_two=form.feature_header_two.data, \
-                    feature_icon_two=feature_icon_two_filename, feature_description_two=form.feature_description_two.data, \
+                    feature_description_two=form.feature_description_two.data, \
                     feature_header_three=form.feature_header_three.data, \
-                    feature_icon_three=feature_icon_three_filename, feature_description_three=form.feature_description_three.data)
+                    feature_description_three=form.feature_description_three.data)
+
             banner.main_image = main_image_filename
             banner.feature_header_one = form.feature_header_one.data
-            banner.feature_icon_one = feature_icon_one_filename
             banner.feature_description_one = form.feature_description_one.data
             banner.feature_header_two = form.feature_header_two.data
-            banner.feature_icon_two = feature_icon_two_filename
             banner.feature_description_two = form.feature_description_two.data
             banner.feature_header_three = form.feature_header_three.data
-            banner.feature_icon_three = feature_icon_three_filename
             banner.feature_description_three = form.feature_description_three.data
             db.session.add(banner)
             db.session.commit()

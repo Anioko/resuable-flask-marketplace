@@ -2,9 +2,11 @@
 {% import 'macros/product_macros.html' as products_macros %}
 {% import 'macros/product_detail_macros.html' as p %}
 {% block page_title %}
-    Marketplace - {{ product_instance.name }}
+    {{ product_instance.name }}
 {% endblock %}
+
 {% block custom_head_tags %}
+   <meta name="description" content="{{ product_instance.description }}">
     <!-- jQuery -->
     <script src="{{ url_for('static', filename='js/jquery-2.0.0.min.js') }}"></script>
     

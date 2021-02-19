@@ -17,11 +17,12 @@ sitemaps = Blueprint('sitemaps', __name__)
 
 ####uncomment to work on linux server
 @sitemaps.route('/robots.txt')
-@sitemaps.route('/<path:filename>')
+@sitemaps.route('/<path:filename>.xml')
 def static_from_root(filename):
     file = request.url.split("/")[-1]
     urlset = generate_sitemap(file)
     return return_xml('public/sitemap.html', urlset=urlset)
+
 
 ####uncomment to work on linux server
 def return_xml(view, **kwargs):

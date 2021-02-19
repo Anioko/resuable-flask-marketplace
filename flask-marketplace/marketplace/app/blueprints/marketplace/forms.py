@@ -40,7 +40,7 @@ class SProductForm(FlaskForm):
     )
     variants = QuerySelectMultipleField(
         'Variants',
-        validators=[InputRequired()],
+        #validators=[InputRequired()],
         get_label='name',
         query_factory=lambda: db.session.query(MVariant).order_by('name')
     )
@@ -71,7 +71,7 @@ class SShippingForm(FlaskForm):
     last_name = StringField('Last name', validators=[InputRequired()])
     email = EmailField('Email', validators=[InputRequired(), Email()])
     mobile_phone = IntegerField('Phone numbers only', validators=[InputRequired()])
-    state = SelectField(u'Select US State', choices=states)
+    state = StringField('State', validators=[InputRequired()])
     zip = StringField('Zip Code', validators=[InputRequired(), Length(1, 7)])
     country = SelectField(u'Select Country', choices=countries)
     city = StringField('City', validators=[InputRequired()])

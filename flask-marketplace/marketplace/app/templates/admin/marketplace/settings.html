@@ -1,9 +1,6 @@
 {% extends 'layouts/base.html' %}
 {% import 'macros/form_macros.html' as f %}
 
-{% block scripts %}
-{% endblock %}
-
 {% block content %}
     <div class="ui stackable centered grid container">
         <div class="four wide column">
@@ -12,37 +9,23 @@
         <div class="twelve wide column">
             <a class="ui basic compact button" href="{{ url_for('admin.marketplace_index') }}">
                 <i class="caret left icon"></i>
-                Back to Marketplace
+                Back to MarketPlace dashboard
             </a>
-                <h2 class="ui header">
-                    Customize Marketplace Settings
-                    <div class="sub header">Edit banner settings</div>
-                </h2>
-
-            {% set flashes = {
-                'error':   get_flashed_messages(category_filter=['form-error']),
-                'warning': get_flashed_messages(category_filter=['form-check-email']),
-                'info':    get_flashed_messages(category_filter=['form-info']),
-                'success': get_flashed_messages(category_filter=['form-success'])
-            } %}
-
-            {{ f.begin_form(form, flashes) }}
-
-            {{ f.render_form_field(form.brand_image) }}
-            {{ f.render_form_field(form.brand_description) }}
-            {{ f.render_form_field(form.stripe_public_key) }}
-            {{ f.render_form_field(form.stripe_secret_key) }}
-
-            {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
-            {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
-            {{ f.form_message(flashes['info'], header='Information', class='info') }}
-            {{ f.form_message(flashes['success'], header='Success!', class='success') }}
-
-            {% for field in form | selectattr('type', 'equalto', 'SubmitField') %}
-                {{ f.render_form_field(field) }}
-            {% endfor %}
-
-            {{ f.end_form() }}
+            <h2 class="ui header">
+                Edit Settings
+            </h2>
+            <form method="POST" class="ui form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                {% for setting in settings %}
+                    <div class="field">
+                        <label for="setting-{{ setting.id }}">{{ setting.display_name }}</label>
+                        <input type="text" name="{{ setting.name }}" value="{{ setting.value }}" id="setting-{{ setting.id }}">
+                    </div>
+                {% endfor %}
+            <div class="field">
+                <input class="ui button" id="submit" name="submit" type="submit" value="Submit">
+            </div>
+            </form>
 
         </div>
     </div>

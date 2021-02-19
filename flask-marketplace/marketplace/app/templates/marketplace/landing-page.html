@@ -33,8 +33,7 @@
 <section class="section-intro">
   <div class="container">
     <div class="intro-banner-wrap">
-      <img src="{{ url_for('_uploads.uploaded_file', setname='images',
-      filename=banner.main_image , _external=True) }}">
+      <img src="{{ background.image_url }}">
     </div>
   </div>
 </section>
@@ -51,8 +50,7 @@
     <div class="col-md-4">	
       <figure class="item-feature">
         <!-- <span class="text-primary"><i class="fa fa-2x fa-truck"></i></span> -->
-        <img height="50" src="{{ url_for('_uploads.uploaded_file', setname='images',
-        filename=banner.feature_icon_one , _external=True) }}">
+        <!---<img height="50" src="{# banner.image_url #}">--->
         <figcaption class="pt-3">
           <h5 class="title">{{ banner.feature_header_one }}</h5>
           <p>{{ banner.feature_description_one }}</p>
@@ -62,8 +60,8 @@
     <div class="col-md-4">
       <figure  class="item-feature">
         <!-- <span class="text-primary"><i class="fa fa-2x fa-landmark"></i></span>	 -->
-        <img height="50" src="{{ url_for('_uploads.uploaded_file', setname='images',
-        filename=banner.feature_icon_two , _external=True) }}">
+        <!---<img height="50" src="{# url_for('_uploads.uploaded_file', setname='images',
+        filename=banner.feature_icon_two , _external=True) #}">--->
         <figcaption class="pt-3">
           <h5 class="title">{{ banner.feature_header_two }}</h5>
           <p>{{ banner.feature_description_two }}</p>
@@ -73,8 +71,8 @@
       <div class="col-md-4">
       <figure  class="item-feature">
         <!-- <span class="text-primary"><i class="fa fa-2x fa-lock"></i></span> -->
-        <img height="50" src="{{ url_for('_uploads.uploaded_file', setname='images',
-        filename=banner.feature_icon_three , _external=True) }}">
+        <!----<img height="50" src="{# url_for('_uploads.uploaded_file', setname='images',
+        filename=banner.feature_icon_three , _external=True) #}">---> 
         <figcaption class="pt-3">
           <h5 class="title">{{ banner.feature_header_three }}</h5>
           <p>{{ banner.feature_description_three }}</p>

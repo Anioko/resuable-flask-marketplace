@@ -1,7 +1,7 @@
 from flask_ckeditor import CKEditorField
 from flask_uploads import UploadSet, IMAGES
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileAllowed
+from flask_wtf.file import FileAllowed, FileRequired
 from wtforms import ValidationError
 from wtforms.ext.sqlalchemy.fields import QuerySelectField, QuerySelectMultipleField
 from wtforms.fields import PasswordField, StringField, SubmitField, BooleanField, IntegerField, FloatField, \
@@ -224,4 +224,29 @@ class MProductForm(FlaskForm):
     lead_time = StringField('Delivery time')
     submit = SubmitField('Submit')
 
+class BackgroundImageForm(FlaskForm):
+    background_image = FileField('Background (1200x300)', validators=[FileRequired(), FileAllowed(images, 'Images Only allowed!')])
+    submit = SubmitField('Submit')
 
+class SiteLogoForm(BaseModelForm):
+    logo_image = FileField('Logo Image (182x33). A transparent logo is better', validators=[FileRequired(), FileAllowed(images, 'Logo Only allowed!')])
+    submit = SubmitField('Submit')
+
+# LandingSetting Form 
+class LandingSettingForm(FlaskForm):
+    site_name = StringField(" E.g Textiles.ng ")
+    title = StringField(" Please write 120 word title for SEO ")
+    description = StringField("Please write 245 word description for SEO")
+    facebook = StringField("Link, e.g https://www.facebook.com/PastorChrisLive ")
+    linkedin = StringField("Link, e.g https://ng.linkedin.com/in/johndoe ")
+    twitter = StringField("Icon Link, e.g https://twitter.com/johndoe ")
+    instagram = StringField("Icon Link, e.g https://www.instagram.com/johndoe/ ")
+    snap_chat = StringField("Icon Link, e.g https://www.snapchat.com/johndoe/ ")
+    youtube = StringField("Icon Link, e.g https://www.youtube.com/johndoe/ ")
+    tiktok = StringField("Icon Link, e.g https://www.tiktok.com/johndoe/ ")
+    google_analytics_id = StringField(" Your Google Analytics ID ")
+    other_tracking_analytics_one = StringField(" Raw trackings scripts ")
+    other_tracking_analytics_two = StringField(" Raw trackings scripts ")
+    other_tracking_analytics_three = StringField(" Raw trackings scripts ")
+    other_tracking_analytics_four = StringField(" Raw trackings scripts ")
+    submit = SubmitField('Submit')

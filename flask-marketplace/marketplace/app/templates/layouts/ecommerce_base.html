@@ -10,23 +10,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 {% for setting in settings %}
 <meta name="description"
-          content="{{ settings.description }}">
-<meta name="author" content="{{ setting.site_name }}">
+          content="{{ setting.description }}">
+<meta name="author" content="{{ setting.title }}">
 <meta name="og:title" content="{{ setting.title }}"/>
 <meta name="og:type" content="website"/>
-<meta name="og:url" content="https://www.{{ setting.site_name }}"/>
-<meta name="og:image" content="{{ url_for('static', filename='images/home/slider/hill.png') }}"/>
-<meta name="og:site_name" content="{{ settings.site_name }}"/>
+<meta name="og:url" content="https://www.{{ setting.title }}"/>
+<meta name="og:image" content="{{ background.image_url }}"/>
+<meta name="og:site_name" content="{{ settings.title }}"/>
 <meta name="og:description"
           content="{{ setting.description }}"/>
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:site" content="@{{ setting.site_name }}"/>
+<meta name="twitter:site" content="@{{ setting.title }}"/>
 <meta name="twitter:creator" content="@anioko1"/>
-<meta property="og:url" content="https://www.{{ setting.site_name }}"/>
+<meta property="og:url" content="https://www.{{ config.APP_NAME }}"/>
 <meta property="og:title" content="{{ setting.title }}"/>
 <meta property="og:description"
           content="{{ setting.description }}"/>
-<meta property="og:image" content="{{ url_for('static', filename='images/home/slider/hill.png') }}"/>
+<meta property="og:image" content="{{ background.image_url }}"/>
 {% endfor %}
 
 
@@ -57,15 +57,6 @@
 </style>
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/toastr.min.css') }}">
-<script type="text/javascript">
-	window._mfq = window._mfq || [];
-	(function() {
-		var mf = document.createElement("script");
-		mf.type = "text/javascript"; mf.async = true;
-		mf.src = "//cdn.mouseflow.com/projects/2307558d-5b70-43db-bf63-ad4dd77ceead.js";
-		document.getElementsByTagName("head")[0].appendChild(mf);
-	})();
-</script>
 
 <link href="{{ url_for('static', filename='frontend/images/favicon.ico') }}" rel="shortcut icon" type="image/x-icon">
 
@@ -97,10 +88,24 @@ $(document).ready(function() {
 // jquery end
 </script>
 {% for setting in settings %}
-{{setting.other_tracking_analytics_one|safe}}
-{{setting.other_tracking_analytics_two|safe}}
-{{setting.other_tracking_analytics_three|safe}}
-{{setting.other_tracking_analytics_four|safe}}
+{% if setting.google_analytics_id %}
+{{setting.google_analytics_id |safe}}
+{% endif %}
+{% if setting.other_tracking_analytics_one %}
+{{setting.other_tracking_analytics_one | safe}}
+{% endif %}
+{% if setting.other_tracking_analytics_two %}
+{{setting.other_tracking_analytics_two | safe}}
+{% endif %}
+
+{% if setting.other_tracking_analytics_three %}
+{{setting.other_tracking_analytics_three | safe}}
+{% endif %}
+
+{% if setting.other_tracking_analytics_four %}
+{{setting.other_tracking_analytics_four | safe}}
+{% endif %}
+
 {% endfor %}
 </head>
 <body>
@@ -113,8 +118,7 @@ $(document).ready(function() {
 <div class="row align-items-center">
 	<div class="col-lg-2 col-6">
 		<a href="{{url_for('marketplace.index')}}" class="brand-wrap">
-			<img class="logo" src="{{ url_for('_uploads.uploaded_file', setname='images',
-			filename=website_settings.brand_image , _external=True) }}">
+			<img class="logo" src="{{ logo.image_url }}">
 		</a> <!-- brand-wrap.// -->
 	</div>
 	<div class="col-lg-6 col-12 col-sm-12">

@@ -69,6 +69,18 @@ class MBanner(db.Model):
     feature_icon_three = db.Column(db.Text, nullable=True)
     feature_description_three = db.Column(db.String(), nullable=True)
 
+    @property
+    def image_url(self):
+        return url_for('_uploads.uploaded_file', setname='images', filename=self.main_image, external=True)
+
+    @property
+    def image_path(self):
+        from flask import current_app
+        return os.path.join(current_app.config['UPLOADED_IMAGES_DEST'], self.main_image)
+
+    def __repr__(self):
+        return u'<{self.__class__.__name__}: {self.id}>'.format(self=self)
+
 class MShippingMethod(db.Model):
     __tablename__ = 'marketplace_shipping_methods'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -333,32 +345,28 @@ class MCartDetails(db.Model):
 
     cart = db.relationship("MCart", uselist=False, back_populates="cart_details")
 
-
 class MSettings(db.Model):
     __tablename__ = 'marketplace_settings'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-
-    stripe_public_key = db.Column(db.String(), nullable=True)
-    stripe_secret_key = db.Column(db.String(), nullable=True)
-
-    brand_image = db.Column(db.Text, nullable=True)
-    brand_description = db.Column(db.String(), nullable=True)
+    name = db.Column(db.String())
+    display_name = db.Column(db.String())
+    value = db.Column(db.String(), default=None)
 
     created_at = db.Column(db.DateTime, default=db.func.now())
     updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
 
-    # @staticmethod
-    # def insert_stripe():
-    #     settings = [
-    #         ['stripe_public', 'Stripe Public Key'],
-    #         ['stripe_secret', 'Stripe Secret Key']
-    #     ]
-    #     for s in settings:
-    #         setting = MSettings.query.filter_by(name=s[0]).first()
-    #         if setting is None:
-    #             setting = MSettings(name=s[0], display_name=s[1])
-    #         db.session.add(setting)
-    #     db.session.commit()
+    @staticmethod
+    def insert_stripe():
+        settings = [
+            ['stripe_public', 'Stripe Public Key'],
+            ['stripe_secret', 'Stripe Secret Key']
+        ]
+        for s in settings:
+            setting = MSettings.query.filter_by(name=s[0]).first()
+            if setting is None:
+                setting = MSettings(name=s[0], display_name=s[1])
+            db.session.add(setting)
+        db.session.commit()
 
 
 class MOrder(db.Model):
