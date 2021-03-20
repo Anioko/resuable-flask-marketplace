@@ -55,7 +55,7 @@ def create_app(config_name):
     app.config.from_object(config[config_name])
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     # not using sqlalchemy event system, hence disabling it
-    #'C:/Users/oem/Desktop/marketplace/marketplace/app/static/frontend/images/' 
+    #'C:/Users/oem/Desktop/marketplace/marketplace/app/static/frontend/images/'
     #'C:/Users/oem/Desktop/marketplace/marketplace/appstatic/docs/'
 
     app.config['UPLOADED_IMAGES_DEST'] = basedir + 'static/frontend/images' if \
@@ -158,12 +158,12 @@ def create_app(config_name):
             h = sha512()
             h.update(base.encode('utf8'))
             session['cart_id'] = h.hexdigest()
-    
+
     @app.cli.command()
     def reindex():
         with app.app_context():
             whooshee.reindex()
-            
+
     @app.cli.command()
     def routes():
         """'Display registered routes"""
@@ -183,5 +183,5 @@ def create_app(config_name):
         """check if object is user"""
         from app.models import MProduct
         return o.__class__ == MProduct
-    
+
     return app

@@ -139,7 +139,14 @@ class MProductVariant(db.Model):
     created_at = db.Column(db.DateTime, default=db.func.now())
     updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
 
-@whooshee.register_model('name', 'description')
+
+
+
+
+
+
+#uncomment this line if you do not get "unsupported pickle protocol :5" error when saving an instance of product to db
+#@whooshee.register_model('name', 'description')
 class MProduct(db.Model):
     __tablename__ = 'marketplace_products'
 
@@ -363,6 +370,7 @@ class MSettings(db.Model):
         ]
         for s in settings:
             setting = MSettings.query.filter_by(name=s[0]).first()
+            print(setting)
             if setting is None:
                 setting = MSettings(name=s[0], display_name=s[1])
             db.session.add(setting)

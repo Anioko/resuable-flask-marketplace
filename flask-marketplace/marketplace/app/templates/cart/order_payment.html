@@ -1,0 +1,132 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/product_macros.html' as products_macros %}
+{% import 'macros/form_macros.html' as f %}
+
+{% block custom_head_tags %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='slick/slick.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='slick/slick-theme.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lightbox/css/lightbox.min.css') }}">
+    <link rel="stylesheet"  type="text/css" href="{{ url_for('static', filename='css/marketplace.css') }}">
+{% endblock %}
+{% block content %}
+<div class="ui stackable centered grid marketplace container">
+    <div class="sixteen wide column">
+        <h1 class="ui header">
+            Market Place
+        </h1>
+        <div class="ui four steps">
+            <div class="completed step">
+                <i class="tasks icon"></i>
+                <div class="content">
+                    <div class="title">Items</div>
+                    <div class="description">Confirm Order Items</div>
+                </div>
+            </div>
+            <div class="completed step">
+                <i class="truck icon"></i>
+                <div class="content">
+                    <div class="title">Shipping</div>
+                    <div class="description">Choose your shipping options</div>
+                </div>
+            </div>
+            <div class="active step">
+                <i class="payment icon"></i>
+                <div class="content">
+                    <div class="title">Billing</div>
+                    <div class="description">Enter billing information</div>
+                </div>
+            </div>
+            <div class="disabled step">
+                <i class="info icon"></i>
+                <div class="content">
+                    <div class="title">Order Details</div>
+                </div>
+            </div>
+        </div>
+        {% set products = cart.products() %}
+        <br>
+        <br>
+        <div class="ui stackable grid">
+            <div class="ten wide column">
+                <h2 class="ui header">
+                    Payment
+                </h2>
+                <h3>
+                    You'll be Charged : {{ cart.price_paid() }}{{ cart.currency.symbol }} net.
+                </h3>
+                <style>
+
+              </style>
+
+              <hr>
+
+              <div id="payment-request">
+                <div id="payment-request-button"></div>
+              </div>
+              <hr>
+                <form action="{{ url_for('marketplace.order', step=4) }}" method="post" id="payment-form" class="ui form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <div class="form-row field" style="height:7cm;">
+                      <div class="form-group">
+                        <label for="card-name">Name on card</label>
+                        <input type="text" class="form-control" id="card-name" placeholder="john doe" style="width:570px; height:18%;">
+
+                        <label for="card-element">Card</label>
+                        <div id="card-element" class="card">
+                      </div>
+                        <!-- Used to display Element errors. -->
+                        <div id="card-errors" role="alert"></div>
+                    </div>
+                  </div>
+                  <hr>
+
+                  <div class="ui centered grid">
+                      <a class="ui orange button" href="javascript:$('#go-to-step2').submit();"><i class="tasks icon"></i>Go Back</a>
+                      <a class="ui green button" href="javascript:payNow()"><button
+                        class="payment-button" type="submit">Submit Payment</button></a>
+                  </div>
+
+                </form>
+
+            </div>
+            <div class="six wide column">
+                <div class="ui raised segment">
+                    <h2 class="ui header">
+                        Order Summary
+                        <i class="ui right floated indigo shopping cart icon"></i>
+                    </h2>
+
+                    <hr>
+                    <div id="summary-table">
+                        {{ products_macros.order_summary(cart, step) }}
+                    </div>
+                    <br>
+                    <br>
+                    <br>
+                    <div class="ui centered very padded grid">
+                        <a class="ui orange button" href="javascript:$('#go-to-step2').submit();"><i class="tasks icon"></i>Go Back</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript" src="{{ url_for('static', filename='slick/slick.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='lightbox/js/lightbox.min.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            $('.slick').slick({
+                infinite: false,
+            });
+        });
+
+    </script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="{{url_for('static', filename='scripts/payments.js')}}"></script>
+
+
+
+
+{% endblock %}
