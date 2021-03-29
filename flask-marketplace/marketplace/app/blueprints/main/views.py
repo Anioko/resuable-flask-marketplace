@@ -347,3 +347,34 @@ def notification_test():
     related = User.query.get(32)
     return render_template('account/email/notification.html', website_settings=website_settings, user=current_user, link="http://www.google.com",
                            notification=n, related=related)
+
+
+
+
+
+
+
+
+STRIPE_PUBLISHABLE_KEY= os.environ.get('STRIPE_PUBLISHABLE_KEY') or 'pk_test_51IUARBGl75N9LA5EvoihrquPLV89S3Y2IaGWsUN6VatKEtu6HAoonN0Fb5O8k1hQUJsKh6Uw4sx3lR744rjjtzMs002VbKwUxF'
+#STRIPE_ENDPOINT_SECRET= os.environ.get('STRIPE_ENDPOINT_SECRET') or ''
+
+stripe_keys = {
+    "publishable_key": STRIPE_PUBLISHABLE_KEY,
+    #"endpoint_secret": STRIPE_ENDPOINT_SECRET
+    }
+
+
+
+
+
+
+
+@main.route('/config')
+def get_publishable_key():
+    stripe_config = {"publicKey": stripe_keys["publishable_key"]}
+    return jsonify(stripe_config)
+
+
+
+
+
