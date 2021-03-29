@@ -6,20 +6,8 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='slick/slick.css') }}"/>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='slick/slick-theme.css') }}"/>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lightbox/css/lightbox.min.css') }}">
-    <style>
-        .slick-prev:before, .slick-next:before {
-            color: black;
-        }
-        .slick-prev {
-            left: 0px;
-            z-index: 100;
-        }
-        .slick-next {
-            right: 0px;
-            z-index: 100;
-        }
-    </style>
-
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/marketplace.css') }}">
+   
 {% endblock %}
 {% block content %}
     <div class="ui stackable centered grid marketplace container">
@@ -69,26 +57,32 @@
                     </h3>
 
                     <hr>
+                    
+                    
+                    
                     <form action="{{ url_for('marketplace.order', step=4) }}" method="post" id="payment-form" class="ui form">
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                        <div class="form-row field">
-                            <label for="card-element">
-                                Credit or debit card
-                            </label>
-                            <div id="card-element">
-                                <!-- A Stripe Element will be inserted here. -->
-                            </div>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <div class="form-row field" style="height:7cm;">
+                        <div class="container-fluid">
 
-                            <!-- Used to display Element errors. -->
-                            <div id="card-errors" role="alert"></div>
-                        </div>
-                    </form>
-                    <hr>
-                    <div class="ui centered grid">
-                        <a class="ui orange button" href="javascript:$('#go-to-step2').submit();"><i class="tasks icon"></i>Go Back</a>
-                        <a class="ui green button" href="javascript:payNow()"><i class="credit card icon"></i>Submit Payment</a>
+
+                        <div class="form-group">
+                        <label for="card-element">Card</label>
+                        <div id="card-element" class="form-control">
+                      </div>
+                        
+                        <!-- Used to display Element errors. -->
+                        <div id="card-errors" role="alert"></div>
                     </div>
                 </div>
+                    </div>
+            <hr>
+                  <div class="ui centered grid">
+                      <a class="ui orange button" href="javascript:$('#go-to-step2').submit();"><i class="tasks icon"></i>Go Back</a>
+                      <a class="ui green button" href="javascript:payNow()"><button
+                        class="payment-button" type="submit">Submit Payment</button></a>
+                  </div>
+                </form>
                 <div class="six wide column">
                     <div class="ui raised segment">
                         <h2 class="ui header">
