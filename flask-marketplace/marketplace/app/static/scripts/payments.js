@@ -16,24 +16,13 @@ fetch("/config")
       },
   };
   // Create an instance of the card Element.
-  var card = elements.create('card', {style: style});
+  var card = elements.create('card', {style: style} );
 
-  let paymentIntent;
 
   // Add an instance of the card Element into the `card-element` <div>.
   card.mount('#card-element');
 
-  //charge = get_current_cart();
-  const paymentRequest = stripe.paymentRequest({
-    country: charge.stripeCountry,
-    currency: charge.currency,
-    total: {
-      label: 'Total',
-      amount: charge.price_paid(),
-    },
-    requestShipping: true,
-    requestPayerEmail: true,
-  });
+
 
 
   var form = document.getElementById('payment-form');
