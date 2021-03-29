@@ -27,6 +27,18 @@ marketplace = Blueprint('marketplace', __name__)
 images = UploadSet('images', IMAGES)
 
 
+
+
+
+
+
+# stripe secret key
+stripe_secret = os.environ.get('STRIPE_SECRET') or 'sk_test_51IUARBGl75N9LA5EFZ4Jpktzkyp8ZA1Q2av1xhRiEqsmA1vSyFt2xO1AppDwdPwJG3Yj3T6gNbZItEwGmhMxQoQ8008pGMXyrg'
+
+
+
+
+
 # Marketplace Shopping Routes start
 @marketplace.route('/')
 def index():
@@ -208,7 +220,7 @@ def order(step):
             # order calculations
             products_total = cart_instance.products_total
             order_currency = cart_instance.currency
-
+            email = cart_instance.cart_details.email
             order_number = cart_instance.generate_order_number()
             shipping_cost = cart_instance.price_shipping()
             order_total = products_total + shipping_cost
@@ -219,81 +231,81 @@ def order(step):
             if not order_pay_amount == price_to_pay:
                 flash("Calculation Mismatch, Please Try Again", "error")
                 return redirect(url_for('marketplace.order', step=3))
-            stripe_secret = MSettings.query.filter_by(name='stripe_secret').first()
-            if not stripe_secret:
-                MSettings.insert_stripe()
-            stripe_secret = stripe_secret.value
             stripe.api_key = stripe_secret
-            token = request.form['stripeToken']
+            customer = stripe.Customer.create(
+                    email=email,           
+                    card=request.form['stripeToken']
+                )
+            token =  request.form['stripeToken']
             try:
                 charge = stripe.Charge.create(
                     amount=math.ceil(order_pay_amount * 100),
                     currency=order_currency.name.lower(),
                     description=description,
-                    receipt_email=cart_instance.cart_details.email,
-                    source=token,
+                    customer = customer,
                 )
-                if charge.status != "succeeded":
-                    flash("Payment Wasn't Successful, Please Try A different card", "error")
-                    return redirect(url_for('marketplace.order', step=3))
-            except:
-                flash("Payment Wasn't Successful, Please Try A different card", "error")
-                return redirect(url_for('marketplace.order', step=3))
-            order_instance = MOrder(
-                order_number=order_number,
-                charge_id=charge.id,
-                products_total=products_total,
-                shipping_cost=shipping_cost,
-                order_total=order_total,
-                order_discount=order_discount,
-                order_pay_amount=order_pay_amount,
-                buyer=buyer,
-                price_currency=order_currency,
-                first_name=cart_instance.cart_details.first_name,
-                last_name=cart_instance.cart_details.last_name,
-                email=cart_instance.cart_details.email,
-                mobile_phone=cart_instance.cart_details.mobile_phone,
-                zip=cart_instance.cart_details.zip,
-                city=cart_instance.cart_details.city,
-                state=cart_instance.cart_details.state,
-                country=cart_instance.cart_details.country,
-            )
-            db.session.add(order_instance)
-            db.session.commit()
-            db.session.refresh(order_instance)
-            for seller_cart in cart_instance.seller_carts:
-                seller_order = MSellerOrder(
-                    order=order_instance,
-                    seller=seller_cart.seller,
-                    shipping_method=seller_cart.shipping_method,
-                    buyer=seller_cart.buyer,
-                    currency=seller_cart.currency,
-                )
-                db.session.add(seller_order)
-                db.session.commit()
-                db.session.refresh(seller_order)
-                for cart_item in seller_cart.cart_items:
-                    order_item = MOrderItem(
-                        order=order_instance,
-                        seller_order=seller_order,
-                        seller=cart_item.seller,
+                if charge:
+                    flash('Thanks for paying!', 'success')
+                    order_instance = MOrder(
+                        order_number=order_number,
+                        charge_id=charge.id,
+                        products_total=products_total,
+                        shipping_cost=shipping_cost,
+                        order_total=order_total,
+                        order_discount=order_discount,
+                        order_pay_amount=order_pay_amount,
                         buyer=buyer,
-                        product=cart_item.product,
-                        count=cart_item.count,
-                        current_price=cart_item.product.price,
-                        current_total_price=cart_item.product.price*cart_item.count,
-                    )
-                    db.session.add(order_item)
+                        price_currency=order_currency,
+                        first_name=cart_instance.cart_details.first_name,
+                        last_name=cart_instance.cart_details.last_name,
+                        email=cart_instance.cart_details.email,
+                        mobile_phone=cart_instance.cart_details.mobile_phone,
+                        zip=cart_instance.cart_details.zip,
+                        city=cart_instance.cart_details.city,
+                        state=cart_instance.cart_details.state,
+                        country=cart_instance.cart_details.country,
+                        )
+                    db.session.add(order_instance)
                     db.session.commit()
+                    db.session.refresh(order_instance)
+                    for seller_cart in cart_instance.seller_carts:
+                        seller_order = MSellerOrder(
+                            order=order_instance,
+                            seller=seller_cart.seller,
+                            shipping_method=seller_cart.shipping_method,
+                            buyer=seller_cart.buyer,
+                            currency=seller_cart.currency,
+                        )
+                        db.session.add(seller_order)
+                        db.session.commit()
+                        db.session.refresh(seller_order)
+                    for cart_item in seller_cart.cart_items:
 
-            MCartItem.query.filter_by(cart=cart_instance).delete()
-            MSellerCart.query.filter_by(cart=cart_instance).delete()
-            MCartDetails.query.filter_by(cart=cart_instance).delete()
-            MCart.query.filter_by(id=cart_instance.id).delete()
-            db.session.commit()
-            return render_template('marketplace/cart/order_done.html', order=order_instance, website_settings=website_settings)
+                        order_item = MOrderItem(
+                            order=order_instance,
+                            seller_order=seller_order,
+                            seller=cart_item.seller,
+                            buyer=buyer,
+                            product=cart_item.product,
+                            count=cart_item.count,
+                            current_price=cart_item.product.price,
+                            current_total_price=cart_item.product.price*cart_item.count,
+                            )
+                        db.session.add(order_item)
+                        db.session.commit()
+
+                    MCartItem.query.filter_by(cart=cart_instance).delete()
+                    MSellerCart.query.filter_by(cart=cart_instance).delete()
+                    MCartDetails.query.filter_by(cart=cart_instance).delete()
+                    MCart.query.filter_by(id=cart_instance.id).delete()
+                    db.session.commit()
+                    return render_template('marketplace/cart/order_done.html', order=order_instance, website_settings=website_settings)
+            except stripe.error.CardError as e:
+                flash('Oops. Something is wrong with your card info!', 'danger')
+                return redirect(url_for('marketplace.order', step=3))
         return abort(404)
 
+            
     elif request.method == 'GET':
         if cart_instance.step != step:
             return redirect(url_for('marketplace.order', step=cart_instance.step))
