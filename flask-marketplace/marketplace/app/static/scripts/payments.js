@@ -27,7 +27,7 @@ fetch("/config")
       },
   };
   // Create an instance of the card Element.
-  var card = elements.create('card', {style: style} );
+  var card = elements.create('card', {style: hidePostalCode: true} );
 
 
   // Add an instance of the card Element into the `card-element` <div>.
