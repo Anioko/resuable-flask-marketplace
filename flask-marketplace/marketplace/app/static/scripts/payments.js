@@ -1,3 +1,14 @@
+//slick codes
+$(document).ready(function () {
+            $('.slick').slick({
+                infinite: false,
+            });
+        });
+
+
+
+
+//stripe payment codes
 console.log("Sanity check!");
 
 // Get Stripe publishable key
