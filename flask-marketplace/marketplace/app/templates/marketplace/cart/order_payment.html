@@ -121,17 +121,6 @@
 {% block scripts %}
     <script type="text/javascript" src="{{ url_for('static', filename='slick/slick.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='lightbox/js/lightbox.min.js') }}"></script>
-    <script>
-        $(document).ready(function () {
-            $('.slick').slick({
-                infinite: false,
-            });
-        });
-
-    </script>
-
     <script src="https://js.stripe.com/v3/"></script>
-    <script src ="{{url_for('static', filename='scripts/payment.js')}}">
-       
-    </script>
+    <script src ="{{url_for('static', filename='scripts/payment.js')}}"></script>
 {% endblock %}
