@@ -19,6 +19,7 @@ from app.blueprints.marketplace.forms import ReviewForm, SearchForm, SVariantFor
 from app.blueprints.admin.forms import MBrandForm
 from app.blueprints.marketplace.apis import *
 from app.blueprints.api import main_api
+from app.blueprints.marketplace.paystack import Paystack
 from app.decorators import seller_required, buyer_required, anonymous_required
 from app.email import send_email
 from app.models import MProduct, MProductCategory, MCategory, MBanner, MReview, MVariant, current_user, User, MShippingMethod, MCartDetails, MSettings, MCurrency, \
@@ -147,6 +148,7 @@ def order(step):
             return redirect(url_for('marketplace.cart'))
 
         elif step == 2:
+            print("Enter your details")
             if cart_instance.step == 1:
                 for item in cart_instance.cart_items:
                     product_instance = item.product
@@ -170,6 +172,7 @@ def order(step):
                 return redirect(url_for('marketplace.order', step=2))
 
         elif step == 3:
+            print("Now enter your stripe")
             form = SShippingForm()
             valid = True
             for seller_cart in cart_instance.seller_carts:
@@ -211,13 +214,58 @@ def order(step):
                     db.session.add(seller_cart)
                 db.session.commit()
                 cart_instance.step = 3
+    
+                stripe_public = MSettings.query.filter_by(name='stripe_public').first()
+                paystack_public = MSettings.query.filter_by(name='paystack_public').first()
+                if not stripe_public or not paystack_public:
+                    MSettings.insert_stripe()
+
+                stripe_public = stripe_public.value
+                paystack_public = paystack_public.value
+
+                if paystack_public != "None" and stripe_public == 'None':
+                    products_total = cart_instance.products_total
+                    order_currency = cart_instance.currency
+                    email = cart_instance.cart_details.email
+                    order_number = cart_instance.generate_order_number()
+                    shipping_cost = cart_instance.price_shipping()
+                    order_total = products_total + shipping_cost
+                    order_discount = 0
+                    order_pay_amount = order_total - order_discount
+                    price_to_pay = cart_instance.price_paid()
+                    description = "Payment for buying from {{ config.APP_NAME }} Markeplace for order: " + order_number
+                    if not order_pay_amount == price_to_pay:
+                        flash("Calculation Mismatch, Please Try Again", "error")
+                        return redirect(url_for('marketplace.order', step=3))
+
+                    paystack_instance = Paystack(token=paystack_public)
+                    response = paystack_instance.accept(
+                        amount = math.ceil(order_pay_amount * 100),
+                        currency="ZAR", 
+                        email=email,
+                        description=description,
+                        metadata={"card_id": cart_instance.id, 'user_id':current_user.id}   
+                        )
+                
+                    print(response)
+                    
+                    if not response.get('status'):
+                        error_msg = response.get('message')
+                        flash(error_msg, 'danger')
+                        return redirect(url_for('marketplace.order', step=3))
+                    authorization_url = response.get('data').get('authorization_url')
+                    print(authorization_url)
+                    return redirect(authorization_url)
                 return redirect(url_for('marketplace.order', step=3))
             else:
                 return render_template('marketplace/cart/order_shipping.html', cart=cart_instance, form=form, website_settings=website_settings)
+        
         elif step == 4:
+            print("You\'re now a legend")
             buyer = None
             if current_user.is_authenticated:
                 buyer = current_user
+        
             # order calculations
             products_total = cart_instance.products_total
             order_currency = cart_instance.currency
@@ -325,16 +373,117 @@ def order(step):
 
         elif step == 3:
             stripe_public = MSettings.query.filter_by(name='stripe_public').first()
-            if not stripe_public:
-                MSettings.insert_stripe()
             stripe_public = stripe_public.value
+            print(stripe_public)
             if not cart_instance.cart_details:
                 cart_instance.step = 2
                 return redirect(url_for('marketplace.order', step=2))
             return render_template('marketplace/cart/order_payment.html', cart=cart_instance, website_settings=website_settings,
-                                   stripe_public=stripe_public)
-
+                                stripe_public=stripe_public)
         return abort(404)
+
+# create a new flask route to act as a callback for Paystack
+# localhost:5000/marketplace/paystack/callback
+
+@marketplace.route('/paystack/callback', methods=[ 'GET', 'POST'])
+def paystack_callback():
+    if request.method == 'POST':
+        payment_data = request.get_json(force=True)
+        print(payment_data)
+        if not payment_data.get('event') == 'charge.success':
+            return '', 200
+        
+        if not payment_data.get('data').get('status') == 'success':
+            return '', 200
+        
+        reference = payment_data.get('data').get('reference')
+        channel = payment_data.get('data').get('channel')
+        currency = payment_data.get('data').get('currency')
+        amount = payment_data.get('data').get('amount')
+        payment_id = payment_data.get('data').get('id')
+        cart_id = payment_data.get('data').get('metadata').get('card_id')
+        user_id = payment_data.get('data').get('metadata').get('user_id')
+        cart_instance = get_current_cart({
+            'user_id': user_id,
+            'cart_id': cart_id,
+        })
+        buyer = User.query.filter_by(id=user_id).first()
+
+        # order calculations
+        products_total = cart_instance.products_total
+        order_currency = cart_instance.currency
+        email = cart_instance.cart_details.email
+        order_number = cart_instance.generate_order_number()
+        shipping_cost = cart_instance.price_shipping()
+        order_total = products_total + shipping_cost
+        order_discount = 0
+        order_pay_amount = order_total - order_discount
+        price_to_pay = cart_instance.price_paid()
+        description = "Payment for buying from {{ config.APP_NAME }} Markeplace for order: " + order_number
+        if not order_pay_amount == price_to_pay:
+            flash("Calculation Mismatch, Please Try Again", "error")
+            print("Calculation Mismatch, Please Try Again", "error")
+            return '', 200
+
+        flash('Thanks for paying!', 'success')
+        print('Thanks for paying!', 'success')
+        order_instance = MOrder(
+            order_number=order_number,
+            charge_id=payment_id,
+            products_total=products_total,
+            shipping_cost=shipping_cost,
+            order_total=order_total,
+            order_discount=order_discount,
+            order_pay_amount=order_pay_amount,
+            buyer=buyer,
+            price_currency=order_currency,
+            first_name=cart_instance.cart_details.first_name,
+            last_name=cart_instance.cart_details.last_name,
+            email=cart_instance.cart_details.email,
+            mobile_phone=cart_instance.cart_details.mobile_phone,
+            zip=cart_instance.cart_details.zip,
+            city=cart_instance.cart_details.city,
+            state=cart_instance.cart_details.state,
+            country=cart_instance.cart_details.country,
+            )
+        db.session.add(order_instance)
+        db.session.commit()
+        db.session.refresh(order_instance)
+        for seller_cart in cart_instance.seller_carts:
+            seller_order = MSellerOrder(
+                order=order_instance,
+                seller=seller_cart.seller,
+                shipping_method=seller_cart.shipping_method,
+                buyer=seller_cart.buyer,
+                currency=seller_cart.currency,
+            )
+            db.session.add(seller_order)
+            db.session.commit()
+            db.session.refresh(seller_order)
+        for cart_item in seller_cart.cart_items:
+
+            order_item = MOrderItem(
+                order=order_instance,
+                seller_order=seller_order,
+                seller=cart_item.seller,
+                buyer=buyer,
+                product=cart_item.product,
+                count=cart_item.count,
+                current_price=cart_item.product.price,
+                current_total_price=cart_item.product.price*cart_item.count,
+                )
+            db.session.add(order_item)
+            db.session.commit()
+
+        MCartItem.query.filter_by(cart=cart_instance).delete()
+        MSellerCart.query.filter_by(cart=cart_instance).delete()
+        MCartDetails.query.filter_by(cart=cart_instance).delete()
+        MCart.query.filter_by(id=cart_instance.id).delete()
+        db.session.commit()
+        return '', 200
+    else:
+        return '', 200
+
 # Marketplace Shopping end
 
 
@@ -430,7 +579,7 @@ def seller_product_create():
                 description=form.description.data,
                 is_featured=form.is_featured.data,
                 categories=form.categories.data,
-                variants=form.variants.data,
+                #variants=form.variants.data,
                 condition=form.condition.data,
                 brand=form.brand.data,
                 availability=form.availability.data,
@@ -440,7 +589,7 @@ def seller_product_create():
                 height=form.height.data,
                 price=form.price.data,
                 price_currency=form.price_currency.data,
-                lead_time=form.lead_time.data,
+                lead_time=form.lead_time.data
             )
             db.session.add(prod)
             db.session.commit()

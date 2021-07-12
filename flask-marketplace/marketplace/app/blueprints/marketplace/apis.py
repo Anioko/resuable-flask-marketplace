@@ -7,14 +7,24 @@ from app.models import User, MCart, MProduct, MVariant, MShippingMethod, MCartIt
 from app.utils import jsonify_object, db
 
 
-def get_current_cart():
+def get_current_cart(hook = None):    
+    user_id = None
+    session_id = None
+    if hook:
+        user_id = hook.get('user_id')
+        session_id = hook.get('cart_id')
+    else:
+        user_id = current_user.id
+        session_id = session.get('cart_id')
+
     session_id = session['cart_id']
-    if current_user.is_authenticated:
-        cart = MCart.query.filter_by(user_id=current_user.id).first()
+
+    if current_user.is_authenticated or hook:
+        cart = MCart.query.filter_by(user_id=user_id).first()
         if cart:
-            MCart.query.filter_by(user_id=current_user.id).filter(MCart.id != cart.id).delete()
+            MCart.query.filter_by(user_id=user_id).filter(MCart.id != cart.id).delete()
         else:
-            cart = MCart(user_id=current_user.id)
+            cart = MCart(user_id=user_id)
             db.session.add(cart)
             db.session.commit()
             db.session.refresh(cart)
@@ -27,9 +37,7 @@ def get_current_cart():
             db.session.add(cart)
             db.session.commit()
             db.session.refresh(cart)
-
     return cart
-
 
 class CartCount(Resource):
     def get(self):

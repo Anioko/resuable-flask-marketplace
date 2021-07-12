@@ -416,6 +416,7 @@ def marketplace_settings():
         MSettings.insert_stripe()
     settings = MSettings.query.order_by(MSettings.id.asc()).all()
     return render_template('admin/marketplace/settings.html', settings=settings)
+
 @admin.route('/marketplace/orders', defaults={'page': 1}, methods=['GET'])
 @admin.route('/marketplace/orders/<int:page>', methods=['GET'])
 @login_required

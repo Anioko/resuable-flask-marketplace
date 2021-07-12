@@ -38,12 +38,12 @@ class SProductForm(FlaskForm):
         get_label='name',
         query_factory=lambda: db.session.query(MCategory).order_by('order')
     )
-    variants = QuerySelectMultipleField(
-        'Variants',
+    #variants = QuerySelectMultipleField(
+       # 'Variants',
         #validators=[InputRequired()],
-        get_label='name',
-        query_factory=lambda: db.session.query(MVariant).order_by('name')
-    )
+        # get_label='name',
+        #query_factory=lambda: db.session.query(MVariant).order_by('name')
+    #)
     condition = SelectField(u'Select condition', choices=conditions)
     availability = BooleanField(u'Is it currently available?')
     min_order_quantity = IntegerField('Min number of units per order e.g 1', default=1)

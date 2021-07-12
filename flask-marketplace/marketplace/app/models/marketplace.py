@@ -366,7 +366,9 @@ class MSettings(db.Model):
     def insert_stripe():
         settings = [
             ['stripe_public', 'Stripe Public Key'],
-            ['stripe_secret', 'Stripe Secret Key']
+            ['stripe_secret', 'Stripe Secret Key'],
+            ['paystack_public', 'Paystack Public Key'],
+            ['paystack_secret', 'Paystack Secret Key']
         ]
         for s in settings:
             setting = MSettings.query.filter_by(name=s[0]).first()

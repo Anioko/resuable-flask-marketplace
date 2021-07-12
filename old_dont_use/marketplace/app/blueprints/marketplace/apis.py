@@ -1,4 +1,5 @@
 from flask import session, render_template
+from werkzeug.wrappers import UserAgentMixin
 from flask_login import current_user
 from flask_restful import Resource, reqparse
 
@@ -6,15 +7,24 @@ from app.decorators import seller_required
 from app.models import User, MCart, MProduct, MShippingMethod, MCartItem, MSellerCart, MSellerOrder, MOrderStatusChange
 from app.utils import jsonify_object, db
 
+def get_target_cart(hook = {}):
+    user_id = None
+    session_id = None
+    if hook:
+        user_id = hook.get('user_id')
+        session_id = hook.get('cart_id')
+    else:
+        user_id = current_user.id
+        session_id = session.get('cart_id')
 
-def get_current_cart():
     session_id = session['cart_id']
-    if current_user.is_authenticated:
-        cart = MCart.query.filter_by(user_id=current_user.id).first()
+
+    if current_user.is_authenticated or hook:
+        cart = MCart.query.filter_by(user_id=user_id).first()
         if cart:
-            MCart.query.filter_by(user_id=current_user.id).filter(MCart.id != cart.id).delete()
+            MCart.query.filter_by(user_id=user_id).filter(MCart.id != cart.id).delete()
         else:
-            cart = MCart(user_id=current_user.id)
+            cart = MCart(user_id=user_id)
             db.session.add(cart)
             db.session.commit()
             db.session.refresh(cart)
@@ -29,6 +39,46 @@ def get_current_cart():
             db.session.refresh(cart)
 
     return cart
+
+
+
+def get_current_cart(hook = None):    
+    user_id = None
+    session_id = None
+    if hook:
+        user_id = hook.get('user_id')
+        session_id = hook.get('cart_id')
+    else:
+        user_id = current_user.id
+        session_id = session.get('cart_id')
+
+    session_id = session['cart_id']
+    
+    try:
+
+        if current_user.is_authenticated or hook:
+            cart = MCart.query.filter_by(user_id=user_id).first()
+            if cart:
+                MCart.query.filter_by(user_id=user_id).filter(MCart.id != cart.id).delete()
+            else:
+                cart = MCart(user_id=user_id)
+                db.session.add(cart)
+                db.session.commit()
+                db.session.refresh(cart)
+        else:
+            cart = MCart.query.filter_by(session_id=session_id).first()
+            if cart:
+                MCart.query.filter_by(session_id=session_id).filter(MCart.id != cart.id).delete()
+            else:
+                cart = MCart(session_id=session_id)
+                db.session.add(cart)
+                db.session.commit()
+                db.session.refresh(cart)
+
+        return cart
+    except  Exception as e:
+        db.session.rollback()
+        return None
 
 
 class CartCount(Resource):

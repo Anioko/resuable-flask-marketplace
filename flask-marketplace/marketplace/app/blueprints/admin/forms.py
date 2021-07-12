@@ -110,6 +110,8 @@ class MBrandForm(FlaskForm):
 class MSettingsForm(FlaskForm):
     stripe_public_key = StringField('Stripe Public Key', validators=[InputRequired()])
     stripe_secret_key = StringField('Stripe Public Key', validators=[InputRequired()])
+    paystack_public_key = StringField('Paystack Public Key', validators=[InputRequired()])
+    paystack_secret_key = StringField('Paystack Secret Key', validators=[InputRequired()])
     brand_image = FileField('Brand image', validators=[InputRequired(), FileAllowed(images, 'Images only!')])
     brand_description = StringField('Description', validators=[InputRequired()])
     submit = SubmitField('Submit')
