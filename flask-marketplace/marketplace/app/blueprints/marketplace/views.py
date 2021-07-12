@@ -251,13 +251,14 @@ def order(step):
                     paystack_currency = paystack_currency[0].name if paystack_currency else 'NGN'
                     print(paystack_currency)
                     paystack_instance = Paystack(token=paystack_public)
+                    user_id = current_user.id if current_user.is_authenticated else None
                     response = paystack_instance.accept(
                         amount=math.ceil(order_pay_amount * 100),
                         currency=paystack_currency,
                         email=email,
                         description=description,
                         metadata={"card_id": cart_instance.id,
-                                  'user_id': current_user.id}
+                                  'user_id': user_id, }
                     )
 
                     print(response)

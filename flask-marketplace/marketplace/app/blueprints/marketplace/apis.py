@@ -7,22 +7,24 @@ from app.models import User, MCart, MProduct, MVariant, MShippingMethod, MCartIt
 from app.utils import jsonify_object, db
 
 
-def get_current_cart(hook = None):    
+def get_current_cart(hook=None):
     user_id = None
     session_id = None
     if hook:
         user_id = hook.get('user_id')
         session_id = hook.get('cart_id')
     else:
-        user_id = current_user.id
         session_id = session.get('cart_id')
 
     session_id = session['cart_id']
 
     if current_user.is_authenticated or hook:
+        if not hook:
+            user_id = current_user.id
         cart = MCart.query.filter_by(user_id=user_id).first()
         if cart:
-            MCart.query.filter_by(user_id=user_id).filter(MCart.id != cart.id).delete()
+            MCart.query.filter_by(user_id=user_id).filter(
+                MCart.id != cart.id).delete()
         else:
             cart = MCart(user_id=user_id)
             db.session.add(cart)
@@ -31,13 +33,15 @@ def get_current_cart(hook = None):
     else:
         cart = MCart.query.filter_by(session_id=session_id).first()
         if cart:
-            MCart.query.filter_by(session_id=session_id).filter(MCart.id != cart.id).delete()
+            MCart.query.filter_by(session_id=session_id).filter(
+                MCart.id != cart.id).delete()
         else:
             cart = MCart(session_id=session_id)
             db.session.add(cart)
             db.session.commit()
             db.session.refresh(cart)
     return cart
+
 
 class CartCount(Resource):
     def get(self):
@@ -58,9 +62,12 @@ class OrderSummary(Resource):
 class AddToCart(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument('product_id', help='This field cannot be blank', required=True)
-        self.parser.add_argument('variant_id', help='This field cannot be blank', required=True)
-        self.parser.add_argument('quantity', help='This field cannot be blank', required=True)
+        self.parser.add_argument(
+            'product_id', help='This field cannot be blank', required=True)
+        self.parser.add_argument(
+            'variant_id', help='This field cannot be blank', required=True)
+        self.parser.add_argument(
+            'quantity', help='This field cannot be blank', required=True)
 
     def post(self):
         data = self.parser.parse_args()
@@ -90,7 +97,8 @@ class AddToCart(Resource):
                         product.price_currency.name, cart_currency.name)
                 }
         cart.user_id = user_id
-        seller_cart = MSellerCart.query.filter_by(cart=cart).filter_by(seller=product.seller).first()
+        seller_cart = MSellerCart.query.filter_by(
+            cart=cart).filter_by(seller=product.seller).first()
         if not seller_cart:
             seller_cart = MSellerCart(
                 cart=cart,
@@ -101,7 +109,8 @@ class AddToCart(Resource):
             db.session.add(seller_cart)
             db.session.commit()
             db.session.refresh(seller_cart)
-        cart_item = MCartItem.query.filter_by(product=product).filter_by(variant=variant).filter_by(cart=cart).first()
+        cart_item = MCartItem.query.filter_by(product=product).filter_by(
+            variant=variant).filter_by(cart=cart).first()
         if cart_item:
             cart_item.count += quantity
         else:
@@ -125,12 +134,16 @@ class AddToCart(Resource):
             'count': count
         }
 
+
 class ChangeCartItemQuantity(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument('product_id', help='This field cannot be blank', required=True)
-        self.parser.add_argument('variant_id', help='This field cannot be blank', required=True)
-        self.parser.add_argument('quantity', help='This field cannot be blank', required=True)
+        self.parser.add_argument(
+            'product_id', help='This field cannot be blank', required=True)
+        self.parser.add_argument(
+            'variant_id', help='This field cannot be blank', required=True)
+        self.parser.add_argument(
+            'quantity', help='This field cannot be blank', required=True)
 
     def post(self):
         data = self.parser.parse_args()
@@ -160,7 +173,8 @@ class ChangeCartItemQuantity(Resource):
                         product.price_currency.name, cart_currency.name)
                 }
         cart.user_id = user_id
-        seller_cart = MSellerCart.query.filter_by(cart=cart).filter_by(seller=product.seller).first()
+        seller_cart = MSellerCart.query.filter_by(
+            cart=cart).filter_by(seller=product.seller).first()
         if not seller_cart:
             seller_cart = MSellerCart(
                 cart=cart,
@@ -171,7 +185,8 @@ class ChangeCartItemQuantity(Resource):
             db.session.add(seller_cart)
             db.session.commit()
             db.session.refresh(seller_cart)
-        cart_item = MCartItem.query.filter_by(product=product).filter_by(variant=variant).filter_by(cart=cart).first()
+        cart_item = MCartItem.query.filter_by(product=product).filter_by(
+            variant=variant).filter_by(cart=cart).first()
         if cart_item:
             cart_item.count = quantity
         else:
@@ -199,9 +214,12 @@ class ChangeCartItemQuantity(Resource):
 class SubFromCart(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument('product_id', help='This field cannot be blank', required=True)
-        self.parser.add_argument('variant_id', help='This field cannot be blank', required=True)
-        self.parser.add_argument('quantity', help='This field cannot be blank', required=True)
+        self.parser.add_argument(
+            'product_id', help='This field cannot be blank', required=True)
+        self.parser.add_argument(
+            'variant_id', help='This field cannot be blank', required=True)
+        self.parser.add_argument(
+            'quantity', help='This field cannot be blank', required=True)
 
     def post(self):
         data = self.parser.parse_args()
@@ -219,7 +237,8 @@ class SubFromCart(Resource):
             user_id = current_user.id
         cart = get_current_cart()
         cart.user_id = user_id
-        cart_item = MCartItem.query.filter_by(product=product).filter_by(variant=variant).filter_by(cart=cart).first()
+        cart_item = MCartItem.query.filter_by(product=product).filter_by(
+            variant=variant).filter_by(cart=cart).first()
         if cart_item:
             cart_item_seller = cart_item.seller
             if cart_item.count - quantity > 0:
@@ -227,7 +246,8 @@ class SubFromCart(Resource):
                 db.session.add(cart_item)
             else:
                 db.session.delete(cart_item)
-            seller_cart = MSellerCart.query.filter_by(cart=cart, seller=cart_item_seller).first()
+            seller_cart = MSellerCart.query.filter_by(
+                cart=cart, seller=cart_item_seller).first()
             if seller_cart:
                 if len(seller_cart.cart_items) < 1:
                     db.session.delete(seller_cart)
@@ -240,11 +260,14 @@ class SubFromCart(Resource):
             'count': count
         }
 
+
 class RemoveFromCart(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument('product_id', help='This field cannot be blank', required=True)
-        self.parser.add_argument('variant_id', help='This field cannot be blank', required=True)
+        self.parser.add_argument(
+            'product_id', help='This field cannot be blank', required=True)
+        self.parser.add_argument(
+            'variant_id', help='This field cannot be blank', required=True)
 
     def post(self):
         data = self.parser.parse_args()
@@ -261,7 +284,8 @@ class RemoveFromCart(Resource):
             user_id = current_user.id
         cart = get_current_cart()
         cart.user_id = user_id
-        cart_item = MCartItem.query.filter_by(product=product).filter_by(variant=variant).filter_by(cart=cart).first()
+        cart_item = MCartItem.query.filter_by(product=product).filter_by(
+            variant=variant).filter_by(cart=cart).first()
         if cart_item:
             cart_item_seller = cart_item.seller
             # if cart_item.count - quantity > 0:
@@ -269,7 +293,8 @@ class RemoveFromCart(Resource):
             #     db.session.add(cart_item)
             # else:
             db.session.delete(cart_item)
-            seller_cart = MSellerCart.query.filter_by(cart=cart, seller=cart_item_seller).first()
+            seller_cart = MSellerCart.query.filter_by(
+                cart=cart, seller=cart_item_seller).first()
             if seller_cart and len(seller_cart.cart_items) < 1:
                 db.session.delete(seller_cart)
             db.session.commit()
@@ -281,21 +306,23 @@ class RemoveFromCart(Resource):
                 'count': count
             }
         return {
-                'status': 0,
-                'title': "Error",
-                'message': "Couldn't find cart item",
+            'status': 0,
+            'title': "Error",
+            'message': "Couldn't find cart item",
         }
 
 
 class ChangeOrderStatus(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument('order_id', help='This field cannot be blank', required=True)
+        self.parser.add_argument(
+            'order_id', help='This field cannot be blank', required=True)
 
     @seller_required
     def post(self):
         data = self.parser.parse_args()
-        order = MSellerOrder.query.filter_by(seller=current_user).filter_by(id=data['order_id']).first()
+        order = MSellerOrder.query.filter_by(
+            seller=current_user).filter_by(id=data['order_id']).first()
         if not order:
             return {
                 'status': 0,
