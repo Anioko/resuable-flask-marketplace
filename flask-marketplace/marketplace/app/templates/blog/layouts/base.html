@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="img/favicon.png" type="image/png">
+    <title>{{config.APP_NAME}}</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='blog/css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='blog/css/themify-icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='blog/css/flaticon.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='blog/vendors/fontawesome/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='blog/vendors/owl-carousel/owl.carousel.min.html') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='blog/vendors/animate-css/animate.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='blog/css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='blog/css/responsive.css') }}">
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/ico/favicon.ico') }}">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144"
+          href="{{ url_for('static', filename='images/ico/apple-touch-icon-144-precomposed.png') }}">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114"
+          href="{{ url_for('static', filename='images/ico/apple-touch-icon-114-precomposed.png') }}">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72"
+          href="{{ url_for('static', filename='images/ico/apple-touch-icon-72-precomposed.png') }}">
+    <link rel="apple-touch-icon-precomposed"
+          href="{{ url_for('static', filename='images/ico/apple-touch-icon-57-precomposed.png') }}">
+    <meta name="google-site-verification" content="eO7v2aO6uakHOD3gSnChM4_GSUpar3MVqPZzr9cWENE" />
+
+    {% block custom_head_tags %}{% endblock %}
+
+</head>
+<body>
+<section class="header-top">
+    <div class="container">
+        <div class="row align-items-center justify-content-between">
+            <div class="col-6 col-lg-4">
+                <div class="float-left">
+                    <ul class="header_social">
+                        <li><a target="_blank" href="https://www.facebook.com/medivillenetwork"><i class="ti-facebook"></i></a></li>
+                        {#                        <li><a href="#"><i class="ti-twitter"></i></a></li>#}
+                        <li><a target="_blank" href="https://www.instagram.com/medivillenetwork"><i class="ti-instagram"></i></a></li>
+                        {#                        <li><a href="#"><i class="ti-skype"></i></a></li>#}
+                        {#                        <li><a href="#"><i class="ti-vimeo"></i></a></li>#}
+                    </ul>
+                </div>
+            </div>
+            <div class="col-6 col-lg-4 col-md-6 col-sm-6 logo-wrapper">
+                <a href="{{ url_for('blog.index') }}" class="logo">
+                    <img src="{{ url_for('static', filename='images/logo_blog.png') }}" alt="">
+                </a>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6 search-trigger">
+                <div class="right-button">
+                    <ul>
+                        <li><a href="{{ url_for('public.about') }}">About</a></li>
+                        <li><a href="#footer-sub">Subscribe</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<header id="header" class="header_area">
+    <div class="main_menu">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
+                    <ul class="nav navbar-nav menu_nav ml-auto mr-auto">
+                        <li class="nav-item {% if request.endpoint == 'blog.index' %} active {% endif %}"><a class="nav-link" href="{{ url_for('blog.index') }}">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('blog.blog_categories') }}">Categories</a></li>
+                        <li class="nav-item {% if request.endpoint == 'public.contact' %} active {% endif %}"><a class="nav-link" href="{{ url_for('public.contact') }}">Contact Us</a></li>
+                        <li class="nav-item {% if request.endpoint == 'home.index' %} active {% endif %}"><a class="nav-link" href="{{ url_for('organisations.org_home') }}">Site Home</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>
+
+
+<section class="banner_area">
+    <div class="banner_inner d-flex align-items-center">
+        <div class="container">
+            <div class="banner_content d-md-flex justify-content-between align-items-center">
+                <div class="mb-3 mb-md-0">
+                    <h2>Blog</h2>
+                </div>
+                <div class="page_link">
+                    <a href="{{ url_for('organisations.org_home') }}">Home</a>
+                    <a href="{{ url_for('blog.index') }}">Blog</a>
+                    {% block extra_link %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% include 'blog/_flashes.html' %}
+{% block content %}{% endblock %}
+
+<footer class="footer-area" style="border-top: 1px solid #e8edf1;">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-4 col-lg-4 col-sm-6 mb-4 mb-xl-0 single-footer-widget">
+                <h4>About Us</h4>
+                <p>A healthcare professional networking and jobs platform built in collaboration with doctors, nurses and other health and allied care professionals.</p>
+                <div class="footer-logo" style="text-align: center;width: 100%;">
+                    <img src="{{ url_for('static', filename='images/blog_footer.png') }}" alt="">
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-sm-6 mb-4 mb-xl-0 single-footer-widget">
+                <h4>Important Link</h4>
+                <ul>
+                    <li><a href="{{ url_for('blog.index') }}">Blog Home</a></li>
+                    <li><a href="{{ url_for('organisations.org_home') }}">Site Home</a></li>
+                    <li><a href="{{ url_for('public.about') }}">About Us</a></li>
+                    <li><a href="{{ url_for('public.contact') }}">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="col-xl-5 col-lg-5 col-sm-6 col-md-6 mb-4 mb-xl-0 single-footer-widget">
+                <h4>Newsletter</h4>
+                <p>Subscribe To receive updates for {{ config.APP_NAME}}'s blog new posts.</p>
+                <div class="form-wrap">
+                    <form  action="{{ url_for('blog.subscribe') }}" method="POST" id="footer-sub">
+                        <div class="input-group">
+                            <input type="hidden" value="{{ csrf_token() }}" name="csrf_token">
+                            <input type="email" class="form-control" name="email" placeholder="Your Email Address" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Your Email Address '">
+                            <div class="input-group-append">
+                                <button class="btn click-btn" type="submit">
+                                    <i class="fab fa-telegram-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div style="position: absolute; left: -5000px;">
+                            <input name="b_36c4fd991d266f23781ded980_aefe40901a" tabindex="-1" value="" type="text">
+                        </div>
+                        <div class="info"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom row align-items-center text-center text-lg-left no-gutters">
+            <p class="footer-text m-0 col-lg-8 col-md-12">
+                Copyright &copy; {{ config.APP_NAME}} <script>document.write(new Date().getFullYear());</script> | All rights reserved...
+            </p>
+            <div class="col-lg-4 col-md-12 text-center text-lg-right footer-social">
+                <a target="_blank" href="https://www.facebook.com/medivillenetwork"><i class="ti-facebook"></i></a>
+                <a target="_blank" href="https://www.instagram.com/medivillenetwork"><i class="ti-instagram"></i></a>
+                {#                    <a href="#"><i class="ti-twitter-alt"></i></a>#}
+                {#                    <a href="#"><i class="ti-dribbble"></i></a>#}
+                {#                    <a href="#"><i class="ti-linkedin"></i></a>#}
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+<script src="{{ url_for('static', filename='blog/js/jquery-2.2.4.min.js') }}"></script>
+<script src="{{ url_for('static', filename='blog/js/popper.js') }}"></script>
+<script src="{{ url_for('static', filename='blog/js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='blog/js/stellar.js') }}"></script>
+<script src="{{ url_for('static', filename='blog/vendors/popup/jquery.magnific-popup.min.js') }}"></script>
+<script src="{{ url_for('static', filename='blog/js/jquery.ajaxchimp.min.js') }}"></script>
+<script src="{{ url_for('static', filename='blog/js/waypoints.min.js') }}"></script>
+<script src="{{ url_for('static', filename='blog/js/mail-script.js') }}"></script>
+<script src="{{ url_for('static', filename='blog/js/contact.js') }}"></script>
+<script src="{{ url_for('static', filename='blog/js/jquery.form.js') }}"></script>
+<script src="{{ url_for('static', filename='blog/js/jquery.validate.min.js') }}"></script>
+<script src="{{ url_for('static', filename='blog/js/mail-script.js') }}"></script>
+<script src="{{ url_for('static', filename='blog/js/theme.js') }}"></script>
+
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-23581568-13');
+</script>
+<script>
+    $(document).ready(function() {
+        if ($('.alert').length){
+            $('html, body').animate({
+                scrollTop: $('.alert').offset().top - 150
+            }, 1000);
+        }
+    })
+</script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

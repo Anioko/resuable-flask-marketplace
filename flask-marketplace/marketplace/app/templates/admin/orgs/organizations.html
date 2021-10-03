@@ -1,0 +1,60 @@
+{% extends 'layouts/base.html' %}
+
+{% macro dashboard_option(title, endpoint, description=None, icon=None) %}
+    <a class="column" href="{{ url_for(endpoint) }}">
+        <div class="ui padded segment">
+            <h3 class="ui header">
+                {% if icon is not none %}
+                    <i class="{{ icon }}"></i>
+                {% endif %}
+                <div class="content">
+                    {{ title }}
+                    {% if description is not none %}
+                        <div class="sub header">
+                            {{ description }}
+                        </div>
+                    {% endif %}
+                </div>
+            </h3>
+        </div>
+    </a>
+{% endmacro %}
+
+{% block content %}
+    <div class="ui stackable grid container">
+        <div class="sixteen wide tablet twelve wide computer centered column">
+			<div class="ui padded segment">
+            <h2 class="ui header">
+                All Organizations
+            </h2>
+			</div>
+
+            {# Use overflow-x: scroll so that mobile views don't freak out
+             # when the table is too wide #}
+            <div style="overflow-x: scroll;">
+                <table class="ui searchable sortable unstackable selectable celled table">
+                    <thead>
+                    <tr>
+                        <th class="sorted ascending" >Name</th>
+                        <th>Creator</th>
+                        <th>View Projects</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for og in orgs | sort(attribute='org_name') %}
+                        <tr onclick="window.location.href = '{{ url_for('admin.user_info', user_id=og.id) }}';">
+
+                            <td>{{ og.org_name }}</td>
+                            <td>{{ og.user.full_name() }}</td>
+                           
+                            <td>
+                                <a class="ui primary button" href="{{ url_for('admin.paid_projects_stats', org_id=og.id) }}">View Paid Projects</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

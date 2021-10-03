@@ -1,0 +1,172 @@
+{% extends "public/layout.html" %}
+{% block page_title %}Sweet CMS - {{ product.name }}{% endblock %}
+{% block content %}
+    <main>
+        <!-- breadcrumb-area -->
+        <section class="breadcrumb-area d-flex align-items-center" data-background="{{ url_for('static',filename='web/img/bg/breadcrumb_bg.jpg')}}">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="breadcrumb-wrap text-center">
+                            <h2>{{ product.name }}</h2>
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="{{ url_for('public.home') }}">Home</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Product Details</li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- breadcrumb-area-end -->
+        <!-- product-details-area -->
+        <section class="product-details gray-bg pt-120 pb-120">
+            <div class="container">
+                <div class="t-product-wrap">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="product-details-wrap">
+                                <div class="slider-product">
+                                    {% for img in product.screenshots %}
+                                        <div class="product-details-thumb">
+                                            <img src="{{ img.image_url }}" alt="img">
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <br>
+                                <div class="product-details-tab">
+                                    <ul class="nav product-tab" id="myTab" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link btn active" id="item-details-tab" data-toggle="tab" href="#item-details" role="tab" aria-controls="item-details" aria-selected="true">Item Details</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link btn" id="product-support-tab" data-toggle="tab" href="#product-support" role="tab" aria-controls="product-support" aria-selected="false">Support</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content product-tab-content" id="myTabContent">
+                                        <div class="tab-pane fade show active" id="item-details" role="tabpanel" aria-labelledby="item-details-tab">
+                                            <div class="product-details-content">
+                                                {{ product.long_description | safe }}
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade" id="product-support" role="tabpanel" aria-labelledby="product-support-tab">
+                                            <div class="product-details-content">
+                                                <h3>Marktplus - Engineering WordPress Theme</h3>
+                                                <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some
+                                                    form,
+                                                    by injected humour, or randomised words which don't look even slightly believable. If you are going to use a
+                                                    passage of
+                                                    Lorem Ipsum, you need to be sure there isn't anything embarrassing hidde.</p>
+                                                <p>But the majority have suffered alteration in some form, by injected humour, or domised words which don't look
+                                                    even
+                                                    slightly believable. If you are going to use a passage Lorem Ipsum, you need sure there isn't anything.</p>
+                                                <div class="product-details-features">
+                                                    <h4>Features Marktplus</h4>
+                                                    <p>Alteration in some form, by injected humour, or domised words which.</p>
+                                                    <ul>
+                                                        <li>Full WooCommerce integration</li>
+                                                        <li>Compatible Browsers – IE9+, Chrome, Safari, Opera, Firefox</li>
+                                                        <li>All settings defined via customization API</li>
+                                                        <li>Files Included – php, html, JS, css</li>
+                                                        <li>Compatible with – Elementor</li>
+                                                    </ul>
+                                                </div>
+                                                <p>Majority have suffered alteration in some form, by injected humour, or domised words which don't look even
+                                                    slightly by
+                                                    injected humour, or domised have suffered alteration in some believable njected humour.</p>
+                                                <div class="product-details-source">
+                                                    <h4>Sources and Credits:</h4>
+                                                    <p>A full list of all the sources and services we use to build :</p>
+                                                    <ul>
+                                                        <li>FontAwesome</li>
+                                                        <li>Parallax</li>
+                                                        <li>Owl carosel</li>
+                                                        <li>Free Image Used</li>
+                                                        <li>Google Font Use</li>
+                                                    </ul>
+                                                </div>
+                                                <p class="product-details-note">Please Note : All images are only for demo preview and NOT included in purchase
+                                                    files.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <aside class="vendor-profile-sidebar item-details-sidebar">
+                                <h5 class="vendor-wrap-title">DOWNLOAD DETAILS</h5>
+                                <div class="item-sidebar-action text-center">
+                                    <div class="item-price-count mb-25">
+                                        <h4>${{ product.price }}</h4>
+                                    </div>
+                                    <div class="item-license">
+                                        <input id="license-checkbox" type="checkbox" checked onchange="$('input:checkbox[name=product_support]')[0].checked=this.checked;">
+                                        <label for="license-checkbox">Add Support - +${{ product.support_price }}</label>
+                                        <br>
+                                        <br>
+                                    </div>
+                                    <div class="item-sidebar-btn mb-25">
+                                        <a class="change-cart btn" href="#" redirect-url="{{ url_for('public.cart_details') }}">Purchase</a>
+                                        <form class="cart-change-form d-none" action="{{ url_for('api.add_to_cart') }}">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                            <input type="hidden" name="product_id" value="{{ product.id }}">
+                                            <input type="checkbox" name="product_support" checked>
+                                            <br>
+                                            <br>
+                                        </form>
+                                        <a href="{{ product.demo_url }}" target="_blank" class="btn item-prev-btn">Live Preview</a>
+                                    </div>
+                                </div>
+                                <div class="sidebar-item-info">
+                                    <h5 class="vendor-sidebar-title text-center">Item Information</h5>
+                                    <img src="{{ product.image_url }}" alt="img" width="100%">
+                                    <hr>
+                                    <ul>
+                                        <li>Price<span>${{ product.price }}</span></li>
+                                        <li>Released<span>August 19, 2019</span></li>
+                                        <li>Last Updated<span>September 05, 2019</span></li>
+                                    </ul>
+                                </div>
+                                <div class="product-sidebar-tag">
+                                    <h5 class="vendor-sidebar-title text-center">Product Tags</h5>
+                                    <ul>
+                                        {% for tag in product.tags.split(',') %}
+                                            <li><a href="#">{{ tag }}</a></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </aside>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- product-details-area-end -->
+    </main>
+{% endblock %}
+{% block scripts %}
+    <script>
+        $('.slider-product').slick({
+            dots: true,
+            arrows: false,
+            infinite: true,
+            autoplay: true,
+            speed: 1000,
+            slidesToShow: 1,
+            slidesToScroll: 1,
+            responsive: [
+                {
+                    breakpoint: 1200,
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1,
+                        infinite: true,
+                    }
+                },
+            ]
+        });
+    </script>
+{% endblock %}

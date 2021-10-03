@@ -1,0 +1,176 @@
+{% extends 'blog/layouts/base.html' %}
+{% import 'blog/_macros.html' as macros %}
+{% block extra_link %}
+    <a href="#">{{ post.title[:50] }}</a>
+{% endblock %}
+{% block content %}
+    <section class="blog_area single-post-area area-padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 posts-list">
+                    <div class="single-post">
+                        <div class="feature-img">
+                            <img class="img-fluid" src="{{ url_for('_uploads.uploaded_file', setname='images',
+                           filename=post.image, _external=True) }}" alt="">
+                        </div>
+                        <div class="blog_details">
+                            <h2>{{ post.title }}</h2>
+                            <ul class="blog-info-link mt-3 mb-4">
+                                <li><a href="{{ url_for('main.user_detail', user_id=post.creator.id) }}"><i class="far fa-user"></i> {{ post.creator.full_name }}</a></li>
+                                <li><a href="#"><i class="far fa-comments"></i> {{ post.comments.count() }} comments</a></li>
+                            </ul>
+                            <div>
+                                {{ post.text | safe }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="navigation-top">
+                        <div class="d-sm-flex justify-content-between text-center">
+                            <div class="col-sm-4 text-center my-2 my-sm-0">
+                                <p class="comment-count"><span class="align-middle"><i class="far fa-comment"></i></span>
+                                    {{ post.comments.count() }} Comments</p>
+                            </div>
+                            <ul class="social-icons">
+                                <li><a target="_blank" href="https://www.facebook.com/medivillenetwork"><i class="fab fa-facebook-f"></i></a></li>
+                                <li><a target="_blank" href="https://www.instagram.com/medivillenetwork"><i class="fab fa-instagram"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="comments-area" style="margin-top: 0">
+                        <h4>Comments</h4>
+                        {% if post.comments.count() > 0 %}
+                            {% for comment in post.comments.all() %}
+                                {% if comment.parent_id == None and comment.author %}
+                                    <div class="comment-list">
+                                        <div class="single-comment justify-content-between d-flex" style="width: 100%">
+                                            <div class="user justify-content-between d-flex" style="width: 100%">
+                                                <div class="thumb">
+                                                    <img src="{{ comment.author.get_photo() }}" alt="">
+                                                </div>
+                                                <div class="desc" style="width: 100%">
+                                                    <p class="comment">
+                                                        {{ comment.text }}
+                                                    </p>
+                                                    <div class="d-flex justify-content-between">
+                                                        <div class="d-flex align-items-center">
+                                                            <h5>
+                                                                <a href="{{ url_for('main.user_detail', user_id=comment.author.id) }}">{{ comment.author.full_name }}</a>
+                                                            </h5>
+                                                            <p class="date">{{ comment.created_at.ctime() }} </p>
+                                                        </div>
+                                                        {% if current_user.is_authenticated %}
+                                                            <div class="reply-btn">
+                                                                <a href="#" onclick="console.log($(this).parent());$(this).parent().parent().next('.reply-form').toggle();return false;" class="btn-reply text-uppercase">reply</a>
+                                                            </div>
+                                                        {% else %}
+                                                            <div class="reply-btn">
+                                                                <a class="btn-reply text-uppercase" href="{{ url_for('account.login', next=url_for(request.endpoint, article_id=post.id, _external=True)) }}">Login To Reply</a>
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="reply-form" style="display: none">
+                                                        <div class="">
+                                                            <form class="form-contact comment_form" action="{{ url_for('blog.add_comment', article_id=post.id) }}"  method="POST">
+                                                                <input type="hidden" name="post_id" value="{{ post.id }}">
+                                                                <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                                <div class="row">
+                                                                    <div class="col-12">
+                                                                        <div class="form-group">
+                                                                            <input class="form-control w-100" name="text" id="comment" placeholder="Write Comment, Enter to send">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                    {% if 'children' in comment.drilldown_tree()[0].keys() %}
+                                                        <br>
+                                                        {{ macros.traverse(comment.drilldown_tree()[0]['children'], post.id, current_user) }}
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <p>No Comments Yet</p>
+                        {% endif %}
+                    </div>
+                    {% if current_user.is_authenticated %}
+                        <div class="comment-form">
+                            <h4>Leave a comment</h4>
+                            <form class="form-contact comment_form" action="{{ url_for('blog.add_comment', article_id=post.id) }}" id="commentForm" method="POST">
+                                <input type="hidden" name="post_id" value="{{ post.id }}">
+                                <input type="hidden" name="parent_id" value="0">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <input class="form-control w-100" name="text" id="comment" placeholder="Write Comment, Enter to send">
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    {% else %}
+                        <hr>
+                        <p>Please <a href="{{ url_for('account.login', next=url_for(request.endpoint, article_id=post.id, _external=True)) }}">Login</a> So You can add comments</p>
+                    {% endif %}
+                </div>
+                <div class="col-lg-4">
+                    <div class="blog_right_sidebar">
+{#                        <aside class="single_sidebar_widget search_widget">#}
+{#                            <form action="#">#}
+{#                                <div class="form-group">#}
+{#                                    <div class="input-group mb-3">#}
+{#                                        <input type="text" class="form-control" placeholder="Search Keyword">#}
+{#                                        <div class="input-group-append">#}
+{#                                            <button class="btn" type="button"><i class="ti-search"></i></button>#}
+{#                                        </div>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                                <button class="button rounded-0 primary-bg text-white w-100" type="submit">Search</button>#}
+{#                            </form>#}
+{#                        </aside>#}
+                        <aside class="single_sidebar_widget post_category_widget">
+                            <h4 class="widget_title">Category</h4>
+                            <ul class="list cat-list">
+                                {% for category in categories %}
+                                    <li>
+                                        <a href="#" class="d-flex">
+                                            <p>{{ category.name }}</p>
+                                            <p>&nbsp;({{ category.posts | length }} )</p>
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </aside>
+                        <aside class="single_sidebar_widget tag_cloud_widget">
+                            <h4 class="widget_title">Tags</h4>
+                            <ul class="list">
+                                {% for tag in tags %}
+                                    <li>
+                                        <a href="{{ url_for('blog.blog_tag', tag_id=tag.id) }}">{{ tag.name }}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </aside>
+                        <aside class="single_sidebar_widget newsletter_widget">
+                            <h4 class="widget_title">Newsletter</h4>
+                            <form action="{{ url_for('blog.subscribe') }}" method="POST">
+                                <div class="form-group">
+                                    <input type="hidden" value="{{ csrf_token() }}" name="csrf_token">
+                                    <input type="email" class="form-control" placeholder="Enter email" name="email" required>
+                                </div>
+                                <button class="button rounded-0 primary-bg text-white w-100" type="submit">Subscribe</button>
+                            </form>
+                        </aside>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+{% endblock %}

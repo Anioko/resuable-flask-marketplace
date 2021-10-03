@@ -19,7 +19,7 @@ if os.path.exists(config_file):
 
 
 class Config:
-    APP_NAME = os.environ.get('APP_NAME') or 'Textiles.ng'
+    APP_NAME = os.environ.get('APP_NAME') or 'Waabuy'
     SESSION_TYPE = os.environ.get('SESSION_TYPE') or 'filesystem'
 
     if os.environ.get('SECRET_KEY'):

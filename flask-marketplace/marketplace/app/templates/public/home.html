@@ -1,0 +1,124 @@
+{% extends "public/layout.html" %}
+{% block page_title %}Sweet CMS{% endblock %}
+{% block content %}
+    <main> 
+        <section class="slider-area slider-bg" data-background="{{ url_for('static', filename='web/img/slider/slider_bg02.jpg')}}">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-xl-8 col-lg-10">
+                        <div class="slider-content text-center mb-45">
+                            <h2>{{ home_title.firstext }}</h2>
+                            <p>{{ home_title.secondtext }}</p>
+                            <br>
+                            <a href="{{ url_for('public.download') }}" class="btn btn-primary col-6">Get Started</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-xl-10">
+                        <div class="slider-dashboard">
+                            <div class="dashboard-active">
+                                {% for slideshow in slideshows %}
+                                    <div class="single-dashboard">
+                                        <a href="#"><img src="{{ slideshow.image_url }}" alt="img"></a>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="features-items-area features-items-p">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-xl-8">
+                        <div class="section-title text-center mb-55">
+                            <h2>{{ text_techno.firstext }}</h2>
+                            <p>{{ text_techno.secondtext}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-thumb-wrap">
+                    <div class="row text-center justify-content-center">
+                        {% for img in techno_img %}
+                        <div class="single-product-thumb">
+                            <a href="#"><img src="{{ img.image_url }}" alt="img"></a>
+                        </div>
+                        {% endfor %}
+                        <!-- <div class="single-product-thumb">
+                            <a href="#"><img src="{{ url_for('static', filename='web/img/thumb/product_thumb10.png')}}" alt="img"></a>
+                        </div>
+                        <div class="single-product-thumb">
+                            <a href="#"><img src="{{ url_for('static', filename='web/img/thumb/product_thumb02.png')}}" alt="img"></a>
+                        </div>
+                        <div class="single-product-thumb">
+                            <a href="#"><img src="{{ url_for('static', filename='web/img/thumb/product_thumb03.png')}}" alt="img"></a>
+                        </div>
+                        <div class="single-product-thumb">
+                            <a href="#"><img src="{{ url_for('static', filename='web/img/thumb/product_thumb04.png')}}" alt="img"></a>
+                        </div>
+                        <div class="single-product-thumb">
+                            <a href="#"><img src="{{ url_for('static', filename='web/img/thumb/product_thumb06.png')}}" alt="img"></a>
+                        </div>
+                        <div class="single-product-thumb">
+                            <a href="#"><img src="{{ url_for('static', filename='web/img/thumb/product_thumb05.png')}}" alt="img"></a>
+                        </div>
+                        <div class="single-product-thumb">
+                            <a href="#"><img src="{{ url_for('static', filename='web/img/thumb/product_thumb07.png')}}" alt="img"></a>
+                        </div>
+                        <div class="single-product-thumb">
+                            <a href="#"><img src="{{ url_for('static', filename='web/img/thumb/product_thumb08.png')}}" alt="img"></a>
+                        </div>
+                        <div class="single-product-thumb">
+                            <a href="#"><img src="{{ url_for('static', filename='web/img/thumb/product_thumb09.png')}}" alt="img"></a>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="product-area gray-bg pt-120 pb-120">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-xl-9">
+                        <div class="section-title text-center mb-30">
+                            <h2>Our Products</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="t-product-wrap">
+                    <div class="row">
+                        {% for module in modules %}
+                            <div class="col-lg-4 col-md-6">
+                                <div class="single-product t-single-product mb-30">
+                                    <div class="product-img">
+                                        <a href="{{ url_for('public.view_product', product_id=module.id, product_name=module.name) }}"><img src="{{ module.image_url }}" alt="img"></a>
+                                    </div>
+                                    <div class="t-product-overlay">
+                                        <h5><a href="{{ url_for('public.view_product', product_id=module.id, product_name=module.name) }}">{{ module.name }}</a></h5>
+                                        <span>{{ module.description }}</span>
+                                        <div class="t-product-meta">
+                                            <div class="t-product-rating">
+                                                <h6>${{ module.price }}</h6>
+                                            </div>
+                                            <div>
+                                                <a class="change-cart" data-id="{{ module.id }}" redirect-url="{{ url_for('public.home') }}" href="#"><i class="fas fa-shopping-basket"></i></a>
+                                                <form class="cart-change-form d-none" action="{{ url_for('api.add_to_cart') }}">
+                                                    {{ form.csrf_token }}
+                                                    <input type="hidden" name="product_id" value="{{ module.id }}">
+                                                    <input type="checkbox" name="product_support" checked>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+    </main>
+{% endblock %}

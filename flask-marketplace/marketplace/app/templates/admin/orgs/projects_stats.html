@@ -1,0 +1,60 @@
+{% extends 'layouts/base.html' %}
+
+{% macro dashboard_option(title, endpoint, description=None, icon=None) %}
+    <a class="column" href="{{ url_for(endpoint) }}">
+        <div class="ui padded segment">
+            <h3 class="ui header">
+                {% if icon is not none %}
+                    <i class="{{ icon }}"></i>
+                {% endif %}
+                <div class="content">
+                    {{ title }}
+                    {% if description is not none %}
+                        <div class="sub header">
+                            {{ description }}
+                        </div>
+                    {% endif %}
+                </div>
+            </h3>
+        </div>
+    </a>
+{% endmacro %}
+
+{% block content %}
+    <div class="ui stackable grid container">
+        <div class="sixteen wide tablet twelve wide computer centered column">
+			<div class="ui padded segment">
+            <h2 class="ui header">
+                All Organizations
+            </h2>
+			</div>
+
+            {# Use overflow-x: scroll so that mobile views don't freak out
+             # when the table is too wide #}
+            <div style="overflow-x: scroll;">
+                <table class="ui searchable sortable unstackable selectable celled table">
+                    <thead>
+                    <tr>
+                        <th class="sorted ascending" >Project</th>
+                        <th>Answers Ordered</th>
+                        <th>Answers Available</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for project_stats in projects_stats | sort(attribute='project') %}
+                        <tr>
+
+                            <td>{{ project_stats.project }}</td>
+                            <td>{{ project_stats.answers_ordered }}</td>
+                            <td>{{ project_stats.answers_count }}</td>
+                            <td>
+                                <a class="ui primary button" href="{{url_for('admin.paid_questions_stats', project_id=project_stats.id)}}">Questions Stats</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

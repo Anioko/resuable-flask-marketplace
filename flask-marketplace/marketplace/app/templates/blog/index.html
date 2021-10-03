@@ -1,0 +1,141 @@
+{% extends 'blog/layouts/base.html' %}
+{% block content %}
+    <section class="blog_area area-padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mb-5 mb-lg-0">
+                    <div class="blog_left_sidebar">
+                        {% for post in posts.items %}
+                            <article class="blog_item">
+                                <div class="blog_item_img">
+                                    <img class="card-img rounded-0" src="{{ url_for('_uploads.uploaded_file', setname='images',
+                           filename=post.image, _external=True) }}" alt="">
+                                    <a href="#" class="blog_item_date">
+                                        <h3>{{ post.created_at | day }}</h3>
+                                        <p>{{ post.created_at | mon }}</p>
+                                    </a>
+                                </div>
+                                <div class="blog_details">
+                                    <a class="d-inline-block" href="{{ url_for('blog.blog_article', article_id=post.id) }}">
+                                        <h2>{{ post.title }}</h2>
+                                    </a>
+                                    <br>
+                                    {{ post.text[:200] | striptags }}
+                                    <ul class="blog-info-link">
+
+                                        <li><a href="#"><i class="far fa-comments"></i> {{ post.comments.count() }} comments</a></li>
+                                    </ul>
+                                </div>
+                            </article>
+                        {% endfor %}
+                        {% if posts.pages > 0 %}
+                            <nav class="blog-pagination justify-content-center d-flex">
+                                <ul class="pagination">
+                                    {% set prev =  posts.page - 1 %}
+                                    {% if prev > 0 and prev < posts.pages %}
+                                        <li class="page-item">
+                                            <a href="{{ url_for(request.endpoint,  page=prev) }}" class="page-link" aria-label="Previous">
+                                                <i class="ti-angle-left"></i>
+                                            </a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled">
+                                            <a href="#" class="page-link" aria-label="Previous" disabled="">
+                                                <i class="ti-angle-left"></i>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                    {% for page in posts.iter_pages() %}
+                                        {% if page %}
+                                            {% if page != posts.page %}
+                                                <li class="page-item">
+                                                    <a href="{{ url_for(request.endpoint,  page=page) }}" class="page-link">{{ page }}</a>
+                                                </li>
+                                            {% else %}
+                                                <li class="page-item active">
+                                                    <a href="{{ url_for(request.endpoint,  page=page) }}" class="page-link">{{ page }}</a>
+                                                </li>
+                                            {% endif %}
+
+                                        {% else %}
+                                            <div class="disabled page-item">
+                                                ...
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% set nex =  posts.page + 1 %}
+                                    {% if nex > 0 and nex < posts.pages %}
+                                        <li class="page-item">
+                                            <a href="{{ url_for(request.endpoint,  page=nex) }}" class="page-link" aria-label="Previous">
+                                                <i class="ti-angle-right"></i>
+                                            </a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled">
+                                            <a href="#" class="page-link" aria-label="Previous" disabled="">
+                                                <i class="ti-angle-right"></i>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="blog_right_sidebar">
+{#                        <aside class="single_sidebar_widget search_widget">#}
+{#                            <form action="#">#}
+{#                                <div class="form-group">#}
+{#                                    <div class="input-group mb-3">#}
+{#                                        <input type="text" class="form-control" placeholder="Search Keyword">#}
+{#                                        <div class="input-group-append">#}
+{#                                            <button class="btn" type="button"><i class="ti-search"></i></button>#}
+{#                                        </div>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                                <button class="button rounded-0 primary-bg text-white w-100" type="submit">Search</button>#}
+{#                            </form>#}
+{#                        </aside>#}
+                        <aside class="single_sidebar_widget post_category_widget">
+                            <h4 class="widget_title">Category</h4>
+                            <ul class="list cat-list">
+                                {% for category in categories %}
+                                    <li>
+                                        <a href="#" class="d-flex">
+                                            <p>{{ category.name }}</p>
+                                            <p>&nbsp;({{ category.posts | length }} )</p>
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </aside>
+                        <aside class="single_sidebar_widget tag_cloud_widget">
+                            <h4 class="widget_title">Tags</h4>
+                            <ul class="list">
+                                {% for tag in tags %}
+                                <li>
+                                    <a href="{{ url_for('blog.blog_tag', tag_id=tag.id) }}">{{ tag.name }}</a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </aside>
+                        <aside class="single_sidebar_widget newsletter_widget">
+                            <h4 class="widget_title">Newsletter</h4>
+                            <form action="{{ url_for('blog.subscribe') }}" method="POST">
+                                <div class="form-group">
+                                                                <input type="hidden" value="{{ csrf_token() }}" name="csrf_token">
+                                    <input type="email" class="form-control" placeholder="Enter email" name="email" required>
+                                </div>
+                                <button class="button rounded-0 primary-bg text-white w-100" type="submit">Subscribe</button>
+                            </form>
+                        </aside>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+{% endblock %}

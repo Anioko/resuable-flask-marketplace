@@ -1,0 +1,84 @@
+{% extends 'blog/layouts/base.html' %}
+{% block content %}
+    <section class="category-page area-padding">
+        <div class="container">
+            <div class="row">
+                {% for post in posts.items %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="single-category" style="border: 1px solid #ff7a7f;">
+                            <div class="thumb">
+                                <img class="img-fluid" src="{{ url_for('_uploads.uploaded_file', setname='images',
+                           filename=post.image, _external=True) }}" alt="">
+                            </div>
+                            <div class="short_details">
+                                <div class="meta-top d-flex">
+                                    <a href="{{ url_for('blog.blog_tag', tag_id=tag.id) }}">{{ tag.name }} </a>/
+                                    <a href="#"> {{ post.created_at | mon }} {{ post.created_at | day }}, {{ post.created_at | year }}</a>
+                                </div>
+                                <a class="d-block" href="{{ url_for('blog.blog_article', article_id=post.id) }}">
+                                    <h4>{{ post.title}}</h4>
+                                </a>
+                                <div class="meta-bottom d-flex">
+                                    <a href="{{ url_for('main.user_detail', user_id=post.creator.id) }}"><i class="far fa-user"></i> {{ post.creator.full_name }}</a>
+                                    <a href="#"><i class="ti-comment"></i>{{ post.comments.count() }} comment</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            {% if posts.pages > 0 %}
+                <nav class="blog-pagination justify-content-center d-flex">
+                    <ul class="pagination">
+                        {% set prev =  posts.page - 1 %}
+                        {% if prev > 0 and prev < posts.pages %}
+                            <li class="page-item">
+                                <a href="{{ url_for(request.endpoint,  page=prev, tag_id=tag.id) }}" class="page-link" aria-label="Previous">
+                                    <i class="ti-angle-left"></i>
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <a href="#" class="page-link" aria-label="Previous" disabled="">
+                                    <i class="ti-angle-left"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% for page in posts.iter_pages() %}
+                            {% if page %}
+                                {% if page != posts.page %}
+                                    <li class="page-item">
+                                        <a href="{{ url_for(request.endpoint,  page=page, tag_id=tag.id) }}" class="page-link">{{ page }}</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item active">
+                                        <a href="{{ url_for(request.endpoint,  page=page, tag_id=tag.id) }}" class="page-link">{{ page }}</a>
+                                    </li>
+                                {% endif %}
+
+                            {% else %}
+                                <div class="disabled page-item">
+                                    ...
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                        {% set nex =  posts.page + 1 %}
+                        {% if nex > 0 and nex < posts.pages %}
+                            <li class="page-item">
+                                <a href="{{ url_for(request.endpoint,  page=nex, tag_id=tag.id) }}" class="page-link" aria-label="Previous">
+                                    <i class="ti-angle-right"></i>
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <a href="#" class="page-link" aria-label="Previous" disabled="">
+                                    <i class="ti-angle-right"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

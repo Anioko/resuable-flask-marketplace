@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>{% block page_title %} {{ city }} market research service{% endblock %}</title>
+  <meta content="" name="No. 1 Market and product research service provider in {{ city }}. Start a market research project with us for best results in {{ city}}">
+  <meta content="" name="market research in {{city}}">
+
+  <!-- Favicons -->
+  <link rel="icon" href="{{ url_for('static', filename='assets/img/favicon.png')}}">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='assets/img/apple-touch-icon.png')}}">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/icofont/icofont.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/boxicons/css/boxicons.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/remixicon/remixicon.css')}}">	
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/venobox/venobox.css')}}">	
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/owl.carousel/assets/owl.carousel.min.css')}}">		
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/aos/aos.css')}}">	
+
+  <!-- Template Main CSS File -->	
+	
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/style.css')}}">			
+    {% block styles %}{% endblock %}
+  <!-- =======================================================
+  * Template Name: OnePage - v2.1.0
+  * Template URL: https://bootstrapmade.com/onepage-multipurpose-bootstrap-template/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+  
+</head>
+
+
+<body>
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top">
+    <div class="container d-flex align-items-center">
+
+      <h1 class="logo mr-auto"><a href="index.html">{{ config.APP_NAME }}</a></h1>
+      <!-- Uncomment below if you prefer to use an image logo -->
+      <!-- <a href="index.html" class="logo mr-auto"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
+
+      <nav class="nav-menu d-none d-lg-block">
+        <ul>
+          <li class="active"><a href="{{ url_for('organisations.org_home') }}">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#researchmethodology">Research Methodology</a></li>
+          <li><a href="#team">Team</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#contact">Contact</a></li>
+
+        </ul>
+      </nav><!-- .nav-menu -->
+
+      <a href="{{ url_for('account.register') }}" class="get-started-btn scrollto">Start project</a>
+
+    </div>
+  </header><!-- End Header -->
+  <!-- ======= Hero Section ======= -->
+  <section id="hero" class="d-flex align-items-center">
+    <div class="container position-relative" data-aos="fade-up" data-aos-delay="100">
+      <div class="row justify-content-center">
+        <div class="col-xl-7 col-lg-9 text-center">
+          <h1>Market Research Service Provider in {{ city }}</h1>
+          <h2>You ask the questions, we gather the data and unlock insights for your business, service or product in {{ city }}.</h2>
+        </div>
+      </div>
+      <div class="text-center">
+        <a href="{{ url_for('account.register') }}" class="btn-get-started scrollto">Click here to start your research project </a>
+      </div>
+
+      <div class="row icon-boxes">
+        <div class="col-md-6 col-lg-3 d-flex align-items-stretch mb-5 mb-lg-0" data-aos="zoom-in" data-aos-delay="200">
+          <div class="icon-box">
+            <div class="icon"><i class="ri-currency-line"></i></div>
+            <h4 class="title"><a href="">Competitive Market Analysis in {{ city }}</a></h4>
+            <p class="description">Use our service to analyze and understand your direct or indirect competitors in any state in {{ city }}</p>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3 d-flex align-items-stretch mb-5 mb-lg-0" data-aos="zoom-in" data-aos-delay="300">
+          <div class="icon-box">
+            <div class="icon"><i class="ri-shirt-fill"></i></div>
+            <h4 class="title"><a href="">Product Research in {{ city }}</a></h4>
+            <p class="description">Understand what your customers really want so you can tailor your products to match the needs in any state in {{ city }}</p>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3 d-flex align-items-stretch mb-5 mb-lg-0" data-aos="zoom-in" data-aos-delay="400">
+          <div class="icon-box">
+            <div class="icon"><i class="ri-numbers-fill"></i></div>
+            <h4 class="title"><a href="">Market Trend Analysis in {{ city }}</a></h4>
+            <p class="description">Do you need trend analysis to obtain insights on the market scenario and consumer preferences in {{ city }}?</p>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3 d-flex align-items-stretch mb-5 mb-lg-0" data-aos="zoom-in" data-aos-delay="500">
+          <div class="icon-box">
+            <div class="icon"><i class="ri-bar-chart-grouped-fill"></i></div>
+            <h4 class="title"><a href="">Data Analysis & Business Intelligence in {{ city }}</a></h4>
+            <p class="description">Using our suite of BI & Data analysis tools and techniques, we analyse data from research respondents to offer you actionable insights.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section><!-- End Hero -->
+
+  <main id="main">
+    <!-- ======= Cta Section ======= -->
+    <section id="cta" class="cta">
+      <div class="container" data-aos="zoom-in">
+        <div class="text-center">
+          <h3>Start your product or market research</h3>
+          <p> We provide you an online platform to create your questions and answer options based on your criteria. We do the rest to ensure you get results. </p>
+          <a class="cta-btn" href="{{ url_for('account.register') }}">Get Started Here</a>
+        </div>
+      </div>
+    </section><!-- End Cta Section -->
+
+    <!-- ======= Services Section ======= -->
+    <section id="researchmethodology" class="services section-bg">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-title">
+          <h2>Market Research Methodologies</h2>
+          <p>Take a look at research strategies which we employ to collect, assemble and evaluate data. These strategies ensure that we provide valuable insights as outputs. These strategies are used on a case by case basis. </p>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-4 col-md-6 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="100">
+            <div class="icon-box iconbox-blue">
+              <div class="icon">
+                <i class="bx bxl-dribbble"></i>
+              </div>
+              <h4><a href="">Face to Face Interviews</a></h4>
+              <p>We initiate contact with research respondents face to face in order to conduct interviews with them based on questions asked by our clients.</p>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4 mt-md-0" data-aos="zoom-in" data-aos-delay="200">
+            <div class="icon-box iconbox-orange ">
+              <div class="icon">
+                <i class="bx bx-file"></i>
+              </div>
+              <h4><a href="">Phone Interviews</a></h4>
+              <p>This is a phone only based process where we contact respondents over the phone. We ask relevant questions, gather data and interprete the data.</p>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4 mt-lg-0" data-aos="zoom-in" data-aos-delay="300">
+            <div class="icon-box iconbox-pink">
+              <div class="icon">
+                <i class="bx bx-tachometer"></i>
+              </div>
+              <h4><a href="">Focus Groups</a></h4>
+              <p>Depending on the type of demand, we gather focus groups in {{ city }}, interview them and present the findings.</p>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4" data-aos="zoom-in" data-aos-delay="100">
+            <div class="icon-box iconbox-yellow">
+              <div class="icon">
+                <i class="bx bx-layer"></i>
+              </div>
+              <h4><a href="">Online Surveys</a></h4>
+              <p>We send out surveys via our online channels to respondents in {{ city }}. We co-ordinate the process to ensure we reach minimum or maximum responses necessary. </p>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4" data-aos="zoom-in" data-aos-delay="200">
+            <div class="icon-box iconbox-red">
+              <div class="icon">
+                <i class="bx bx-slideshow"></i>
+              </div>
+              <h4><a href="">Phone based - In depth Interviews in {{ city }}</a></h4>
+              <p>Some qualitative research questionnaires required more sessions with respondents in {{ city }}, we take this approach on a case by case basis.</p>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4" data-aos="zoom-in" data-aos-delay="300">
+            <div class="icon-box iconbox-teal">
+              <div class="icon">
+                <i class="bx bx-arch"></i>
+              </div>
+              <h4><a href="">Face to face - In depth Interviews in {{ city }}</a></h4>
+              <p>We use in-depth face to face interviews for gathering qualitative research data. These decisions are made on a case by case basis.  </p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section><!-- End Sevices Section -->
+
+    <!-- ======= Team Section ======= -->
+    <!-----<section id="team" class="team section-bg">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-title">
+          <h2>Team</h2>
+          <p>Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem. Sit sint consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea. Quia fugiat sit in iste officiis commodi quidem hic quas.</p>
+        </div>
+
+        <div class="row">
+
+          <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="100">
+            <div class="member">
+              <div class="member-img">
+                <img src="assets/img/team/team-1.jpg" class="img-fluid" alt="">
+                <div class="social">
+                  <a href=""><i class="icofont-twitter"></i></a>
+                  <a href=""><i class="icofont-facebook"></i></a>
+                  <a href=""><i class="icofont-instagram"></i></a>
+                  <a href=""><i class="icofont-linkedin"></i></a>
+                </div>
+              </div>
+              <div class="member-info">
+                <h4>Walter White</h4>
+                <span>Chief Executive Officer</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="200">
+            <div class="member">
+              <div class="member-img">
+                <img src="assets/img/team/team-2.jpg" class="img-fluid" alt="">
+                <div class="social">
+                  <a href=""><i class="icofont-twitter"></i></a>
+                  <a href=""><i class="icofont-facebook"></i></a>
+                  <a href=""><i class="icofont-instagram"></i></a>
+                  <a href=""><i class="icofont-linkedin"></i></a>
+                </div>
+              </div>
+              <div class="member-info">
+                <h4>Sarah Jhonson</h4>
+                <span>Product Manager</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="300">
+            <div class="member">
+              <div class="member-img">
+                <img src="assets/img/team/team-3.jpg" class="img-fluid" alt="">
+                <div class="social">
+                  <a href=""><i class="icofont-twitter"></i></a>
+                  <a href=""><i class="icofont-facebook"></i></a>
+                  <a href=""><i class="icofont-instagram"></i></a>
+                  <a href=""><i class="icofont-linkedin"></i></a>
+                </div>
+              </div>
+              <div class="member-info">
+                <h4>William Anderson</h4>
+                <span>CTO</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="400">
+            <div class="member">
+              <div class="member-img">
+                <img src="assets/img/team/team-4.jpg" class="img-fluid" alt="">
+                <div class="social">
+                  <a href=""><i class="icofont-twitter"></i></a>
+                  <a href=""><i class="icofont-facebook"></i></a>
+                  <a href=""><i class="icofont-instagram"></i></a>
+                  <a href=""><i class="icofont-linkedin"></i></a>
+                </div>
+              </div>
+              <div class="member-info">
+                <h4>Amanda Jepson</h4>
+                <span>Accountant</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section><!-- End Team Section -->
+
+    <!-- ======= Pricing Section ======= -->
+    <section id="pricing" class="pricing">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-title">
+          <h2>Pricing</h2>
+        </div>
+
+        <div class="row">
+
+          <div class="col-lg-4 col-md-6" data-aos="zoom-im" data-aos-delay="100">
+            <div class="box">
+              <h3>Silver</h3>
+              <h4><sup>₦</sup>660.00<span> / response</span></h4>
+              <ul>
+                <li>Min. order 500 responses</li>
+                <li>Max. order 2500 responses </li>
+                <li>Delivered as raw data in Excelsheet</li>
+                <li>10 questions per project</li>
+              </ul>
+              <div class="btn-wrap">
+                <a href="{{ url_for('account.register') }}" class="btn-buy">Start Project</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6" data-aos="zoom-im" data-aos-delay="100">
+            <div class="box">
+              <h3>Gold</h3>
+              <h4><sup>₦</sup>900<span> / response</span></h4>
+              <ul>
+                <li>Min. order 500 responses</li>
+                <li>Max. order 2500 responses </li>
+                <li>Delivered as analyzed data in Charts & Raw data</li>
+                <li>10 questions per project</li>
+              </ul>
+              <div class="btn-wrap">
+                <a href="{{ url_for('account.register') }}" class="btn-buy">Start Project</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6 mt-4 mt-md-0" data-aos="zoom-in" data-aos-delay="100">
+            <div class="box featured">
+              <h3>Platinum</h3>
+              <h4><sup>₦</sup>1200<span> / response</span></h4>
+              <ul>
+                <li>Min. order 250 responses</li>
+                <li>Max. order 2500 responses </li>
+                <li>Delivered as analyzed data in a report, raw rata, infographic</li>
+                <li>10 questions per project</li>
+              </ul>
+              <div class="btn-wrap">
+                <a href="{{ url_for('account.register') }}" class="btn-buy">Start Project</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section><!-- End Pricing Section -->
+
+    <!-- ======= Frequently Asked Questions Section ======= -->
+    <section id="faq" class="faq section-bg">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-title">
+          <h2>Frequently Asked Questions</h2>
+          <p>Here are our answers to frequently asked questions. If you require information which is not available here, please contact us with such questions and we will provide you with answers.</p>
+        </div>
+
+        <div class="faq-list">
+          <ul>
+            <li data-aos="fade-up">
+              <i class="bx bx-help-circle icon-help"></i> <a data-toggle="collapse" class="collapse" href="#faq-list-1">How does it work? <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+              <div id="faq-list-1" class="collapse show" data-parent=".faq-list">
+                <p>
+                  If you are interested in using our online service to conduct a market or product research in {{ city }}, you create an account online, add questions and answer options, we take yur questions and contact respondents either face to face or via phone interviews or group sessions. We get answers, analyze them and send to you. 
+                </p>
+              </div>
+            </li>
+
+            <li data-aos="fade-up" data-aos-delay="100">
+              <i class="bx bx-help-circle icon-help"></i> <a data-toggle="collapse" href="#faq-list-2" class="collapsed">How many questions are we allowed to ask? <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+              <div id="faq-list-2" class="collapse" data-parent=".faq-list">
+                <p>
+                  Right now companies or organizations can only ask 10 questions per project. Unlimited projects can be created but there can only be 10 questions. One of the questions must be a screener question.
+                </p>
+              </div>
+            </li>
+
+            <li data-aos="fade-up" data-aos-delay="200">
+              <i class="bx bx-help-circle icon-help"></i> <a data-toggle="collapse" href="#faq-list-3" class="collapsed">When are the results of the research survey available? <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+              <div id="faq-list-3" class="collapse" data-parent=".faq-list">
+                <p>
+                  Currently, we are unable to give a fixed duration for the return of data gathered. This is because of the manual processes involved. We endeavor to send back the results between 3 to 4 weeks of completed data gathering and data analysis. 
+                </p>
+              </div>
+            </li>
+
+            <li data-aos="fade-up" data-aos-delay="300">
+              <i class="bx bx-help-circle icon-help"></i> <a data-toggle="collapse" href="#faq-list-4" class="collapsed">What is a screener question and why do we need it? <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+              <div id="faq-list-4" class="collapse" data-parent=".faq-list">
+                <p>
+                  A screener is one question which you will set so that it can be used in deciding the segment or category or professions or groups of respondents which can provide answers that meet your criteria. The screener can be age, religion, employment status or location based.
+                </p>
+              </div>
+            </li>
+
+            <li data-aos="fade-up" data-aos-delay="400">
+              <i class="bx bx-help-circle icon-help"></i> <a data-toggle="collapse" href="#faq-list-5" class="collapsed">Why do organizations have to register and create questions online? <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+              <div id="faq-list-5" class="collapse" data-parent=".faq-list">
+                <p>
+                  We are working to make the ordering process seemless for International and {{ city }} based clients. This means that we take orders online only. It also allows us to introduce future upgrades where those respondents login online to answer questions. We want to digitize the process end to end, this will enable us increase the size of the data gathered.
+                </p>
+              </div>
+            </li>
+            <li data-aos="fade-up" data-aos-delay="500">
+              <i class="bx bx-help-circle icon-help"></i> <a data-toggle="collapse" href="#faq-list-5" class="collapsed">How many results are provided per project? <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+              <div id="faq-list-5" class="collapse" data-parent=".faq-list">
+                <p>
+                  Results range from minimum of 500 responses to a maximum of 2500 responses. In the future we may increase the number of respondents. 
+                </p>
+              </div>
+            </li>
+            <li data-aos="fade-up" data-aos-delay="600">
+              <i class="bx bx-help-circle icon-help"></i> <a data-toggle="collapse" href="#faq-list-5" class="collapsed">What are steps to take when conducting MarketResearch in {{ city }}? <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+              <div id="faq-list-5" class="collapse" data-parent=".faq-list">
+                <p>
+                  Market research can be conducted by different types of organizations. It doesn't always have to be for profit organizations only. Here are high level steps involved: 
+                </p>
+				<ol>
+				  <li>Define the research or business problem or what good looks like for your business case</li>
+				  <li>Develop hypothesis i.e an idea or explanation for something that is based on known facts but has not yet been proved </li>
+				  <li></i>Start your project with us. We will determine the best research methodology and the channels to gathering the right data</li>
+				  <li></i>We gather data</li>
+				  <li></i>We analyse the data using proper statistical tools and frameworks</li>
+				  <li></i>We interprete the data, sumbit it to your organization</li>
+				  <li></i>You draw a conclusion</li>
+				</ol>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </section><!-- End Frequently Asked Questions Section -->
+
+    <!-- ======= Contact Section ======= -->
+    <section id="contact" class="contact">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-title">
+          <h2>Contact</h2>
+          <p>We are a fully remote organization due to the Covid-19 pandemic although we meet face to face with respondents where necessary to carry out data gathering campaigns. </p>
+          <p>Our remot working abilities help us deploy resources quicker where and when necessary. </p>
+        </div>
+
+        <!---<div>
+          <iframe style="border:0; width: 100%; height: 270px;" src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d12097.433213460943!2d-74.0062269!3d40.7101282!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xb89d1fe6bc499443!2sDowntown+Conference+Center!5e0!3m2!1smk!2sbg!4v1539943755621" frameborder="0" allowfullscreen></iframe>
+        </div>--->
+
+        <div class="row mt-5">
+
+          <div class="col-lg-4">
+            <div class="info">
+              <!----<div class="address">
+                <i class="icofont-google-map"></i>
+                <h4>Location:</h4>
+                <p>A108 Adam Street, New York, NY 535022</p>
+              </div>---->
+
+              <div class="email">
+                <i class="icofont-envelope"></i>
+                <h4>Email:</h4>
+                <p>office@marketresearch.com.ng</p>
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="col-lg-8 mt-5 mt-lg-0">
+          </div>
+
+        </div>
+
+      </div>
+    </section><!-- End Contact Section -->
+
+  </main><!-- End #main -->
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer">
+
+    <div class="footer-top">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-3 col-md-6 footer-links">
+            <h3>{{ config.APP_NAME }}</h3>
+            <ul>
+              <li><i class="bx bx-chevron-right"></i> <a href="/Calabar/">Calabar</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="/Uyo/">Uyo</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="/Port Harcourt/">Port Harcourt</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="/Awka/">Awka</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="/Aba/">Aba</a></li>
+            </ul>
+          </div>
+          <div class="col-lg-2 col-md-6 footer-links">
+            <h4>Cities Nigeria</h4>
+            <ul>
+              <li><i class="bx bx-chevron-right"></i> <a href="/Adamawa/">Adamawa</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="/Bauchi/">Bauchi</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="/Gombe/">Gombe</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="/Jalingo/">Jalingo</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="/Lagos/">Lagos</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="/Ibadan/">Ibadan</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="/Enugu/">Enugu</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="/Nsukka/">Nuskka</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="/Okigwe/">Okigwe</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="/Orlu/">Orlu</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="/Abakaliki/">Abakaliki</a></li>
+            </ul>
+          </div>
+          <div class="col-lg-2 col-md-6 footer-links">
+            <h4>Useful Links</h4>
+            <ul>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Home</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">About us</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#researchmethodology">Research Methodology</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="{{ url_for('public.terms') }}">Terms of service</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="{{ url_for('public.privacy') }}">Privacy policy</a></li>
+            </ul>
+          </div>
+
+          <div class="col-lg-4 col-md-6 footer-newsletter">
+            <h4>Join Our Newsletter</h4>
+            <p>If you are interested to be updated when we make announcements, please subscribe to our newsletter here.</p>
+            <form action="{{ url_for('blog.subscribe') }}" method="post">
+			  <input type="hidden" value="{{ csrf_token() }}" name="csrf_token">
+              <input type="email" name="email"><input type="submit" value="Subscribe">
+            </form>
+
+
+        </div>
+      </div>
+    </div>
+
+    <div class="container d-md-flex py-4">
+
+      <div class="mr-md-auto text-center text-md-left">
+        <div class="copyright">
+          &copy; Copyright <strong><span>{{ config.APP_NAME }}</</span></strong>. All Rights Reserved
+        </div>
+      </div>
+      <div class="social-links text-center text-md-right pt-3 pt-md-0">
+        <a href="#" class="twitter"><i class="bx bxl-twitter"></i></a>
+        <a href="#" class="facebook"><i class="bx bxl-facebook"></i></a>
+        <a href="#" class="instagram"><i class="bx bxl-instagram"></i></a>
+        <a href="#" class="google-plus"><i class="bx bxl-skype"></i></a>
+        <a href="#" class="linkedin"><i class="bx bxl-linkedin"></i></a>
+      </div>
+    </div>
+  </footer><!-- End Footer -->
+
+  <a href="#" class="back-to-top"><i class="ri-arrow-up-line"></i></a>
+  <div id="preloader"></div>
+
+  <!-- Vendor JS Files -->
+	<script src="{{ url_for('static', filename='assets/vendor/jquery/jquery.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+	<script src="{{ url_for('static', filename='assets/vendor/jquery.easing/jquery.easing.min.js')}}"></script>
+	<script src="{{ url_for('static', filename='assets/vendor/php-email-form/validate.js')}}"></script>
+	<script src="{{ url_for('static', filename='assets/vendor/waypoints/jquery.waypoints.min.js')}}"></script>
+	<script src="{{ url_for('static', filename='assets/vendor/counterup/counterup.min.js')}}"></script>
+	<script src="{{ url_for('static', filename='assets/vendor/venobox/venobox.min.js')}}"></script>
+	<script src="{{ url_for('static', filename='assets/vendor/owl.carousel/owl.carousel.min.js')}}"></script>
+	<script src="{{ url_for('static', filename='assets/vendor/isotope-layout/isotope.pkgd.min.js')}}"></script>
+	<script src="{{ url_for('static', filename='assets/vendor/aos/aos.js')}}"></script>
+
+  <!-- Template Main JS File -->
+  <script src="{{ url_for('static', filename='assets/js/main.js')}}"></script>
+
+{# include 'public/includes/scripts.html' #}
+{% block scripts %}{% endblock %}
+</body>
+</html>
+

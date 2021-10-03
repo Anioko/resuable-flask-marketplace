@@ -1,0 +1,76 @@
+{% extends 'blog/layouts/base.html' %}
+{% block content %}
+    <section class="category-page area-padding">
+        <div class="container">
+            <div class="row">
+                {% for category in categories.items %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="single-category" style="border: 1px solid #ff7a7f;cursor: pointer" onclick="location.href='{{ url_for('blog.blog_category', category_id=category.id) }}'">
+                            <div class="thumb">
+                                <p style="margin-bottom:52px;width:100%;height:100px;line-height: 100px;text-align: center;font-weight: bolder">{{ category.name }}</p>
+                            </div>
+                            <div class="short_details">
+                                <hr>
+                                <div class="meta-bottom d-flex">
+                                    <a href="#"><i class="ti-pencil"></i> {{ category.posts | length }} posts</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            {% if categories.pages > 0 %}
+                <nav class="blog-pagination justify-content-center d-flex">
+                    <ul class="pagination">
+                        {% set prev =  categories.page - 1 %}
+                        {% if prev > 0 and prev < categories.pages %}
+                            <li class="page-item">
+                                <a href="{{ url_for(request.endpoint,  page=prev) }}" class="page-link" aria-label="Previous">
+                                    <i class="ti-angle-left"></i>
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <a href="#" class="page-link" aria-label="Previous" disabled="">
+                                    <i class="ti-angle-left"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% for page in categories.iter_pages() %}
+                            {% if page %}
+                                {% if page != categories.page %}
+                                    <li class="page-item">
+                                        <a href="{{ url_for(request.endpoint,  page=page) }}" class="page-link">{{ page }}</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item active">
+                                        <a href="{{ url_for(request.endpoint,  page=page) }}" class="page-link">{{ page }}</a>
+                                    </li>
+                                {% endif %}
+
+                            {% else %}
+                                <div class="disabled page-item">
+                                    ...
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                        {% set nex =  categories.page + 1 %}
+                        {% if nex > 0 and nex < categories.pages %}
+                            <li class="page-item">
+                                <a href="{{ url_for(request.endpoint,  page=nex) }}" class="page-link" aria-label="Previous">
+                                    <i class="ti-angle-right"></i>
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <a href="#" class="page-link" aria-label="Previous" disabled="">
+                                    <i class="ti-angle-right"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

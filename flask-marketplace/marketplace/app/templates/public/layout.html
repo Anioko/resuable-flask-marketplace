@@ -1,0 +1,267 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>{% block page_title %}{% endblock %}</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='web/img/favicon.png')}}">
+    <!-- Place favicon.ico in the root directory -->
+
+    <!-- CSS here -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='web/css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='web/css/animate.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='web/css/magnific-popup.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='web/css/fontawesome-all.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='web/css/aos.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='web/css/flaticon.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='web/css/jquery-ui.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='web/css/nice-select.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='web/css/meanmenu.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='web/css/default.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='web/css/slick.css')}}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/jquery.slick/1.5.0/slick-theme.css">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='web/css/toastr.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='web/css/style.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='web/css/responsive.css')}}">
+
+    {% block styles %}
+    {% for script in tracking_script %}
+    {{ script.script | safe }}
+    {% endfor %}
+
+     {% endblock %}
+
+</head>
+<body>
+
+<!-- preloader -->
+<div id="preloader">
+    <div id="loading-center">
+        <div id="loading-center-absolute">
+            <div class="object" id="object_one"></div>
+            <div class="object" id="object_two"></div>
+            <div class="object" id="object_three"></div>
+        </div>
+    </div>
+</div>
+<!-- preloader-end -->
+
+<!-- header-area -->
+<header>
+    <div class="header-top d-none d-md-block">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="header-top-link">
+                        <ul>
+                            <li><a href="{{ url_for('public.under_construction') }}">Privacy Policy</a></li>
+                            <li><a href="{{ url_for('public.under_construction') }}">Terms & Conditions</a></li>
+                            <li><a href="{{ url_for('public.under_construction') }}">Support</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="header-social text-right">
+                        <ul>
+                            {% if not current_user.is_authenticated %}
+                                <li class="become-seller"><a href="{{ url_for('account.register') }}">Register</a></li>
+                            {% else %}
+                                <li class="become-seller"><a href="{{ url_for('account.logout') }}">Logout</a></li>
+                            {% endif %}
+                            <li><a href="https://www.facebook.com" target="_blank"><i class="fab fa-facebook-square"></i></a></li>
+                            <li><a href="https://www.twitter.com"  target="_blank"><i class="fab fa-twitter-square"></i></a></li>
+                            <li><a href="https://www.linkedin.com"  target="_blank"><i class="fab fa-linkedin"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="header-sticky" class="menu-area">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-3 col-md-6 col-sm-6 col-6">
+                    <div class="logo">
+                        <a href="{{ url_for('public.home') }}"><img src="{{ logo.image_url }}" alt="Logo"></a>
+                    </div>
+                </div>
+                <div class="col-lg-9 col-md-6 col-sm-6 col-6 text-right">
+                    <div class="main-menu d-none d-lg-inline-block">
+                        <nav id="mobile-menu">
+                            <ul>
+                                <li {% if request.endpoint == 'public.home' %}class="active"{% endif %}><a href="{{ url_for('public.home') }}">Home</a></li>
+                                <li {% if request.endpoint == 'public.download' %}class="active"{% endif %}><a href="{{ url_for('public.download') }}">Download</a></li>
+                                <li><a href="javascript:;">Modules</a>
+                                    <ul class="submenu">
+                                        {% for module in modules %}
+                                            <!---<li><a href="{# url_for('public.view_product', product_id=module.id,product_name=module.name | slugify) #}">{# module.name #}</a></li>--->
+											 <li><a href="{{ url_for('public.view_product', product_id=module.id,product_name=module.name ) }}">{{ module.name }}</a></li>
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:;">Resources</a>
+                                    <ul class="submenu">
+                                        <li><a href="{{ url_for('public.about') }}">About</a></li>
+                                        <li><a href="{{ url_for('public.pricing') }}">Pricing</a></li>
+                                        <li><a href="{{ url_for('public.faq') }}">FAQ</a></li>
+                                        <li><a href="{{ url_for('public.testimonial') }}">Testimonial</a></li>
+                                        <li><a href="{{ url_for('public.blog') }}">Blog</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="{{ url_for('public.under_construction') }}">Contact</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="shop-cart position-relative d-inline-block">
+                        <a href="{{ url_for('public.cart_details') }}"><i class="fas fa-shopping-basket"></i></a>
+                        <span>0</span>
+                        <div class="menu-cart-widget">
+                            <p>No Items In Cart</p>
+                        </div>
+                    </div>
+                    <div class="header-btn d-none d-xl-inline-block">
+                        {% if current_user.is_authenticated %}
+                            <a href="{{ url_for('organisations.org_home') }}" class="btn"><i class="fas fa-user"></i>My Account</a>
+                        {% else %}
+                            <a href="{{ url_for('account.login') }}" class="btn"><i class="fas fa-arrow-left"></i>Login</a>
+                        {% endif %}
+                    </div>
+                    <div class="header-small-btn d-inline-block d-xl-none position-relative">
+                        {% if current_user.is_authenticated %}
+                            <a href="{{ url_for('client.account') }}"><i class="fas fa-user"></i></a>
+                            <a class="d-md-none ml-2" href="{{ url_for('public.logout') }}"><i class="fas fa-sign-out-alt"></i></a>
+                        {% else %}
+                            <a href="{{ url_for('account.login') }}" ><i class="fas fa-arrow-left"></i></a>
+                            <a class="d-md-none ml-2" href="{{ url_for('account.register') }}"><i class="fas fa-users"></i></a>
+                        {% endif %}
+                    </div>
+
+                </div>
+                <div class="col-12">
+                    <div class="mobile-menu"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+{% block content %}{% endblock %}
+<footer>
+    <div class="footer-top-wrap black-bg pt-90 pb-35">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-6">
+                    <div class="footer-widget mb-50 pr-80">
+                        <div class="logo mb-25">
+                            <a href="#"><img src="{{ logo.image_url }}" alt="Logo"></a>
+                        </div>
+                        <div class="footer-text mb-35">
+                            <p>Digital Product Marketplace Create Your Business<br>
+                                Most powerful, & customizable Scripts for Professional Digital Solutions.</p>
+                        </div>
+                        <div class="footer-social">
+                            <ul>
+                                <li><a href="https://www.facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
+                                <li><a href="https://www.twitter.com" target="_blank"><i class="fab fa-twitter"></i></a></li>
+                                <li><a href="https://www.linkedin.com" target="_blank"><i class="fab fa-linkedin-in"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-4">
+                    <div class="footer-widget mb-50">
+                        <div class="fw-title mb-30">
+                            <h5>PRODUCT List</h5>
+                        </div>
+                        <div class="fw-link">
+                            <ul>
+                                {% for module in modules %}
+                                            <!---<li><a href="{# url_for('public.view_product', product_id=module.id,product_name=module.name | slugify) #}">{# module.name #}</a></li>--->
+											 <li><a href="{{ url_for('public.view_product', product_id=module.id,product_name=module.name ) }}">{{ module.name }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-4">
+                    <div class="footer-widget mb-50">
+                        <div class="fw-title mb-30">
+                            <h5>RESOURCES</h5>
+                        </div>
+                        <div class="fw-link">
+                            <ul>
+                                <li><a href="{{ url_for('public.under_construction') }}">Pricing</a></li>
+                                <li><a href="{{ url_for('public.under_construction') }}">FAQ</a></li>
+                                <li><a href="{{ url_for('public.under_construction') }}">Testimonial</a></li>
+                                <li><a href="{{ url_for('public.under_construction') }}">Blog</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-4">
+                    <div class="footer-widget mb-50">
+                        <div class="fw-title mb-30">
+                            <h5>CUSTOMERS</h5>
+                        </div>
+                        <div class="fw-link">
+                            <ul>
+                                {% if current_user.is_authenticated %}
+                                    <li><a href="{{ url_for('public.under_construction') }}">My Account</a></li>
+                                    <li><a href="{{ url_for('public.under_construction') }}">My Products</a></li>
+                                    <li><a href="{{ url_for('account.logout') }}">Logout</a></li>
+                                {% else %}
+                                    <li><a href="{{ url_for('account.register') }}">Register</a></li>
+                                    <li><a href="{{ url_for('account.login') }}">Login</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="copyright-wrap">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 col-md-6">
+                    <div class="copyright-text">
+                        <p>Copyright © {{ today.year }} <a href="{{ url_for('public.home') }}">Sweet CMS</a> All Rights Reserved.</p>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 d-none d-md-block">
+                    <div class="payment-method-img text-right">
+                        <img src="{{ url_for('static', filename='web/img/images/card_img.png')}}" alt="img">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+<script src="{{ url_for('static', filename='web/js/vendor/jquery-1.12.4.min.js') }}"></script>
+<script src="{{ url_for('static', filename='web/js/popper.min.js')}}"></script>
+<script src="{{ url_for('static', filename='web/js/bootstrap.min.js')}}"></script>
+<script src="{{ url_for('static', filename='web/js/isotope.pkgd.min.js')}}"></script>
+<script src="{{ url_for('static', filename='web/js/slick.min.js')}}"></script>
+<script src="{{ url_for('static', filename='web/js/jquery.meanmenu.min.js')}}"></script>
+<script src="{{ url_for('static', filename='web/js/ajax-form.js')}}"></script>
+<script src="{{ url_for('static', filename='web/js/wow.min.js')}}"></script>
+<script src="{{ url_for('static', filename='web/js/aos.js')}}"></script>
+<script src="{{ url_for('static', filename='web/js/jquery-ui.min.js')}}"></script>
+<script src="{{ url_for('static', filename='web/js/jquery.counterup.min.js')}}"></script>
+<script src="{{ url_for('static', filename='web/js/jquery.waypoints.min.js')}}"></script>
+<script src="{{ url_for('static', filename='web/js/jquery.nice-select.min.js')}}"></script>
+<script src="{{ url_for('static', filename='web/js/jquery.scrollUp.min.js')}}"></script>
+<script src="{{ url_for('static', filename='web/js/imagesloaded.pkgd.min.js')}}"></script>
+<script src="{{ url_for('static', filename='web/js/jquery.magnific-popup.min.js')}}"></script>
+<script src="{{ url_for('static', filename='web/js/plugins.js')}}"></script>
+<script src="{{ url_for('static', filename='web/js/main.js')}}"></script>
+<script src="{{ url_for('static', filename='web/js/toastr.min.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+<script src="{{ url_for('static', filename='web/js/custom.js')}}"></script>
+{% include 'public/includes/scripts.html' %}
+{% block scripts %}{% endblock %}
+</body>
+</html>
+

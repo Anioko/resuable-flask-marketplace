@@ -1,0 +1,57 @@
+{% macro traverse(children, post_id, current_user) -%}
+    {% if children|length > 0 %}
+        {% for child in children %}
+            <div class="comment-list">
+                <div class="single-comment justify-content-between d-flex" style="width: 100%">
+                    <div class="user justify-content-between d-flex" style="width: 100%">
+                        <div class="thumb">
+                            <img src="{{ child['node'].author.get_photo() }}" alt="">
+                        </div>
+                        <div class="desc" style="width: 100%">
+                            <p class="comment">
+                                {{ child['node'].text }}
+                            </p>
+                            <div class="d-flex justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <h5>
+                                        <a href="{{ url_for('main.user_detail', user_id=child['node'].author.id) }}">{{ child['node'].author.full_name }}</a>
+                                    </h5>
+                                    <p class="date">{{ child['node'].created_at.ctime() }} </p>
+                                </div>
+                                {% if current_user.is_authenticated %}
+                                    <div class="reply-btn">
+                                        <a href="#" onclick="console.log($(this).parent());$(this).parent().parent().next('.reply-form').toggle();return false;" class="btn-reply text-uppercase">reply</a>
+                                    </div>
+                                {% else %}
+                                    <div class="reply-btn">
+                                        <a class="btn-reply text-uppercase" href="{{ url_for('account.login', next=url_for(request.endpoint, article_id=post_id, _external=True)) }}">Login To Reply</a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="reply-form" style="display: none">
+                                <div class="">
+                                    <form class="form-contact comment_form" action="{{ url_for('blog.add_comment', article_id=post_id) }}"  method="POST">
+                                        <input type="hidden" name="post_id" value="{{ post_id }}">
+                                        <input type="hidden" name="parent_id" value="{{ child['node'].id }}">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <input class="form-control w-100" name="text" id="comment" placeholder="Write Comment, Enter to send">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            {% if 'children' in child['node'].drilldown_tree()[0].keys() %}
+                                <br>
+                                {{ traverse(child['node'].drilldown_tree()[0]['children'], post_id, current_user) }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endmacro %}

@@ -1,0 +1,22 @@
+{% macro render_flashes(class) %}
+    {% with msgs = get_flashed_messages(category_filter=[class]) %}
+        {% for msg in msgs %}
+            <div class="alert alert-{{ class }}">
+                {{ msg | safe }}
+            </div>
+        {% endfor %}
+    {% endwith %}
+{% endmacro %}
+
+<div class="container">
+    <div class="flashes">
+        <br>
+        {{ render_flashes('danger') }}
+        {{ render_flashes('warning') }}
+        {{ render_flashes('success') }}
+        {{ render_flashes('primary') }}
+        {{ render_flashes('secondary') }}
+        {{ render_flashes('light') }}
+        {{ render_flashes('dark') }}
+    </div>
+</div>

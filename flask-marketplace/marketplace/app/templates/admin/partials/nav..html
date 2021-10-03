@@ -1,0 +1,55 @@
+{% macro dashboard_option(title, endpoint, description=None, icon=None) %}
+    <a class="{% if request.endpoint == endpoint %} active {% endif %}item" href="{{ url_for(endpoint) }}">
+        <i class="{{ icon }}"></i>{{ title }}
+    </a>
+{% endmacro %}
+<div class="ui vertical fluid tabular menu">
+    {{ dashboard_option('Home', 'admin.index',
+                                    description='Admin Home', icon='home icon') }}
+        <div class="ui dropdown item">
+        <i class="dropdown icon"></i>
+        Market Place
+        <div class="menu">
+            <div class="header">Market Place</div>
+            {{ dashboard_option('Home', 'admin.marketplace_index',
+                                    description='Marketplace Home', icon='home icon') }}
+            {% include 'admin/marketplace/partials/nav.html' %}
+
+        </div>
+    </div>
+    <div class="ui dropdown item">
+        <i class="dropdown icon"></i>
+        Blog Management
+        <div class="menu">
+            <div class="header">Blog Management</div>
+            {{ dashboard_option('Home', 'admin.marketplace_index',
+                                    description='Marketplace Home', icon='home icon') }}
+            {% include 'admin/blog/partials/nav.html' %}
+
+        </div>
+    </div>
+    {{ dashboard_option('Registered Users', 'admin.registered_users',
+                                    description='View and manage user accounts', icon='users icon') }}
+    {{ dashboard_option('Add New User', 'admin.new_user',
+                                    description='Create a new user account', icon='add user icon') }}
+    {{ dashboard_option('Invite New User', 'admin.invite_user',
+                                    description='Invites a new user to create their own account', icon='add user icon') }}
+    {{ dashboard_option('All Posts', 'admin.posts',
+                                    description='View and manage users\' posts', icon='write icon') }}
+    {{ dashboard_option('All Questions', 'admin.questions',
+                                    description='View and manage users\' Questions', icon='edit icon') }}
+    {{ dashboard_option('All Promos', 'admin.promos',
+                                    description='View and manage users\' Promos', icon='edit icon') }}
+    {{ dashboard_option('All Organisations', 'admin.orgs',
+                                    description='View and manage users\' Organisations', icon='user outline icon') }}
+    {{ dashboard_option('All Jobs', 'admin.jobs',
+                                    description='View and manage users\' created jobs', icon='suitcase icon') }}
+    {{ dashboard_option('All Messages', 'admin.messages',
+                                    description='View and manage users\' sent messages', icon='comments icon') }}
+    {{ dashboard_option('Miscellaneous Texts', 'admin.texts',
+                                    description='View and manage Miscellaneous Texts', icon='settings icon') }}
+    {{ dashboard_option('Contact Messages', 'admin.contact_messages',
+                                    description='View and manage Contact Messages', icon='mail icon') }}
+
+
+</div>

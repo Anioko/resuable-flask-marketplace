@@ -1,0 +1,98 @@
+<script>
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-bottom-left",
+        "preventDuplicates": false,
+        "showDuration": "5000",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut",
+    };
+    $(document).on('click', '.change-cart', function () {
+        let form = $(this).next($('form.cart-change-form'));
+        let url = $(form).attr('action');
+        let redirect_url = $(this).attr('redirect-url');
+        toastr.options["onclick"]=function() {location.href=''+redirect_url;};
+        let data = new FormData(form[0]);
+        let endpoint = "{{ request.endpoint }}"
+        axios.post(url, data )
+            .then(function (response) {
+                if (response.data.status === 1) {
+                    toastr["info"](response.data.message, response.data.title);
+                    if (response.data.cart) {
+                        changeCart(response.data.cart);
+                        if (endpoint == 'public.cart_details'){
+                            location.reload();
+                        }
+                    }
+                }
+            });
+        return false;
+    });
+    function initCart(url){
+        axios.get(url)
+            .then(function (response) {
+                if (response.data.status === 1) {
+                    if (response.data.cart) {
+                        changeCart(response.data.cart);
+                    }
+                }
+            });
+        return false;
+    }
+    function changeCart(cart){
+        let cart_html = '<p>No Items In Cart</p>';
+        if (cart.cart_items.length){
+            let check_out_url = "{{ url_for('public.cart_details') }}";
+            let form_action = "{{ url_for('api.remove_from_cart') }}";
+            let redirect_url = "{{ url_for('public.home') }}";
+            let csrf = "{{ csrf_token() }}"
+            cart_html = '<ul>';
+            let total_price = 0;
+            for (let i=0; i < cart.cart_items.length; i++){
+                let item = cart.cart_items[i];
+                total_price += item.product.price;
+                cart_html += '<li class="menu-cart-product-list">' +
+                    '<div class="cart-product-thumb">' +
+                    '<a href="#"><img width="90" src="'+item.product.image_url+'" alt=""></a>' +
+                    '</div>' +
+                    '<div class="cart-product-content">' +
+                    '<h5><a href="#">'+item.product.name+'</a></h5>' +
+                    '<span>Price: $'+item.product.price+'</span>';
+                if (item.product_support){
+                    cart_html += '<span>Support: $'+item.product.support_price+'</span>';
+                    total_price += item.product.support_price;
+                }
+                cart_html += '</div>' +
+                    '<div class="cart-del">' +
+                    '<a class="change-cart" data-id="'+item.product.id+'" href="#" redirect-url="'+redirect_url+'">X</a>' +
+                    '<form class="cart-change-form d-none" action="'+form_action+'">'+
+                    '    <input type="hidden" name="csrf_token" value="'+csrf+'" />'+
+                    '    <input type="hidden" name="product_id" value="'+item.product.id+'">'+
+                    '</form>'+
+                    '</div>' +
+                    '</li>';
+            }
+            cart_html += '</ul><div class="cart-price fix mb-15">' +
+                '<span>Subtotal</span>' +
+                '<span>$'+total_price+'</span>' +
+                '</div>'+
+                '<div class="cart-checkout-btn">' +
+                '<a href="'+check_out_url+'" class="btn" >check out</a>' +
+                '</div>';
+        }
+        $('.shop-cart').find('span').html(cart.cart_items.length);
+        $('.menu-cart-widget').html(cart_html);
+
+    }
+    $(document).ready(function (){
+        initCart('{{ url_for("api.get_cart") }}')
+    });
+</script>
