@@ -225,7 +225,7 @@ Before you submit changes to flask-base, you may want to autoformat your code wi
 
 ## Contributing
 
-Contributions are welcome! Please refer to our [Code of Conduct](./CONDUCT.md) for more information.
+Contributions are welcome! 
 
 ## Documentation Changes
 
