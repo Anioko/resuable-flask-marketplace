@@ -123,13 +123,13 @@ def create_app(config_name):
     app.register_blueprint(main_blueprint)
 
     from .blueprints.account import account as account_blueprint
-    app.register_blueprint(account_blueprint, url_prefix='/account')
+    app.register_blueprint(account_blueprint)
 
     from .blueprints.admin import admin as admin_blueprint
     app.register_blueprint(admin_blueprint, url_prefix='/admin')
 
     from .blueprints.marketplace import marketplace as marketplace_blueprint
-    app.register_blueprint(marketplace_blueprint, url_prefix='/marketplace')
+    app.register_blueprint(marketplace_blueprint)
 
     from .blueprints.organisations import organisations as organisations_blueprint
     app.register_blueprint(organisations_blueprint, url_prefix='/organisations')

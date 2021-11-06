@@ -3,7 +3,7 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed
 from wtforms import StringField, MultipleFileField, TextAreaField, BooleanField, IntegerField, FloatField, SubmitField, \
     RadioField, SelectField
-from wtforms.validators import InputRequired, Length, Email
+from wtforms.validators import InputRequired, Length, Email, Optional
 from wtforms_alchemy import QuerySelectMultipleField, QuerySelectField, Unique, model_form_factory
 from wtforms.fields.html5 import EmailField
 
@@ -58,7 +58,7 @@ class SProductForm(FlaskForm):
         query_factory=lambda: db.session.query(MCurrency).order_by('name'))
     brand = QuerySelectField(
         'Brand',
-        validators=[InputRequired()],
+        validators=[Optional()],
         get_label='name',
         query_factory=lambda: db.session.query(MBrand).order_by('name'))
     is_featured = BooleanField("Is Featured ?")

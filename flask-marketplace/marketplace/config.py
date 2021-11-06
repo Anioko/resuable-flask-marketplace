@@ -36,18 +36,19 @@ class Config:
     MAIL_USE_SSL = os.environ.get('MAIL_USE_SSL') or False
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
-    MAIL_DEFAULT_SENDER = "postmaster@mg.corralhealth.com"
+    MAIL_DEFAULT_SENDER = "flask-base-admin@example.com"
     MAIL_SUPPRESS_SEND = False
     # Analytics
-    GOOGLE_ANALYTICS_ID = os.environ.get('GOOGLE_ANALYTICS_ID') or 'UA-154243808-1'
+    GOOGLE_ANALYTICS_ID = os.environ.get('GOOGLE_ANALYTICS_ID') or 'UA-xxxxxxx'
     SEGMENT_API_KEY = os.environ.get('SEGMENT_API_KEY') or ''
 
     # Admin account
     ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD') or 'password'
     ADMIN_EMAIL = os.environ.get(
-        'ADMIN_EMAIL') or 'aniekanokono@gmail.com'
+        'ADMIN_EMAIL') or 'flask-base-admin@example.com'
     EMAIL_SUBJECT_PREFIX = '[{}]'.format(APP_NAME)
-    EMAIL_SENDER = "postmaster@mg.corralhealth.com"
+    EMAIL_SENDER = '{app_name} Admin <{email}>'.format(
+        app_name=APP_NAME, email=MAIL_USERNAME)
 
     REDIS_URL = os.getenv('REDISTOGO_URL') or 'http://localhost:6379'
 
@@ -74,10 +75,8 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
     ASSETS_DEBUG = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
-                              'postgresql+psycopg2://postgres:postgres@localhost:5432/postgres'
-
-    # 'postgresql+psycopg2://postgres:PostGres@127.0.0.1:5432/development'
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL',
+        'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite'))
 
     @classmethod
     def init_app(cls, app):
@@ -87,8 +86,8 @@ class DevelopmentConfig(Config):
 
 class TestingConfig(Config):
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
-                              'sqlite:///' + os.path.join(basedir, 'data-test.sqlite')
+    SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL',
+        'sqlite:///' + os.path.join(basedir, 'data-test.sqlite'))
     WTF_CSRF_ENABLED = False
 
     @classmethod
@@ -98,9 +97,11 @@ class TestingConfig(Config):
 
 
 class ProductionConfig(Config):
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-                              'sqlite:///' + os.path.join(basedir, 'data.sqlite')
-    SSL_DISABLE = (os.environ.get('SSL_DISABLE') or 'True') == 'True'
+    DEBUG = False
+    USE_RELOADER = False
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL',
+        'sqlite:///' + os.path.join(basedir, 'data.sqlite'))
+    SSL_DISABLE = (os.environ.get('SSL_DISABLE', 'True') == 'True')
 
     @classmethod
     def init_app(cls, app):
@@ -118,11 +119,6 @@ class HerokuConfig(ProductionConfig):
         # Handle proxy server headers
         from werkzeug.contrib.fixers import ProxyFix
         app.wsgi_app = ProxyFix(app.wsgi_app)
-        import logging
-        from logging.handlers import SysLogHandler
-        syslog_handler = SysLogHandler()
-        syslog_handler.setLevel(logging.WARNING)
-        app.logger.addHandler(syslog_handler)
 
 
 class UnixConfig(ProductionConfig):

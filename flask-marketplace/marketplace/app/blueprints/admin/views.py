@@ -21,11 +21,12 @@ from app.blueprints.admin.forms import (
     NewUserForm,
     BackgroundImageForm,
     SiteLogoForm,
-    LandingSettingForm
+    LandingSettingForm,
+    FeatureForm
 )
 from app.decorators import admin_required
 from app.email import send_email
-from app.models import MSettings, EditableHTML, Role, User, Organisation, Message, BackgroundImage, SiteLogo, LandingSetting
+from app.models import MSettings, EditableHTML, Role, User, Organisation, Message, BackgroundImage, SiteLogo, LandingSetting, Feature
 
 admin = Blueprint('admin', __name__)
 
@@ -520,6 +521,9 @@ def add_settings():
     if form.validate_on_submit():
         data = LandingSetting(
             title=form.title.data,
+            company_name=form.company_name.data,
+            email=form.email.data,
+            phone_number=form.phone_number.data,
             description=form.description.data,
             twitter=form.twitter.data,
             facebook=form.facebook.data,
@@ -561,6 +565,9 @@ def edit_settings(id):
     form = LandingSettingForm(obj=data)
     if form.validate_on_submit():
         data.title=form.title.data
+        data.company_name=form.company_name.data
+        data.email=form.email.data
+        data.phone_number=form.phone_number.data
         data.description=form.description.data
         data.twitter=form.twitter.data
         data.facebook=form.facebook.data
@@ -576,8 +583,68 @@ def edit_settings(id):
         data.other_tracking_analytics_four = form.other_tracking_analytics_four.data 
         db.session.add(data)
         db.session.commit()
-        flash("Settings Added Successfully.", "success")
+        flash("Settings added successfully.", "success")
         return redirect(url_for('admin.added_settings'))
     else:
         flash('ERROR! Settings was not edited.', 'error')
     return render_template('admin/settings/add_settings.html', form=form)
+
+# Added Features
+@admin.route('/feature')
+@login_required
+@admin_required
+def added_feature():
+    """View added feature and description."""
+    data = Feature.query.all()
+    if data is None:
+        return redirect(url_for('admin.add_feature'))
+    return render_template(
+        'admin/feature/added_feature.html', data=data)
+
+# Add Feature Area
+@admin.route('/feature/add', methods=['POST', 'GET'])
+@login_required
+@admin_required
+def add_feature():
+    form = FeatureForm()
+    if form.validate_on_submit():
+        data = Feature(
+            title=form.title.data,
+            description=form.description.data,
+            icon=form.icon.data
+            )
+        db.session.add(data)
+        db.session.commit()
+        flash("Added Successfully.", "success")
+        return redirect(url_for('admin.added_feature'))
+    return render_template('admin/feature/add_feature.html', form=form)
+
+# Edit Feature Area
+@admin.route('/feature/<int:id>/edit', methods=['POST', 'GET'])
+@login_required
+@admin_required
+def edit_feature(id):
+    data = Feature.query.filter_by(id=id).first()
+    form = FeatureForm(obj=data)
+    if form.validate_on_submit():
+        data.title=form.title.data
+        data.description=form.description.data
+        data.icon=form.icon.data
+        db.session.add(data)
+        db.session.commit()
+        flash("Edited Successfully.", "success")
+        return redirect(url_for('admin.added_feature'))
+    else:
+        flash('ERROR! Data was not edited.', 'error')
+    return render_template('admin/feature/add_feature.html', form=form)
+
+@admin.route('/feature/<int:id>/_delete', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def delete_feature(id):
+    """Delete the item """
+    data = Feature.query.filter_by(id=id).first()
+    db.session.commit()
+    db.session.delete(data)
+    flash('Successfully deleted ' , 'success')
+    return redirect(url_for('admin.added_feature'))

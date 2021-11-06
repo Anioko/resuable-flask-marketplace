@@ -2,46 +2,175 @@
     <br>
     <br>
     {% if current_user.is_authenticated %}
-        <div class="primary ui footer" style="background-color: #2352c6;">
-            <br>
-            <div class="ui primary vertical footer segment">
-                <div class="ui container">
-                    <div class="ui stackable inverted divided equal height stackable grid">
-                        <div class="four wide column">
-                            <h4 class="ui  header">Fast Links</h4>
-                            <div class="ui link list">
-                                <a href="{{ url_for('main.index') }}" class="item">Home</a>
-                                <a href="{{ url_for('public.contact') }}" class="item">Contact Us</a>
-                                <a href="{{ url_for('public.about') }}" class="item">About</a>
-                                <a href="{{ url_for('public.faq') }}" class="item">FAQ</a>
-                                <a href="{{ url_for('public.terms') }}" class="item">Terms</a>
-                                <a href="{{ url_for('public.privacy') }}" class="item">Privacy</a>
-                            </div>
-                        </div>
-                        <div class="four wide column">
-                            <h4 class="ui  header">User</h4>
-                            <div class="ui  link list">
-                                <a href="{{ url_for('organisations.org_home') }}" class="item">Organization</a>
-                                <a href="{{ url_for('main.conversations') }}" class="item">Messages</a>
-                                <a href="{{ url_for('main.notifications') }}" class="item">Notifications</a>
-                                <a href="{{ url_for('account.manage') }}" class="item">Profile</a>
-                                <a href="{{ url_for('account.logout') }}" class="item">Logout</a>
-                            </div>
-                        </div>
-                        {% if website_settings %}
-                        <div class="seven wide column" style="text-align: center">
-                            <!---<img class="footer-img" src="{# url_for('_uploads.uploaded_file', setname='images',
-                            filename=website_settings.brand_image) #}" alt="{{ config.APP_NAME }}">--->
-                            <br>
-                            <br>
-                            <p style="color: white"><b>{# website_settings.brand_description #}</b></p>
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-                <br>
-                <br>
-            </div>
-        </div>
-    {% endif %}
+<!-- ========================= FOOTER ========================= -->
+<footer class="section-footer border-top bg">
+	<div class="container">
+		<section class="footer-top  padding-y">
+			<div class="row">
+				<!----<aside class="col-md col-6">
+					<h6 class="title">Brands</h6>
+					<ul class="list-unstyled">
+						<li> <a href="#">Adidas</a></li>
+						<li> <a href="#">Puma</a></li>
+						<li> <a href="#">Reebok</a></li>
+						<li> <a href="#">Nike</a></li>
+					</ul>
+				</aside>---->
+				<aside class="col-md col-6">
+					<h6 class="title">Company</h6>
+					<ul class="list-unstyled">
+						<li> <a href="/sitemap">Sitemap</a></li>
+                        <li><a href="{{ url_for('main.index') }}">Home</a></li>
+                        <li><a href="{{ url_for('public.contact') }}">Contact Us</a></li>
+                        <li><a href="{{ url_for('public.about') }}">About</a></li>
+                        <li><a href="{{ url_for('public.faq') }}">FAQ</a></li></li>
+                        <li><a href="{{ url_for('public.terms') }}">Terms</a></li>
+                        <li><a href="{{ url_for('public.privacy') }}">Privacy</a></li>
+                        <li><a href="{{ url_for('public.delivery') }}">Delivery</a></li>
+					</ul>
+				</aside>
+				<aside class="col-md col-6">
+					<h6 class="title">Help</h6>
+					<ul class="list-unstyled">
+						<li> <a href="/contact">Contact us</a></li>
+						<li> <a href="/contact">Money refund</a></li>
+						<li> <a href="/contact">Order status</a></li>
+						<li> <a href="/delivery">Shipping info</a></li>
+						<li> <a href="/contact">Open dispute</a></li>
+					</ul>
+				</aside>
+				<aside class="col-md col-6">
+					<h6 class="title">Quick links</h6>
+					<ul class="list-unstyled">
+                                               {% if current_user.is_seller %}
+						<li> <a href="{{ url_for('marketplace.seller_panel') }}">Seller Admin Panel</a></li>
+						<li> <a href="{{ url_for('marketplace.seller_product_create') }}">Add Products</a></li>
+						{% endif %}
+                        <li><a href="{{ url_for('organisations.org_home') }}">Organizations</a></li>
+                        <li><a href="{{ url_for('main.conversations') }}">Messages</a></li>
+                        <li><a href="{{ url_for('main.notifications') }}">Notifications</a></li>
+                        <li><a href="{{ url_for('account.manage') }}">Profile</a></li>
+                        <li><a href="{{ url_for('account.logout') }}">Logout</a></li>
+					</ul>
+				</aside>
+				<aside class="col-md col-6">
+					<h6 class="title">Account</h6>
+					<ul class="list-unstyled">
+						<li> <a href="/profile"> Account Setting </a></li>
+						<!----<li> <a href="#"> My Orders </a></li>---->
+					</ul>
+				</aside>
+				{% if website_settings %}
+				<aside class="col-md">
+					<h6 class="title">Social</h6>
+					<ul class="list-unstyled">
+						<li><a href="/{{ website_settings.facebook }}" target=“_blank”> <i class="fab fa-facebook"></i> Facebook </a></li>
+						<li><a href="/{{ website_settings.twitter }}" target=“_blank”> <i class="fab fa-twitter"></i> Twitter </a></li>
+						<li><a href="/{{ website_settings.instagram }}" target=“_blank”> <i class="fab fa-instagram"></i> Instagram </a></li>
+						<li><a href="/{{ website_settings.youtube }}" target=“_blank”> <i class="fab fa-youtube"></i> Youtube </a></li>
+					</ul>
+				</aside>
+				{% endif %}
+			</div> <!-- row.// -->
+		</section>	<!-- footer-top.// -->
+				{% if website_settings %}
+		<section class="footer-bottom row">
+			<div class="col-md-2">
+				<p class="text-muted"> &copy 2022 {{ website_settings.company_name }} </p>
+			</div>
+			<div class="col-md-8 text-md-center">
+				<span  class="px-2">{{ website_settings.email }}</span>
+				<span  class="px-2">{{ website_settings.phone_number }}</span>
+				<!----<span  class="px-2">Street name 123, Avanue abc</span>--->
+			</div>
+			<div class="col-md-2 text-md-right text-muted">
+				<i class="fab fa-lg fa-cc-visa"></i>
+				<i class="fab fa-lg fa-cc-paypal"></i>
+				<i class="fab fa-lg fa-cc-mastercard"></i>
+			</div>
+		</section>
+			{% endif %}
+	</div><!-- //container -->
+</footer>
+<!-- ========================= FOOTER END // ========================= -->
+    {% else %}
+<!-- ========================= FOOTER ========================= -->
+<footer class="section-footer border-top bg">
+	<div class="container">
+		<section class="footer-top  padding-y">
+			<div class="row">
+				<!----<aside class="col-md col-6">
+					<h6 class="title">Brands</h6>
+					<ul class="list-unstyled">
+						<li> <a href="#">Adidas</a></li>
+						<li> <a href="#">Puma</a></li>
+						<li> <a href="#">Reebok</a></li>
+						<li> <a href="#">Nike</a></li>
+					</ul>
+				</aside>---->
+				<aside class="col-md col-6">
+					<h6 class="title">Company</h6>
+					<ul class="list-unstyled">
+						<li> <a href="/sitemap">Sitemap</a></li>
+                        <li><a href="{{ url_for('main.index') }}">Home</a></li>
+                        <li><a href="{{ url_for('public.contact') }}">Contact Us</a></li>
+                        <li><a href="{{ url_for('public.about') }}">About</a></li>
+                        <li><a href="{{ url_for('public.faq') }}">FAQ</a></li></li>
+                        <li><a href="{{ url_for('public.terms') }}">Terms</a></li>
+                        <li><a href="{{ url_for('public.privacy') }}">Privacy</a></li>
+                        <li><a href="{{ url_for('public.delivery') }}">Delivery</a></li>
+					</ul>
+				</aside>
+				<aside class="col-md col-6">
+					<h6 class="title">Help</h6>
+					<ul class="list-unstyled">
+						<li> <a href="/contact">Contact us</a></li>
+						<li> <a href="/contact">Money refund</a></li>
+						<li> <a href="/contact">Order status</a></li>
+						<li> <a href="/delivery">Shipping info</a></li>
+						<li> <a href="/contact">Open dispute</a></li>
+					</ul>
+				</aside>
+				<aside class="col-md col-6">
+					<h6 class="title">Account</h6>
+					<ul class="list-unstyled">
+						<li> <a href="/login"> User Login </a></li>
+						<li> <a href="/register"> User register </a></li>
+						<!----<li> <a href="#"> My Orders </a></li>---->
+					</ul>
+				</aside>
+				
+				<aside class="col-md">
+					<h6 class="title">Social</h6>
+					<ul class="list-unstyled">
+						<li><a href="/{{ website_settings.facebook }}" target=“_blank”> <i class="fab fa-facebook"></i> Facebook </a></li>
+						<li><a href="/{{ website_settings.twitter }}" target=“_blank”> <i class="fab fa-twitter"></i> Twitter </a></li>
+						<li><a href="/{{ website_settings.instagram }}" target=“_blank”> <i class="fab fa-instagram"></i> Instagram </a></li>
+						<li><a href="/{{ website_settings.youtube }}" target=“_blank”> <i class="fab fa-youtube"></i> Youtube </a></li>
+					</ul>
+				</aside>
+				
+			</div> <!-- row.// -->
+		</section>	<!-- footer-top.// -->
+{% if website_settings %}
+		<section class="footer-bottom row">
+			<div class="col-md-2">
+				<p class="text-muted"> &copy 2022 {{ website_settings.company_name }} </p>
+			</div>
+			<div class="col-md-8 text-md-center">
+				<span  class="px-2">{{ website_settings.email }}</span>
+				<span  class="px-2">{{ website_settings.phone_number }}</span>
+				<!----<span  class="px-2">Street name 123, Avanue abc</span>--->
+			</div>
+			<div class="col-md-2 text-md-right text-muted">
+				<i class="fab fa-lg fa-cc-visa"></i>
+				<i class="fab fa-lg fa-cc-paypal"></i>
+				<i class="fab fa-lg fa-cc-mastercard"></i>
+			</div>
+		</section>
+{% endif %}
+	</div><!-- //container -->
+</footer>
+<!-- ========================= FOOTER END // ========================= -->
+{% endif %}
 {% endmacro %}

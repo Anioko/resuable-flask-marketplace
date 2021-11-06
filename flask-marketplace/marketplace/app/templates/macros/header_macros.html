@@ -1,0 +1,61 @@
+{% macro header_macro(current_user, website_settings) -%}
+    {% if current_user.is_authenticated %}
+	
+<nav class="navbar navbar-dark navbar-expand p-0 bg-primary">
+<div class="container">
+    <ul class="navbar-nav d-none d-md-flex mr-auto">
+		<li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+		<li class="nav-item"><a class="nav-link" href="/Delivery">Delivery</a></li>
+		<li class="nav-item"><a class="nav-link" href="/Payment">Payment</a></li>
+    </ul>
+    <ul class="navbar-nav">
+		<li  class="nav-item"><a href="/contact" class="nav-link"> Contact </a></li>
+		<li class="nav-item dropdown">
+		{% if current_user.is_seller %}
+		 	<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown"> Sellers </a>
+		    <ul class="dropdown-menu dropdown-menu-right" style="max-width: 100px;">
+				<li><a class="dropdown-item" href="{{ url_for('marketplace.seller_panel') }}">Seller's Admin</a></li>
+				<li><a class="dropdown-item" href="{{ url_for('marketplace.seller_product_create') }}">Add Products</a></li>
+		    </ul>
+			{% else %}
+		 	<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown"> Buyers </a>
+		    <ul class="dropdown-menu dropdown-menu-right" style="max-width: 100px;">
+				<li><a class="dropdown-item" href="{{ url_for('marketplace.seller_panel') }}">Buyers's Admin</a></li>
+		    </ul>
+			{% endif %}
+		</li>
+	</ul> <!-- list-inline //  -->
+  </div> <!-- navbar-collapse .// -->
+</div> <!-- container //  -->
+</nav> <!-- header-top-light.// -->
+	
+
+    {% else %}
+
+{% if website_settings %}
+<nav class="navbar navbar-dark navbar-expand p-0 bg-primary">
+<div class="container">
+    <ul class="navbar-nav d-none d-md-flex mr-auto">
+		<li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+		<li class="nav-item"><a class="nav-link" href="/Delivery">Delivery</a></li>
+		<li class="nav-item"><a class="nav-link" href="/Payment">Payment</a></li>
+    </ul>
+    <ul class="navbar-nav">
+		<li  class="nav-item"><a href="/contact" class="nav-link"> Contact </a></li>
+		<!---<li class="nav-item dropdown">
+		 	<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown"> English </a>
+		    <ul class="dropdown-menu dropdown-menu-right" style="max-width: 100px;">
+				<li><a class="dropdown-item" href="#">Arabic</a></li>
+				<li><a class="dropdown-item" href="#">Russian </a></li>
+		    </ul>
+		</li>--->
+	</ul> <!-- list-inline //  -->
+  </div> <!-- navbar-collapse .// -->
+</div> <!-- container //  -->
+</nav> <!-- header-top-light.// -->
+{% endif %}
+	</div><!-- //container -->
+</footer>
+<!-- ========================= FOOTER END // ========================= -->
+{% endif %}
+{% endmacro %}

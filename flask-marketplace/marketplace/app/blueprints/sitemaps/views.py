@@ -116,3 +116,4 @@ def profiles_xml():
                        'lastmod': '{}'.format(sitemap_date(user.updated_at) if user.updated_at is not None else ''),
                        'changefreq': 'daily'})
     return return_xml('public/sitemap.html', urlset=urlset)
+

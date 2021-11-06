@@ -1,5 +1,111 @@
-{% extends 'layouts/base.html' %}
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="max-age=604800" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+{% if settings %}
+<title>{{ settings.title }}</title>
+<meta name="description"
+          content="{{ settings.description }}">
+<meta name="author" content="{{ settings.title }}">
+<meta name="og:title" content="{{ settings.title }}"/>
+<meta name="og:type" content="website"/>
+<meta name="og:url" content="https://www.{{ settings.title }}"/>
+<meta name="og:image" content="{{ background.image_url }}"/>
+<meta name="og:site_name" content="{{ settings.title }}"/>
+<meta name="og:description"
+          content="{{ settings.description }}"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:site" content="@{{ settings.title }}"/>
+<meta name="twitter:creator" content="@{{ config.APP_NAME }}"/>
+<meta property="og:url" content="https://www.{{ config.APP_NAME }}"/>
+<meta property="og:title" content="{{ settings.title }}"/>
+<meta property="og:description"
+          content="{{ settings.description }}"/>
+<meta property="og:image" content="{{ background.image_url }}"/>
+{% endif %}
+
+
+
+
+<link href="{{ url_for('static', filename='images/favicon.ico') }}" rel="shortcut icon" type="image/x-icon">
+
+<!-- jQuery -->
+<script src="{{ url_for('static', filename='js/jquery-2.0.0.min.js') }}" type="text/javascript"></script>
+
+<!-- Bootstrap4 files-->
+<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}" type="text/javascript"></script>
+<link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet" type="text/css"/>
+
+<!-- Font awesome 5 -->
+<link href="{{ url_for('static', filename='fonts/all.min.css') }}" type="text/css" rel="stylesheet">
+
+<!-- custom style -->
+<link href="{{ url_for('static', filename='css/ui.css') }}" rel="stylesheet" type="text/css"/>
+<link href="{{ url_for('static', filename='css/responsive.css') }}" rel="stylesheet" media="only screen and (max-width: 1200px)" />
+
+<!-- custom javascript -->
+<script src="{{ url_for('static', filename='js/script.js') }}" type="text/javascript"></script>
+
+{% if settings %}
+{% if settings.google_analytics_id %}
+{{settings.google_analytics_id |safe}}
+{% endif %}
+{% if settings.other_tracking_analytics_one %}
+{{settings.other_tracking_analytics_one | safe}}
+{% endif %}
+{% if settings.other_tracking_analytics_two %}
+{{settings.other_tracking_analytics_two | safe}}
+{% endif %}
+
+{% if settings.other_tracking_analytics_three %}
+{{settings.other_tracking_analytics_three | safe}}
+{% endif %}
+
+{% if settings.other_tracking_analytics_four %}
+{{settings.other_tracking_analytics_four | safe}}
+{% endif %}
+{% endif %}
+
+<script type="text/javascript">
+/// some script
+
+// jquery ready start
+$(document).ready(function() {
+	// jQuery code
+
+}); 
+// jquery end
+</script>
+
+</head>
+<body>
+
+
+<header class="section-header">
+
+<header class="section-header">
+{% include 'partials/_header_ecommerce.html' %}
+<section class="header-main border-bottom">
+	<div class="container">
+<div class="row align-items-center">
+	<div class="col-lg-2 col-6">
+		<a href="{{url_for('marketplace.index')}}" class="brand-wrap">
+		{% if logo %}
+			<img class="logo" src="{{ logo.image_url }}">
+			{% elif settings %}
+			{{ settings.company_name }}
+			{% else %}
+			{% endif %}
+		</a> <!-- brand-wrap.// -->
+	</div>
+</div> <!-- row.// -->
+	</div> <!-- container.// -->
+</section> <!-- header-main .// -->
+</header> <!-- section-header.// -->
 {% block content %}
     <div style="text-align: center; margin-top: 100px">
         <h1>
@@ -12,3 +118,182 @@
 
     </div>
 {% endblock %}
+    {% if current_user.is_authenticated %}
+<!-- ========================= FOOTER ========================= -->
+<footer class="section-footer border-top bg">
+	<div class="container">
+		<section class="footer-top  padding-y">
+			<div class="row">
+				<!----<aside class="col-md col-6">
+					<h6 class="title">Brands</h6>
+					<ul class="list-unstyled">
+						<li> <a href="#">Adidas</a></li>
+						<li> <a href="#">Puma</a></li>
+						<li> <a href="#">Reebok</a></li>
+						<li> <a href="#">Nike</a></li>
+					</ul>
+				</aside>---->
+				<aside class="col-md col-6">
+					<h6 class="title">Company</h6>
+					<ul class="list-unstyled">
+						<li> <a href="/sitemap">Sitemap</a></li>
+                        <li><a href="{{ url_for('main.index') }}">Home</a></li>
+                        <li><a href="{{ url_for('public.contact') }}">Contact Us</a></li>
+                        <li><a href="{{ url_for('public.about') }}">About</a></li>
+                        <li><a href="{{ url_for('public.faq') }}">FAQ</a></li></li>
+                        <li><a href="{{ url_for('public.terms') }}">Terms</a></li>
+                        <li><a href="{{ url_for('public.privacy') }}">Privacy</a></li>
+                        <li><a href="{{ url_for('public.delivery') }}">Delivery</a></li>
+					</ul>
+				</aside>
+				<aside class="col-md col-6">
+					<h6 class="title">Help</h6>
+					<ul class="list-unstyled">
+						<li> <a href="/contact">Contact us</a></li>
+						<li> <a href="/contact">Money refund</a></li>
+						<li> <a href="/contact">Order status</a></li>
+						<li> <a href="/delivery">Shipping info</a></li>
+						<li> <a href="/contact">Open dispute</a></li>
+					</ul>
+				</aside>
+				<aside class="col-md col-6">
+					<h6 class="title">Brands</h6>
+					<ul class="list-unstyled">
+						<li> <a href="#">Adidas</a></li>
+						<li> <a href="#">Puma</a></li>
+						<li> <a href="#">Reebok</a></li>
+						<li> <a href="#">Nike</a></li>
+                                               {% if current_user.is_seller %}
+						<li> <a href="{{ url_for('marketplace.seller_panel') }}">Seller Admin Panel</a></li>
+						<li> <a href="{{ url_for('marketplace.seller_product_create') }}">Add Products</a></li>
+						{% endif %}
+                        <li><a href="{{ url_for('organisations.org_home') }}">Organizations</a></li>
+                        <li><a href="{{ url_for('main.conversations') }}">Messages</a></li>
+                        <li><a href="{{ url_for('main.notifications') }}">Notifications</a></li>
+                        <li><a href="{{ url_for('account.manage') }}">Profile</a></li>
+                        <li><a href="{{ url_for('account.logout') }}">Logout</a></li>
+					</ul>
+				</aside>
+				<aside class="col-md col-6">
+					<h6 class="title">Account</h6>
+					<ul class="list-unstyled">
+						<li> <a href="/login"> User Login </a></li>
+						<li> <a href="/register"> User register </a></li>
+						<li> <a href="/profile"> Account Setting </a></li>
+						<!----<li> <a href="#"> My Orders </a></li>---->
+					</ul>
+				</aside>
+				{% if website_settings %}
+				<aside class="col-md">
+					<h6 class="title">Social</h6>
+					<ul class="list-unstyled">
+						<li><a href="/{{ website_settings.facebook }}" target=“_blank”> <i class="fab fa-facebook"></i> Facebook </a></li>
+						<li><a href="/{{ website_settings.twitter }}" target=“_blank”> <i class="fab fa-twitter"></i> Twitter </a></li>
+						<li><a href="/{{ website_settings.instagram }}" target=“_blank”> <i class="fab fa-instagram"></i> Instagram </a></li>
+						<li><a href="/{{ website_settings.youtube }}" target=“_blank”> <i class="fab fa-youtube"></i> Youtube </a></li>
+					</ul>
+				</aside>
+				{% endif %}
+			</div> <!-- row.// -->
+		</section>	<!-- footer-top.// -->
+				{% if website_settings %}
+		<section class="footer-bottom row">
+			<div class="col-md-2">
+				<p class="text-muted"> &copy 2022 {{ website_settings.company_name }} </p>
+			</div>
+			<div class="col-md-8 text-md-center">
+				<span  class="px-2">{{ website_settings.email }}</span>
+				<span  class="px-2">{{ website_settings.phone_number }}</span>
+				<!----<span  class="px-2">Street name 123, Avanue abc</span>--->
+			</div>
+			<div class="col-md-2 text-md-right text-muted">
+				<i class="fab fa-lg fa-cc-visa"></i>
+				<i class="fab fa-lg fa-cc-paypal"></i>
+				<i class="fab fa-lg fa-cc-mastercard"></i>
+			</div>
+		</section>
+			{% endif %}
+	</div><!-- //container -->
+</footer>
+<!-- ========================= FOOTER END // ========================= -->
+    {% else %}
+<!-- ========================= FOOTER ========================= -->
+<footer class="section-footer border-top bg">
+	<div class="container">
+		<section class="footer-top  padding-y">
+			<div class="row">
+				<!----<aside class="col-md col-6">
+					<h6 class="title">Brands</h6>
+					<ul class="list-unstyled">
+						<li> <a href="#">Adidas</a></li>
+						<li> <a href="#">Puma</a></li>
+						<li> <a href="#">Reebok</a></li>
+						<li> <a href="#">Nike</a></li>
+					</ul>
+				</aside>---->
+				<aside class="col-md col-6">
+					<h6 class="title">Company</h6>
+					<ul class="list-unstyled">
+						<li> <a href="/sitemap">Sitemap</a></li>
+                        <li><a href="{{ url_for('main.index') }}">Home</a></li>
+                        <li><a href="{{ url_for('public.contact') }}">Contact Us</a></li>
+                        <li><a href="{{ url_for('public.about') }}">About</a></li>
+                        <li><a href="{{ url_for('public.faq') }}">FAQ</a></li></li>
+                        <li><a href="{{ url_for('public.terms') }}">Terms</a></li>
+                        <li><a href="{{ url_for('public.privacy') }}">Privacy</a></li>
+                        <li><a href="{{ url_for('public.delivery') }}">Delivery</a></li>
+					</ul>
+				</aside>
+				<aside class="col-md col-6">
+					<h6 class="title">Help</h6>
+					<ul class="list-unstyled">
+						<li> <a href="/contact">Contact us</a></li>
+						<li> <a href="/contact">Money refund</a></li>
+						<li> <a href="/contact">Order status</a></li>
+						<li> <a href="/delivery">Shipping info</a></li>
+						<li> <a href="/contact">Open dispute</a></li>
+					</ul>
+				</aside>
+				<aside class="col-md col-6">
+					<h6 class="title">Account</h6>
+					<ul class="list-unstyled">
+						<li> <a href="/login"> User Login </a></li>
+						<li> <a href="/register"> User register </a></li>
+						<li> <a href="/profile"> Account Setting </a></li>
+						<!----<li> <a href="#"> My Orders </a></li>---->
+					</ul>
+				</aside>
+				
+				<aside class="col-md">
+					<h6 class="title">Social</h6>
+					<ul class="list-unstyled">
+						<li><a href="/{{ website_settings.facebook }}" target=“_blank”> <i class="fab fa-facebook"></i> Facebook </a></li>
+						<li><a href="/{{ website_settings.twitter }}" target=“_blank”> <i class="fab fa-twitter"></i> Twitter </a></li>
+						<li><a href="/{{ website_settings.instagram }}" target=“_blank”> <i class="fab fa-instagram"></i> Instagram </a></li>
+						<li><a href="/{{ website_settings.youtube }}" target=“_blank”> <i class="fab fa-youtube"></i> Youtube </a></li>
+					</ul>
+				</aside>
+				
+			</div> <!-- row.// -->
+		</section>	<!-- footer-top.// -->
+{% if website_settings %}
+		<section class="footer-bottom row">
+			<div class="col-md-2">
+				<p class="text-muted"> &copy 2022 {{ website_settings.company_name }} </p>
+			</div>
+			<div class="col-md-8 text-md-center">
+				<span  class="px-2">{{ website_settings.email }}</span>
+				<span  class="px-2">{{ website_settings.phone_number }}</span>
+				<!----<span  class="px-2">Street name 123, Avanue abc</span>--->
+			</div>
+			<div class="col-md-2 text-md-right text-muted">
+				<i class="fab fa-lg fa-cc-visa"></i>
+				<i class="fab fa-lg fa-cc-paypal"></i>
+				<i class="fab fa-lg fa-cc-mastercard"></i>
+			</div>
+		</section>
+{% endif %}
+	</div><!-- //container -->
+</footer>
+<!-- ========================= FOOTER END // ========================= -->
+{% endif %}

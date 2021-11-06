@@ -7,12 +7,13 @@ from wtforms.ext.sqlalchemy.fields import QuerySelectField, QuerySelectMultipleF
 from wtforms.fields import PasswordField, StringField, SubmitField, BooleanField, IntegerField, FloatField, \
     MultipleFileField, TextAreaField, SelectField, FileField
 from wtforms.fields.html5 import EmailField
-from wtforms.validators import Email, EqualTo, InputRequired, Length
+from wtforms.validators import Email, EqualTo, InputRequired, Length, DataRequired
 from wtforms_alchemy import Unique, ModelForm, model_form_factory
 
 from app import db
 from app.models import Role, User, MBrand, MVariant, MCurrency, MShippingMethod,\
      MCategory, BlogCategory, BlogTag, BlogNewsLetter
+from app.blueprints.marketplace.forms import SearchForm
 from app.utils import conditions
 
 images = UploadSet('images', IMAGES)
@@ -196,7 +197,6 @@ class MProductForm(FlaskForm):
     )
     variants = QuerySelectMultipleField(
         'Variants',
-        validators=[InputRequired()],
         get_label='name',
         query_factory=lambda: db.session.query(MVariant).order_by('name')
     )
@@ -237,18 +237,28 @@ class SiteLogoForm(BaseModelForm):
 # LandingSetting Form 
 class LandingSettingForm(FlaskForm):
     site_name = StringField(" E.g Textiles.ng ")
+    company_name = StringField(" E.g Textiles UK Ltd ")
+    email = StringField(" E.g first.name@example.com ")
+    phone_number = StringField(" E.g +12345678901 ")
     title = StringField(" Please write 120 word title for SEO ")
-    description = StringField("Please write 245 word description for SEO")
-    facebook = StringField("Link, e.g https://www.facebook.com/PastorChrisLive ")
-    linkedin = StringField("Link, e.g https://ng.linkedin.com/in/johndoe ")
-    twitter = StringField("Icon Link, e.g https://twitter.com/johndoe ")
-    instagram = StringField("Icon Link, e.g https://www.instagram.com/johndoe/ ")
-    snap_chat = StringField("Icon Link, e.g https://www.snapchat.com/johndoe/ ")
-    youtube = StringField("Icon Link, e.g https://www.youtube.com/johndoe/ ")
-    tiktok = StringField("Icon Link, e.g https://www.tiktok.com/johndoe/ ")
+    description = TextAreaField("Please write 245 word description for SEO")
+    facebook = StringField("https://www.facebook.com/PastorChrisLive ")
+    linkedin = StringField("https://ng.linkedin.com/in/johndoe ")
+    twitter = StringField("https://twitter.com/johndoe ")
+    instagram = StringField("https://www.instagram.com/johndoe/ ")
+    snap_chat = StringField("https://www.snapchat.com/johndoe/ ")
+    youtube = StringField("https://www.youtube.com/johndoe/ ")
+    tiktok = StringField("https://www.tiktok.com/johndoe/ ")
     google_analytics_id = StringField(" Your Google Analytics ID ")
     other_tracking_analytics_one = StringField(" Raw trackings scripts ")
     other_tracking_analytics_two = StringField(" Raw trackings scripts ")
     other_tracking_analytics_three = StringField(" Raw trackings scripts ")
     other_tracking_analytics_four = StringField(" Raw trackings scripts ")
+    submit = SubmitField('Submit')
+
+#FeatureForm
+class FeatureForm(FlaskForm):
+    title = StringField("Title or Name", validators=[DataRequired(), Length(min=5, max=80)])
+    description = StringField("Description", validators=[DataRequired(), Length(min=10, max=180)])
+    icon = StringField("Icon from Semantic UI or Font Awesome only e.g shopping-basket", validators=[DataRequired()])
     submit = SubmitField('Submit')

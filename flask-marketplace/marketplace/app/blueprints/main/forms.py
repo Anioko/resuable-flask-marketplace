@@ -12,21 +12,6 @@ images = UploadSet('images', IMAGES)
 docs = UploadSet('docs', ('rtf', 'odf', 'ods', 'gnumeric', 'abw', 'doc', 'docx', 'xls', 'xlsx', 'pdf'))
 
 
-class ExtraForm(FlaskForm):
-    photo = FileField('Upload resume or documents only. No images here!', validators=[FileRequired(), FileAllowed(docs, 'Documents only!')])
-    required_skill_one = StringField('Specify skill here', [Length(max=255)])
-    required_skill_two = StringField('Specify skill here', [Length(max=255)])
-    required_skill_three = StringField('Specify skill here', [Length(max=255)])
-    required_skill_four = StringField('Specify skill here', [Length(max=255)])
-    required_skill_five = StringField('Specify skill here', [Length(max=255)])
-    required_skill_six = StringField('Specify skill here', [Length(max=255)])
-    required_skill_seven = StringField('Specify skill here', [Length(max=255)])
-    required_skill_eight = StringField('Specify skill here', [Length(max=255)])
-    required_skill_nine = StringField('Specify skill here', [Length(max=255)])
-    required_skill_ten = StringField('Specify skill here', [Length(max=255)])
-    submit = SubmitField('Submit')
-
-
 class TelephoneForm(FlaskForm):
     country_code = IntegerField('Country Code', validators=[Required()])
     area_code = IntegerField('Area Code/Exchange', validators=[Required()])
@@ -48,12 +33,6 @@ class PhotoForm(FlaskForm):
 class TagForm(FlaskForm):
     tag = StringField('Please tag your question', validators=[DataRequired()])
 
-
-class QuestionForm(FlaskForm):
-    """ This is the question form  """
-    title = StringField('Title', validators=[DataRequired(), Length(min=2, max=500)])
-    description = TextAreaField('Description')
-    submit = SubmitField('Ask')
 
 
 class AnswerForm(FlaskForm):
@@ -91,15 +70,6 @@ class PostForm(FlaskForm):
 class CommentForm(FlaskForm):
     """ This is the comments form  """
     body = TextAreaField('Comments', validators=[DataRequired(), Length(min=50, max=5000)])
-    submit = SubmitField('Submit')
-
-
-class InterestForm(FlaskForm):
-    """ This is the interest declaration form  """
-    interest_one = StringField('Professional networking')
-    interest_two = StringField('Job Opportunities')
-    interest_three = StringField('Career Questions, Advice & Support')
-    interest_four = StringField('Communications between colleagues and co-workers')
     submit = SubmitField('Submit')
 
 

@@ -16,14 +16,14 @@ from wtforms import Flags
 
 from app import db
 from app.blueprints.marketplace.forms import ReviewForm, SearchForm, SVariantForm, SProductForm, SShippingForm, SShippingMethodForm
-from app.blueprints.admin.forms import MBrandForm
+from app.blueprints.admin.forms import *
 from app.blueprints.marketplace.apis import *
 from app.blueprints.api import main_api
 from app.blueprints.marketplace.paystack import Paystack
 from app.decorators import seller_required, buyer_required, anonymous_required
 from app.email import send_email
 from app.models import MProduct, MProductCategory, MCategory, MBanner, MReview, MVariant, current_user, User, MShippingMethod, MCartDetails, MSettings, MCurrency, \
-    MShippingMethodPrice, MOrderItem, MOrder, MSellerOrder, LandingSetting, MBrand, NewsLink, BackgroundImage, SiteLogo
+    MShippingMethodPrice, MOrderItem, MOrder, MSellerOrder, LandingSetting, MBrand, BackgroundImage, SiteLogo
 
 marketplace = Blueprint('marketplace', __name__)
 images = UploadSet('images', IMAGES)
@@ -31,7 +31,9 @@ images = UploadSet('images', IMAGES)
 
 # stripe secret key
 stripe_secret = os.environ.get(
-    'STRIPE_SECRET') or 'sk_test_51IUARBGl75N9LA5EFZ4Jpktzkyp8ZA1Q2av1xhRiEqsmA1vSyFt2xO1AppDwdPwJG3Yj3T6gNbZItEwGmhMxQoQ8008pGMXyrg'
+    'STRIPE_SECRET') 
+
+
 
 
 # Marketplace Shopping Routes start
@@ -44,14 +46,13 @@ def index():
     settings = LandingSetting.query.all()
     website_settings = MSettings.query.first()
     brands = MBrand.query.order_by(MBrand.created_at.asc()).limit(5).all()
-    newslinks = NewsLink.query.all()
     featured_products = MProduct.query.filter_by(availability=True).filter_by(
         is_featured=True).order_by(MProduct.created_at.asc()).limit(4).all()  # .limit(5).all()
     new_arrived_products = MProduct.query.filter_by(
         availability=True).order_by(MProduct.created_at.desc()).limit(4).all()
     categories_instances = MCategory.query.filter_by(is_featured=True).all()
     return render_template('marketplace/landing-page.html', form=form, categories=categories_instances, featured_products=featured_products,
-                           new_arrived_products=new_arrived_products, settings=settings, website_settings=website_settings, brands=brands, newslinks=newslinks, banner=banner,
+                           new_arrived_products=new_arrived_products, settings=settings, website_settings=website_settings, brands=brands, banner=banner,
                            background=background, logo=logo)
 
 
@@ -70,13 +71,14 @@ def review():
         "status": 1
     }
 
-
+'''
+# This view is not really necessary.
 @marketplace.route('/categories')
 def categories():
     categories_list = MCategory.query.filter_by(parent_id=None).all()
     website_settings = MSettings.query.first()
     return render_template('marketplace/categories/index.html', website_settings=website_settings, categories=categories_list)
-
+'''
 
 @marketplace.route('/category/<int:category_id>/<category_name>', defaults={'page': 1}, methods=['GET'])
 @marketplace.route('/category/<int:category_id>/<category_name>/<int:page>', methods=['GET'])
@@ -812,7 +814,7 @@ def anon_login():
         user = User.query.filter_by(email=email).first()
         if user:
             flash(
-                "There is a mediville user with this email, please go to the login page instead", "error")
+                "There is a user with this email, please go to the login page instead", "error")
             return render_template("marketplace/buyer/anon_auth.html", website_settings=website_settings)
         orders_count = MOrder.query.filter_by(email=email).count()
         if orders_count == 0:

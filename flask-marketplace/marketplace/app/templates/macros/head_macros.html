@@ -1,0 +1,145 @@
+{% macro header_macro(current_user, settings) -%}
+{% import 'macros/form_macros.html' as form %}
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="max-age=604800" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+{% if settings %}
+<title>{{ settings.title }}</title>
+<meta name="description"
+          content="{{ settings.description }}">
+<meta name="author" content="{{ settings.title }}">
+<meta name="og:title" content="{{ settings.title }}"/>
+<meta name="og:type" content="website"/>
+<meta name="og:url" content="https://www.{{ settings.title }}"/>
+<meta name="og:image" content="{{ background.image_url }}"/>
+<meta name="og:site_name" content="{{ settings.title }}"/>
+<meta name="og:description"
+          content="{{ settings.description }}"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:site" content="@{{ settings.title }}"/>
+<meta name="twitter:creator" content="@{{ config.APP_NAME }}"/>
+<meta property="og:url" content="https://www.{{ config.APP_NAME }}"/>
+<meta property="og:title" content="{{ settings.title }}"/>
+<meta property="og:description"
+          content="{{ settings.description }}"/>
+<meta property="og:image" content="{{ background.image_url }}"/>
+{% endif %}
+
+
+
+
+<link href="{{ url_for('static', filename='images/favicon.ico') }}" rel="shortcut icon" type="image/x-icon">
+
+<!-- jQuery -->
+<script src="{{ url_for('static', filename='js/jquery-2.0.0.min.js') }}" type="text/javascript"></script>
+
+<!-- Bootstrap4 files-->
+<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}" type="text/javascript"></script>
+<link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet" type="text/css"/>
+
+<!-- Font awesome 5 -->
+<link href="{{ url_for('static', filename='fonts/all.min.css') }}" type="text/css" rel="stylesheet">
+
+<!-- custom style -->
+<link href="{{ url_for('static', filename='css/ui.css') }}" rel="stylesheet" type="text/css"/>
+<link href="{{ url_for('static', filename='css/responsive.css') }}" rel="stylesheet" media="only screen and (max-width: 1200px)" />
+
+<!-- custom javascript -->
+<script src="{{ url_for('static', filename='js/script.js') }}" type="text/javascript"></script>
+
+{% if settings %}
+{% if settings.google_analytics_id %}
+{{settings.google_analytics_id |safe}}
+{% endif %}
+{% if settings.other_tracking_analytics_one %}
+{{settings.other_tracking_analytics_one | safe}}
+{% endif %}
+{% if settings.other_tracking_analytics_two %}
+{{settings.other_tracking_analytics_two | safe}}
+{% endif %}
+
+{% if settings.other_tracking_analytics_three %}
+{{settings.other_tracking_analytics_three | safe}}
+{% endif %}
+
+{% if settings.other_tracking_analytics_four %}
+{{settings.other_tracking_analytics_four | safe}}
+{% endif %}
+{% endif %}
+
+<script type="text/javascript">
+/// some script
+
+// jquery ready start
+$(document).ready(function() {
+	// jQuery code
+
+}); 
+// jquery end
+</script>
+
+</head>
+<body>
+
+
+
+<header class="section-header">
+<section class="header-main border-bottom">
+	<div class="container">
+<div class="row align-items-center">
+	<div class="col-lg-2 col-6">
+		<a href="{{url_for('marketplace.index')}}" class="brand-wrap">
+		{% if logo %}
+			<img class="logo" src="{{ logo.image_url }}">
+			{% else %}
+			{{config.APP_NAME}}
+			{% endif %}
+		</a> <!-- brand-wrap.// -->
+	</div>
+	<div class="col-lg-6 col-12 col-sm-12">
+		<form action="{{ url_for('main.search', query=0) }}">
+			<div class="input-group w-100">
+				{{ form.query(class_="form-control") }}
+			    <div class="input-group-append">
+			      <button class="btn btn-primary" type="submit">
+			        <i class="fa fa-search"></i>
+			      </button>
+			    </div>
+			</div>
+		</form>
+	</div> <!-- col.// -->
+	<div class="col-lg-4 col-sm-6 col-12">
+		<div class="widgets-wrap float-md-right">
+			<div class="widget-header  mr-3">
+				<a href="{{url_for('marketplace.cart')}}" class="icon icon-sm rounded-circle border"><i class="fa fa-shopping-cart"></i></a>
+				<span class="badge badge-pill badge-danger notify">0</span>
+			</div>
+			<div class="widget-header icontext">
+				<a href="{{url_for('account.profile')}}" class="icon icon-sm rounded-circle border"><i class="fa fa-user"></i></a>
+				<div class="text">
+					<span class="text-muted">Welcome!</span>
+					{% if current_user.is_authenticated %}
+					<div> 
+						{{ current_user.full_name }} |
+						<a href="{{url_for('account.logout')}}">Log out</a> 
+					</div>
+					{% else %}
+					<div> 
+						<a href="{{url_for('account.login')}}">Sign in</a> |  
+						<a href="{{url_for('account.register')}}"> Register</a>
+					</div>
+					{% endif %}
+				</div>
+			</div>
+		</div> <!-- widgets-wrap.// -->
+	</div> <!-- col.// -->
+</div> <!-- row.// -->
+	</div> <!-- container.// -->
+</section> <!-- header-main .// -->
+</header> <!-- section-header.// -->
+{% endmacro %}

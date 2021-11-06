@@ -50,9 +50,7 @@
         {{ render_menu_items( endpoints +  user ) }}
     {% else %}
         {% set endpoints = [
-        ('public.index', 'Home', 'home', ''),
-                ('account.register', 'Register', 'list layout', ''),
-        ('account.login', 'Log In', 'sign in', '')
+        ('main.index', 'Home', 'home', '')
       ] %}
         {{ render_menu_items(endpoints) }}
     {% endif %}
@@ -62,15 +60,29 @@
    manage their account and logout (account routes). Otherwise, it links to register and login.
 #}
 {% macro account_items(current_user) %}
-    {% if current_user.is_authenticated %}
-        {% set endpoints = [	  
-	  ('marketplace.index', 'Marketplace', 'shopping basket', ''),
+    {% if current_user.is_authenticated and current_user.is_seller %}
+        {% set endpoints = [	
+	   ('marketplace.buyer_panel', 'Buyer Area', 'credit card outline', ''),
+      ('marketplace.categories', 'Categories', 'database', ''),
+	  ('marketplace.seller_panel', 'Seller Area', 'sitemap', ''),
+      ('organisations.org_home', 'Organizations', 'user outline', ''),
+	  ('main.notifications', 'Notifications', 'alarm', '...'),
+	  ('marketplace.cart', 'Cart', 'main shopping cart', get_cart()),
+        ('account.profile', current_user.first_name , 'settings', ''),
+        ('account.logout', 'Log out', 'sign out', '')
+      ] %}
+        {{ render_menu_items(endpoints) }}
+    {% elif current_user.is_authenticated and not current_user.is_seller %}
+        {% set endpoints = [	
+	  ('marketplace.buyer_panel', 'Buyer Dashboard', 'credit card outline', ''),
+      ('marketplace.categories', 'Categories', 'database', ''),
       ('organisations.org_home', 'Organizations', 'user outline', ''),
 	  ('main.notifications', 'Notifications', 'alarm', '...'),
         ('account.profile', current_user.first_name , 'settings', ''),
         ('account.logout', 'Log out', 'sign out', '')
       ] %}
         {{ render_menu_items(endpoints) }}
+
     {% else %}
         {% set endpoints = [
         ('public.about', 'About', '', ''),
@@ -85,7 +97,7 @@
 
 {% macro mobile_nav(current_user, dropdown=None) %}
     <div class="mobile only  tablet only row" style="background-color: #2352c6;">
-        <div class="ui fixed inverted black main menu">
+        <div class="ui fixed inverted black main menu" style="background-color: #2352c6;">
             {{ header_items(current_user) }}
             <div class="right menu">
                 <a class="icon item" id="open-nav"><i class="sidebar icon"></i></a>
@@ -94,26 +106,9 @@
 
         {# The menu items which will be shown when open-nav is clicked #}
         <div class="ui fixed vertical fluid menu">
-            {{ account_items(current_user) }}
-            {{ create_dropdown(dropdown) }}
+          {{ account_items(current_user) }}
+          {{ create_dropdown(dropdown) }}
         </div>
-
-        {% if request.blueprint == 'marketplace' %}
-            <div class="ui fixed indigo inverted  menu" style="top:2.85714286em; background-color: #2352c6;">
-                {{ render_menu_items([('marketplace.index', 'Market', 'shopping basket', '')]) }}
-                <div class="right menu">
-                    <a class="icon item" id="open-nav1"><i class="sidebar icon"></i></a>
-                </div>
-            </div>
-            <div class="ui fixed vertical fluid menu" style="top:2.85714286em;">
-                {{ render_menu_items([('marketplace.categories', 'Categories', 'database', '')]) }}
-                {{ render_menu_items([('marketplace.buyer_panel', 'Buyer Dashborad', 'credit card outline', '')]) }}
-                {% if current_user.is_seller %}
-                    {{ render_menu_items([('marketplace.seller_panel', 'Seller Dashborad', 'sitemap', '')]) }}
-                {% endif %}
-                {{ render_menu_items([('marketplace.cart', 'Cart', 'main shopping cart', get_cart())]) }}
-            </div>
-        {% endif %}
     </div>
 {% endmacro %}
 
@@ -142,27 +137,11 @@
                 </div>
             </div>
         </div>
-        {% if request.blueprint == 'marketplace' %}
-            <div class="ui fixed indigo  inverted menu" style="top:2.85714286em;background-color: #2352c6;">
-                <div class="ui container">
-                    {{ render_menu_items([('marketplace.index', 'Market', 'shopping basket', '')]) }}
-                    <div class="right menu">
-                        {{ render_menu_items([('marketplace.categories', 'Categories', 'database', '')]) }}
-                        {{ render_menu_items([('marketplace.buyer_panel', 'Buyer Dashborad', 'credit card outline', '')]) }}
-                        {% if current_user.is_seller %}
-                            {{ render_menu_items([('marketplace.seller_panel', 'Seller Dashborad', 'sitemap', '')]) }}
-                        {% endif %}
-                        {{ render_menu_items([('marketplace.cart', '', 'main shopping cart', get_cart())]) }}
-
-                    </div>
-                </div>
-            </div>
-        {% endif %}
     </div>
 {% endmacro %}
 
 {% macro render_nav(current_user, dropdown=[]) %}
-    <nav class="ui navigation grid {% if endpoints %}has-submenu{% endif %}" style="background-color: #2352c6;">
+    <nav class="ui navigation grid {% if endpoints %}has-submenu{% endif %}" >
         {{ mobile_nav(current_user, dropdown=dropdown) }}
         {{ desktop_nav(current_user, dropdown=dropdown) }}
     </nav>

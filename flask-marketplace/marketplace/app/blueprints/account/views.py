@@ -133,7 +133,7 @@ def logout():
         db.session.commit()
     logout_user()
     flash('You have been logged out.', 'info')
-    return redirect(url_for('public.index'))
+    return redirect(url_for('main.index'))
 
 
 @account.route('/manage/info', methods=['GET'])

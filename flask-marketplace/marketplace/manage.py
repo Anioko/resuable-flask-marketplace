@@ -26,6 +26,27 @@ manager.add_command('db', MigrateCommand)
 
 
 @manager.command
+def add_seo_items():
+    """
+    Adds seo items to the database.
+    """
+    SeoItems.insert_data()
+
+@manager.command
+def add_seo_locations():
+    """
+    Adds seo locations to the database.
+    """
+    SeoLocations.insert_data()
+
+@manager.command
+def add_marketplace_categories():
+    """
+    Adds marketplace categories to the database.
+    """
+    MCategory.insert_data()
+
+@manager.command
 def routes():
     """'Display registered routes"""
     rules = []

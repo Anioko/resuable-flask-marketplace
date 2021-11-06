@@ -6,6 +6,7 @@ from flask_sqlalchemy import Pagination
 from sqlalchemy import desc, func
 from app.email import send_email
 from .forms import *
+from app.blueprints.marketplace.forms import SearchForm
 from ...utils import Struct
 #from app.models import MSettings, MBanner, BackgroundImage, LandingSetting, SiteLogo, MProduct, MCategory
 
@@ -18,21 +19,28 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+
 @main.route('/')
 def index():
     form = SearchForm()
     banner = MBanner.query.first()
     background = BackgroundImage.query.first()
     logo = SiteLogo.query.first()
-    settings = LandingSetting.query.all()
+    settings = LandingSetting.query.first()
     website_settings = MSettings.query.first()
     brands = MBrand.query.order_by(MBrand.created_at.asc()).limit(5).all()
-    featured_products = MProduct.query.filter_by(availability=True).filter_by(is_featured=True).order_by(MProduct.created_at.asc()).limit(4).all()#.limit(5).all()
-    new_arrived_products = MProduct.query.filter_by(availability=True).order_by(MProduct.created_at.desc()).limit(4).all()
-    categories_instances = MCategory.query.filter_by(is_featured=True).all()
-    return render_template('marketplace/landing-page.html', form=form, categories=categories_instances, featured_products=featured_products,
-                           new_arrived_products=new_arrived_products, settings=settings, website_settings=website_settings, brands=brands, newslinks=newslinks, banner=banner,
-                            background=background, logo=logo)
+    featured_products = MProduct.query.filter_by(availability=True).filter_by(
+        is_featured=True).order_by(MProduct.created_at.asc()).limit(4).all()  # .limit(5).all()
+    new_arrived_products = MProduct.query.filter_by(
+        availability=True).order_by(MProduct.created_at.desc()).limit(4).all()
+    featured_categories = MCategory.query.filter_by(is_featured=True).all()
+    categories = MCategory.query.limit(6).all()
+    features = Feature.query.limit(3).all()
+    products = MProduct.query.limit(4).all()
+    return render_template('marketplace/page-index-1.html', form=form, featured_categories=featured_categories, categories=categories, featured_products=featured_products,
+                           new_arrived_products=new_arrived_products, settings=settings, website_settings=website_settings, brands=brands, banner=banner,
+                           background=background, logo=logo, features=features, products=products)
+
 
 @main.route('/search')
 def search():
@@ -97,14 +105,7 @@ def search():
     return render_template("main/search_results.html", website_settings=website_settings, query=query, search_type=search_type, sort_by=sort_by,
                            sort_dir=sort_dir, results=results)
 
-@main.route('/feed')
-def home():
-    website_settings = MSettings.query.first()
 
-    if not current_user.is_authenticated:
-        return redirect(url_for('public.index'))
-    ''' this is where users will see their feeds'''
-    return render_template('main/user_feed.html', website_settings=website_settings)
 
 
 @main.route('/profile', methods=['GET', 'POST'])

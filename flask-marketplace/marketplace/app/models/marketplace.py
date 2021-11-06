@@ -17,7 +17,7 @@ class MCategory(db.Model):
     parent_id = db.Column(db.Integer, db.ForeignKey('marketplace_categories.id', ondelete="CASCADE"), nullable=True,
                           default=None)
     name = db.Column(db.String(), default=None, nullable=False)
-    image = db.Column(db.String(), default=None, nullable=False)
+    image = db.Column(db.String(), default=None, nullable=True)
     order = db.Column(db.Integer, default=0)
     is_featured = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=db.func.now())
@@ -31,6 +31,27 @@ class MCategory(db.Model):
     #     backref=db.backref('user', passive_deletes=True, lazy='dynamic')
     # )
     # products = db.relationship("MProduct", backref="categories")
+    @staticmethod
+    def insert_data():   
+        names = ('Animals & Pet Supplies', 'Apparel & Accessories',
+            'Arts & Entertainment','Baby & Toddler',
+            'Business & Industrial','Cameras & Optics',
+            'Electronics','Food, Beverages & Tobacco','Furniture',
+            'Hardware','Health & Beauty','Home & Garden','Luggage & Bags',
+            'Mature','Media','Office Supplies','Religious & Ceremonial',
+            'Software & Information Technology','Sporting Goods',
+            'Toys & Games','Vehicles & Parts', 'Housing', 'Hobbies', 'Classifieds')
+        
+
+        for name in names:
+            name = MCategory(name=name)
+            db.session.add(name)
+        db.session.commit()
+        print('Added Marketplace Categories')
+        
+    @property
+    def image_url(self):
+        return url_for('_uploads.uploaded_file', setname='images',filename=self.image, external=True)
 
 
 class MCurrency(db.Model):

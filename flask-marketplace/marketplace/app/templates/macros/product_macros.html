@@ -12,8 +12,9 @@
             <figcaption class="info-wrap">
                 <a href="{{ url_for('marketplace.product', product_id=product.id, product_name=product.name) }}" style="font-size:1em; font-weight: 500;" class="title">{{ product.name }}</a>
                 <div class="row" style="color: grey; margin-left: 0.07em;">
-                    <var cstylelass="p">by <span class="h6">{{ product.brand.name }}</span>
-                        <span style="display: inline-block; font-size: 2rem">.</span>
+                    <var styleclass="p">{% if product.brand.name %} by <span class="h6">{{ product.brand.name }}</span> 
+                        <span style="display: inline-block; font-size: 2rem">.</span>					
+					{% endif %} 
                         <span style="display: inline-block;">
                             {{ pd.rating_percent(product.rating) }}
                         </span>
@@ -30,7 +31,7 @@
 		<div href="#" class="card card-product-grid">
 		{% for image in json_load(product.images) %}
 			<a href="{{ url_for('marketplace.product', product_id=product.id, product_name=product.name) }}" class="img-wrap"> 
-						                       <div style="width:100%; height: 300px; background-image: url('{{ url_for('_uploads.uploaded_file', setname='images',
+					<div style="width:100%; height: 300px; background-image: url('{{ url_for('_uploads.uploaded_file', setname='images',
                            filename=image , _external=True) }}'); background-position: center;background-size: cover"
                          class="product-image" data-content="{{ product.id }}" data-size="{{ image_size(image ) }}">
                     </div>
@@ -183,8 +184,7 @@
 {% macro category_wid(category) %}
     <div class="ui card" onclick="location.href='{{ url_for('marketplace.category', category_id=category.id, category_name=category.name) }}'">
         <div class="image">
-            <img src="{{ url_for('_uploads.uploaded_file', setname='images',
-                           filename=category.image , _external=True) }}" height="200" style="height: 200px">
+            <img src="{{ category.image_url }}" height="200" style="height: 200px">
         </div>
         <div class="content">
             <a class="header">{{ category.name }}</a>
