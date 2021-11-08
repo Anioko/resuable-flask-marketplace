@@ -142,6 +142,7 @@ def create_app(config_name):
 
     # main_api.init_app(app)
     app.jinja_env.globals.update(json_load=json_load, image_size=image_size, get_cart=get_cart)
+    app.jinja_env.add_extension('jinja2.ext.do')
 
     @app.before_request
     def before_request():

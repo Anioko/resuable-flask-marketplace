@@ -209,26 +209,6 @@ class SeoItems(db.Model):
 		'Vehicle Alarms & Locks','Vehicle Safety Equipment','Motor Vehicle Cargo Nets','Motor Vehicle Carrying Rack Accessories','Motor Vehicle Carrying Racks','Motor Vehicle Loading Ramps','Motor Vehicle Trailers','Motorcycle Bags & Panniers','Truck Bed Storage Boxes & Organizers','Vehicle Headrest Hangers & Hooks',
 		'Vehicle Organizers','Docking & Anchoring','Sailboat Parts','Watercraft Care','Watercraft Engine Parts','Watercraft Engines & Motors','Watercraft Exhaust Parts','Watercraft Fuel Systems','Watercraft Lighting','Watercraft Steering Parts','Cars', 'Trucks & Vans','Golf Carts','Motorcycles & Scooters',
 		'Off-Road and All-Terrain Vehicles','Recreational Vehicles','Snowmobiles','Motor Boats','Personal Watercraft','Sailboats','Yachts')
-        
-        locations = ('Abia State','Aba','Arochukwu','Umuahia','Adamawa State','Jimeta','Mubi','Numan',
-                'Yola','Akwa Ibom State','Ikot Abasi','Ikot Ekpene','Oron','Uyo','Anambra State',
-                'Awka','Onitsha','Bauchi State','Azare','Bauchi','Jama′are','Katagum','Misau',
-                'Bayelsa State','Brass','BenueState','Makurdi','Borno State','Biu','Dikwa','Maiduguri',
-                'Cross River State','Calabar','Ogoja','Delta State','Asaba','Burutu','Koko','Sapele',
-                'Ughelli','Warri','Ebonyi State','Abakaliki','Edo State','BeninCity','Ekiti State',
-                'Ado-Ekiti','Effon-Alaiye','Ikere-Ekiti','Enugu State','Enugu','Nsukka','Abuja',
-                'Gombe State','Deba Habe','Gombe','Kumo','Imo State','Owerri','Jigawa State',
-                'Birnin Kudu','Dutse','Gumel','Hadejia','Kazaure','KadunaState','Jemaa','Kaduna',
-                'Zaria','KanoState','Kano','KatsinaState','Daura','Katsina','KebbiState','Argungu','Birnin Kebbi',
-                    'Gwandu','Yelwa','KogiState','Idah','Kabba','Lokoja','Okene','KwaraState','Ilorin',
-                'Jebba','Lafiagi','Offa','Pategi','Lagos State','Badagry','Epe','Ikeja','Ikorodu','Lagos','Mushin',
-                'Shomolu','Nasarawa State','Keffi','Lafia','Nasarawa','NigerState','Agaie','Baro','Bida','Kontagora',
-                'Lapai','Minna','Suleja','Ogun State','Abeokuta','Ijebu-Ode','Ilaro','Shagamu','OndoState','Akure','Ikare',
-                'Oka-Akoko','Ondo','Owo',
-                'OsunState','Ede','Ikire','Ikirun','Ila','Ile-Ife','Ilesha','Ilobu','Inisa','Iwo','Oshogbo','OyoState',
-                'Ibadan','Iseyin','Ogbomosho','Oyo','Saki','Plateau State','Bukuru','Jos','Vom','Wase','RiversState',
-                'Bonny','Degema','Okrika','Port Harcourt','Sokoto State','Sokoto','Taraba State','Ibi','Jalingo','Muri',
-                'Yobe State','Damaturu','Nguru','Zamfara State','Gusau','Kaura Namoda')
 
         for item in items:
             item = SeoItems(items=item)
