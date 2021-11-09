@@ -167,7 +167,7 @@ class MProductVariant(db.Model):
 
 
 #uncomment this line if you do not get "unsupported pickle protocol :5" error when saving an instance of product to db
-#@whooshee.register_model('name', 'description')
+@whooshee.register_model('name', 'description')
 class MProduct(db.Model):
     __tablename__ = 'marketplace_products'
 

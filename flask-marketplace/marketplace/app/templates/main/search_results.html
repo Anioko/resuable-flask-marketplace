@@ -23,13 +23,13 @@
     <div class="ui stackable centered grid container">
         <div class="sixteen wide column">
             <h2 class="ui header">
-                Search Mediville
+                Search
                 <span class="sub header">Search results for '{{ query }}'.</span>
             </h2>
             <form class="ui inline form fluid" style="width: 100%" method="GET" action="{{ url_for('main.search') }}">
                 <div class="fields" style="margin-bottom: 0">
                     <div class="fourteen wide field">
-                        <input type="text" name="query"  placeholder="Search across mediville platform" value="{{ query }}" required autocomplete minlength="3">
+                        <input type="text" name="query"  placeholder="Search across platform" value="{{ query }}" required autocomplete minlength="3">
                     </div>
                     <div class="two wide field">
                         <button type="submit" class="ui button" style="width: 100%"><i class="search icon"></i></button>

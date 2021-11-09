@@ -71,14 +71,14 @@ def review():
         "status": 1
     }
 
-'''
+#'''
 # This view is not really necessary.
 @marketplace.route('/categories')
 def categories():
     categories_list = MCategory.query.filter_by(parent_id=None).all()
     website_settings = MSettings.query.first()
     return render_template('marketplace/categories/index.html', website_settings=website_settings, categories=categories_list)
-'''
+#'''
 
 @marketplace.route('/category/<int:category_id>/<category_name>', defaults={'page': 1}, methods=['GET'])
 @marketplace.route('/category/<int:category_id>/<category_name>/<int:page>', methods=['GET'])

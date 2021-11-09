@@ -185,4 +185,6 @@ def create_app(config_name):
         from app.models import MProduct
         return o.__class__ == MProduct
 
+    whooshee.init_app(app)
+
     return app
