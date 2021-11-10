@@ -20,6 +20,7 @@ from sqlalchemy_mptt.mixins import BaseNestedSets
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from app.utils import pretty_date, db, login_manager, jsonify_object
+from app import whooshee
 
 
 class Permission:
@@ -333,6 +334,7 @@ class Message(db.Model):
     def __repr__(self):
         return '<Message {}>'.format(self.body)
 
+@whooshee.register_model('org_name', 'org_description', 'org_city', 'org_state', 'org_industry')
 class Organisation(db.Model):
     __tablename__ = 'organisations'
     id = db.Column(db.Integer, primary_key=True)

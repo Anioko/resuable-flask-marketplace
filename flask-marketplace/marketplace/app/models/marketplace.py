@@ -10,7 +10,7 @@ from app import whooshee
 #from flask_whooshee import Whooshee
 from app.utils import db, random_char
 
-
+@whooshee.register_model('name')
 class MCategory(db.Model):
     __tablename__ = 'marketplace_categories'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
