@@ -227,20 +227,12 @@ Before you submit changes to flask-base, you may want to autoformat your code wi
 
 Contributions are welcome! 
 
-## Documentation Changes
-
-To make changes to the documentation refer to the [Mkdocs documentation](http://www.mkdocs.org/#installation) for setup.
-
-To create a new documentation page, add a file to the `docs/` directory and edit `mkdocs.yml` to reference the file.
-
-When the new files are merged into `master` and pushed to github. Run `mkdocs gh-deploy` to update the online documentation.
-
 ## Todo
 
 - Tests
--Flask whooshee fix or replacement to ensure the search works on Apache.
--Add Gifs to README to show how to use the seller panel, admin panel and buyer panel
--Make search work "data_location" in seo_world blueprint
+- Flask whooshee fix or replacement to ensure the search works on Apache.
+- Add Gifs to README to show how to use the seller panel, admin panel and buyer panel
+- Make search work "data_location" in seo_world blueprint
 
 ## License
 [MIT License](LICENSE.md)
